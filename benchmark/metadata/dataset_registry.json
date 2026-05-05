@@ -1,0 +1,188 @@
+{
+  "datasets": {
+    "heloc": {
+      "display_name": "HELOC",
+      "task": "adverse_credit_decision_proxy",
+      "target": "RiskPerformance",
+      "positive_label": "Good",
+      "negative_label": "Bad",
+      "demo_data_path": "benchmark/data/demo/heloc_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "ExternalRiskEstimate"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "default_of_credit_card_clients": {
+      "display_name": "Default of Credit Card Clients",
+      "task": "credit_default_proxy",
+      "target": "default_payment_next_month",
+      "positive_label": "0",
+      "negative_label": "1",
+      "demo_data_path": "benchmark/data/demo/default_credit_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "ID",
+        "SEX",
+        "MARRIAGE",
+        "AGE",
+        "EDUCATION"
+      ],
+      "audit_track_excluded_features": [
+        "ID"
+      ],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "give_me_some_credit": {
+      "display_name": "Give Me Some Credit",
+      "task": "credit_distress_proxy",
+      "target": "FinancialDistressNextTwoYears",
+      "positive_label": "No",
+      "negative_label": "Yes",
+      "demo_data_path": "benchmark/data/demo/give_me_some_credit_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "age",
+        "NumberOfDependents"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "south_german_credit": {
+      "display_name": "South German Credit",
+      "task": "adverse_credit_decision_proxy",
+      "target": "credit_risk",
+      "positive_label": "good",
+      "negative_label": "bad",
+      "demo_data_path": "benchmark/data/demo/south_german_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "personal_status_sex",
+        "foreign_worker"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "hmda": {
+      "display_name": "HMDA Mortgage Applications",
+      "task": "mortgage_application_denial",
+      "target": "mortgage_application_outcome",
+      "positive_label": "approved",
+      "negative_label": "denied",
+      "demo_data_path": "benchmark/data/demo/hmda_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "applicant_age",
+        "co_applicant_age",
+        "derived_race",
+        "derived_ethnicity",
+        "derived_sex",
+        "state_code",
+        "county_code",
+        "census_tract"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "ny_courts_pretrial": {
+      "display_name": "NY Courts Pretrial Release",
+      "task": "pretrial_release_decision",
+      "target": "pretrial_release_outcome",
+      "positive_label": "released",
+      "negative_label": "detained",
+      "demo_data_path": "benchmark/data/demo/ny_courts_pretrial_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "gender",
+        "race",
+        "ethnicity",
+        "age_at_arrest",
+        "county_name"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "ipums_cps_ui": {
+      "display_name": "IPUMS CPS Unemployment Insurance",
+      "task": "ui_application_receipt",
+      "target": "ui_application_outcome",
+      "positive_label": "received",
+      "negative_label": "not_received",
+      "demo_data_path": "benchmark/data/demo/ipums_cps_ui_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "age",
+        "sex",
+        "race",
+        "hispan",
+        "educ",
+        "statefip"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "nhamcs": {
+      "display_name": "NHAMCS Emergency Department Triage",
+      "task": "ed_triage_priority",
+      "target": "triage_priority_outcome",
+      "positive_label": "high_priority",
+      "negative_label": "low_priority",
+      "demo_data_path": "benchmark/data/demo/nhamcs_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "age",
+        "sex",
+        "raceun",
+        "ethun",
+        "paytyper"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    },
+    "fda_inspections": {
+      "display_name": "FDA Inspection Classifications",
+      "task": "inspection_classification_action",
+      "target": "inspection_classification_outcome",
+      "positive_label": "no_action_indicated",
+      "negative_label": "action_indicated",
+      "demo_data_path": "benchmark/data/demo/fda_inspections_demo.csv",
+      "file_format": "csv",
+      "primary_track_excluded_features": [
+        "state",
+        "country",
+        "district",
+        "fiscal_year"
+      ],
+      "audit_track_excluded_features": [],
+      "paper_sources": [
+        "paper/dataset_cards_and_feature_taxonomy.md",
+        "paper/feature_taxonomy_manifest.yaml"
+      ]
+    }
+  }
+}

@@ -1,0 +1,4 @@
+triage_priority_outcome,age,sex,raceun,ethun,paytyper,tempf,pulse,bpsys,bpdias,painscale,arrems,ambtransfer
+high_priority,72,female,white,not_hispanic_or_latino,medicare,101.2,118,162,94,8,yes,no
+low_priority,29,male,black_african_american,not_hispanic_or_latino,private_insurance,98.4,82,124,78,3,no,not_applicable
+high_priority,41,female,hispanic,hispanic_or_latino,self_pay,99.7,105,146,88,7,yes,yes

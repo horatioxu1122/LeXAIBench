@@ -1,0 +1,16 @@
+metric_a,metric_b,spearman_rank_corr,shared_explainers
+actionability,alf,0.9999999999999998,2
+actionability,comprehensibility,-0.4857142857142857,6
+actionability,css,0.7714285714285715,6
+actionability,faithfulness,-0.7142857142857143,6
+actionability,stability,-0.7142857142857143,6
+alf,comprehensibility,-0.9999999999999998,2
+alf,css,-0.9999999999999998,2
+alf,faithfulness,-0.9999999999999998,2
+alf,stability,0.9999999999999998,2
+comprehensibility,css,-0.6,6
+comprehensibility,faithfulness,-0.2,6
+comprehensibility,stability,0.5428571428571428,6
+css,faithfulness,-0.3142857142857143,6
+css,stability,-0.9428571428571428,6
+faithfulness,stability,0.2571428571428571,6

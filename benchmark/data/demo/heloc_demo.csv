@@ -1,0 +1,4 @@
+RiskPerformance,ExternalRiskEstimate,MSinceOldestTradeOpen,MSinceMostRecentTradeOpen,AverageMInFile,NumSatisfactoryTrades,NumTrades60Ever2DerogPubRec,NumTrades90Ever2DerogPubRec,PercentTradesNeverDelq,MSinceMostRecentDelq,MaxDelq2PublicRecLast12M,MaxDelqEver,NumTotalTrades,NumTradesOpeninLast12M,PercentInstallTrades,MSinceMostRecentInqexcl7days,NumInqLast6M,NumInqLast6Mexcl7days,NetFractionRevolvingBurden,NetFractionInstallBurden,NumRevolvingTradesWBalance,NumInstallTradesWBalance,NumBank2NatlTradesWHighUtilization,PercentTradesWBalance
+Bad,52,180,4,96,12,2,1,73,2,6,7,17,3,41,1,5,4,87,72,6,3,4,82
+Good,77,240,16,120,18,0,0,96,18,1,2,14,1,36,8,1,1,22,35,2,2,0,38
+Bad,60,132,7,68,9,1,1,81,4,5,6,11,2,47,2,4,3,74,66,5,3,3,76

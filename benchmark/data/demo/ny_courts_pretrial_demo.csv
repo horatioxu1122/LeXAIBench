@@ -1,0 +1,4 @@
+pretrial_release_outcome,gender,race,ethnicity,age_at_arrest,county_name,court_type,arrest_type,top_charge_at_arraign,top_severity_at_arraign,top_charge_weight_at_arraign,top_charge_at_arraign_violent_felony_ind,arraign_charge_category,representation_at_securing_order,prior_vfo_cnt,prior_nonvfo_cnt,prior_misd_cnt
+detained,male,black,non_hispanic,29,kings,local,custody,criminal_possession_of_a_weapon,misdemeanor,am,n,criminal_possession_of_a_weapon,y,1,0,2
+released,female,white,non_hispanic,41,albany,local,dat,grand_larceny,misdemeanor,am,n,larceny,y,0,0,0
+released,male,hispanic,hispanic,24,bronx,local,custody,criminal_trespass,misdemeanor,bm,n,criminal_trespass,n,0,1,3

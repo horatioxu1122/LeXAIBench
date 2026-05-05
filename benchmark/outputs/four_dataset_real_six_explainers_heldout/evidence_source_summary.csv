@@ -1,0 +1,7 @@
+explainer_id,total_instances,faithfulness_direct_count,faithfulness_proxy_count,faithfulness_direct_share,faithfulness_proxy_share,stability_direct_count,stability_fallback_count,stability_direct_share,stability_fallback_share
+anchors,192,192,0,1.0,0.0,191,1,0.9947916666666666,0.005208333333333333
+dice,192,0,192,0.0,1.0,192,0,1.0,0.0
+leave_one_out,192,192,0,1.0,0.0,190,2,0.9895833333333334,0.010416666666666666
+lime,192,192,0,1.0,0.0,192,0,1.0,0.0
+shap,192,192,0,1.0,0.0,192,0,1.0,0.0
+wachter,192,0,192,0.0,1.0,191,1,0.9947916666666666,0.005208333333333333

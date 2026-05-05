@@ -1,0 +1,6 @@
+explainer_id,total_instances,faithfulness_direct_count,faithfulness_proxy_count,faithfulness_direct_share,faithfulness_proxy_share,stability_direct_count,stability_fallback_count,stability_direct_share,stability_fallback_share
+anchors,216,216,0,1.0,0.0,216,0,1.0,0.0
+dice,216,0,216,0.0,1.0,216,0,1.0,0.0
+lime,216,216,0,1.0,0.0,216,0,1.0,0.0
+shap,216,216,0,1.0,0.0,216,0,1.0,0.0
+wachter,216,0,216,0.0,1.0,216,0,1.0,0.0

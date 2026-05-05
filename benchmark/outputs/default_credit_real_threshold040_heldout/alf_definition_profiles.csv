@@ -1,0 +1,15 @@
+family,scenario_name,explainer_id,composite_score,rank,leader_changed
+alf,observed_alf,wachter,0.5327384337662644,1,False
+alf,observed_alf,dice,0.5306511892361393,2,False
+alf,balanced_arithmetic_alf,wachter,0.8248424857067411,1,False
+alf,balanced_arithmetic_alf,dice,0.8244385601502512,2,False
+alf,legality_dominant_alf,dice,0.8966553972559368,1,True
+alf,legality_dominant_alf,wachter,0.8961032702601363,2,False
+alf,feasibility_dominant_alf,dice,0.8242414383217888,1,True
+alf,feasibility_dominant_alf,wachter,0.8196779465003529,2,False
+alf,minimality_dominant_alf,wachter,0.799953349329855,1,False
+alf,minimality_dominant_alf,dice,0.7956898105879009,2,False
+alf,invalidity_penalized_alf,wachter,0.8248424857067411,1,False
+alf,invalidity_penalized_alf,dice,0.81871329237143,2,False
+alf,hard_failure_penalized_alf,wachter,0.8248424857067411,1,False
+alf,hard_failure_penalized_alf,dice,0.8129880245926089,2,False

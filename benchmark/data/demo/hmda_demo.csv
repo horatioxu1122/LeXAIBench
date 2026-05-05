@@ -1,0 +1,4 @@
+mortgage_application_outcome,loan_amount,loan_type,loan_purpose,occupancy_type,derived_dwelling_category,lien_status,total_units,income,debt_to_income_ratio,combined_loan_to_value_ratio,applicant_age,co_applicant_age,derived_race,derived_ethnicity,derived_sex,state_code,county_code,census_tract
+denied,320000,conventional,home_purchase,primary_residence,single_family_site_built,first_lien,1,82,45-50,92,35-44,35-44,white,not_hispanic_or_latino,male,36,061,36061000100
+approved,255000,fha,home_purchase,primary_residence,single_family_site_built,first_lien,1,104,36-40,84,45-54,45-54,black_or_african_american,not_hispanic_or_latino,female,12,086,12086000100
+denied,410000,conventional,refinancing,primary_residence,single_family_site_built,first_lien,1,76,50-60,97,25-34,25-34,joint,hispanic_or_latino,joint,48,201,48201000100

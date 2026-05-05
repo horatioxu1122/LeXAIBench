@@ -1,0 +1,87 @@
+{
+  "experiment": {
+    "name": "legalbench_xai_default_credit_real_threshold050",
+    "description": "Held-out default-credit benchmark with a 0.50 denial threshold for threshold-sensitivity analysis.",
+    "random_seed": 42,
+    "output_root": "benchmark/outputs"
+  },
+  "tracks": {
+    "run_primary_track": true,
+    "run_audit_track": true
+  },
+  "datasets": {
+    "enabled": [
+      "default_of_credit_card_clients"
+    ],
+    "denied_instance_sampling": {
+      "max_instances_per_dataset_model_pair": 12,
+      "stratify_by_decision_margin": true,
+      "strata": [
+        "borderline",
+        "medium_confidence",
+        "strong_denial"
+      ]
+    }
+  },
+  "dataset_sources": {
+    "local_paths": {
+      "default_of_credit_card_clients": "benchmark/data/real/default_credit.csv"
+    }
+  },
+  "evaluation": {
+    "heldout_enabled": true,
+    "split_strategy": "stratified",
+    "test_fraction": 0.30,
+    "split_seed": 42,
+    "fallback_to_full_dataset": true
+  },
+  "stability_probe": {
+    "enabled": true,
+    "num_neighbors": 3,
+    "candidate_multiplier": 6,
+    "same_label_only": true,
+    "lime_seed_trials": 3,
+    "numeric_jitter_fraction": 0.05,
+    "categorical_flip_probability": 0.15
+  },
+  "models": {
+    "enabled": [
+      "logistic_regression",
+      "ebm",
+      "xgboost"
+    ],
+    "decision_threshold": 0.5
+  },
+  "explainers": {
+    "enabled": [
+      "shap",
+      "lime",
+      "anchors",
+      "dice",
+      "wachter"
+    ],
+    "lime": {
+      "num_seeds": 3
+    }
+  },
+  "reporting": {
+    "bootstrap": {
+      "enabled": true,
+      "num_resamples": 1000,
+      "confidence_level": 0.95,
+      "method": "hierarchical",
+      "hierarchy_levels": [
+        "dataset_id",
+        "track",
+        "model_id"
+      ]
+    }
+  },
+  "registry": {
+    "dataset_registry": "benchmark/metadata/dataset_registry.json",
+    "feature_taxonomy": "benchmark/metadata/feature_taxonomy.json",
+    "paper_feature_taxonomy_manifest": "paper/feature_taxonomy_manifest.yaml",
+    "paper_metric_scoring_schema": "paper/metric_scoring_schema.yaml",
+    "paper_canonical_explanation_schema": "paper/canonical_explanation_schema.yaml"
+  }
+}

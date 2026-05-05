@@ -1,0 +1,4 @@
+inspection_classification_outcome,program_area,project_area,state,country,district,fiscal_year
+action_indicated,human_drugs,drug_quality_assurance,nj,united_states,new_jersey,2024
+no_action_indicated,foods,produce_safety,ca,united_states,san_francisco,2024
+action_indicated,medical_devices,device_quality_systems,pr,united_states,florida,2023

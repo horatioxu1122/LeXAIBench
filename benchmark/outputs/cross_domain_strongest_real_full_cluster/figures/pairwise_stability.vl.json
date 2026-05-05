@@ -1,0 +1,82 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Pairwise explainer win rates for stability.",
+  "data": {
+    "url": "../pairwise_wins.csv"
+  },
+  "transform": [
+    {
+      "filter": "datum.metric === 'stability'"
+    }
+  ],
+  "mark": "rect",
+  "encoding": {
+    "x": {
+      "field": "explainer_b",
+      "type": "nominal",
+      "title": "Explainer B"
+    },
+    "y": {
+      "field": "explainer_a",
+      "type": "nominal",
+      "title": "Explainer A"
+    },
+    "color": {
+      "field": "win_rate_a",
+      "type": "quantitative",
+      "title": "Win Rate for A"
+    },
+    "tooltip": [
+      {
+        "field": "metric",
+        "type": "nominal",
+        "title": "Metric"
+      },
+      {
+        "field": "explainer_a",
+        "type": "nominal",
+        "title": "Explainer A"
+      },
+      {
+        "field": "explainer_b",
+        "type": "nominal",
+        "title": "Explainer B"
+      },
+      {
+        "field": "wins_a",
+        "type": "quantitative",
+        "title": "Wins A"
+      },
+      {
+        "field": "wins_b",
+        "type": "quantitative",
+        "title": "Wins B"
+      },
+      {
+        "field": "ties",
+        "type": "quantitative",
+        "title": "Ties"
+      },
+      {
+        "field": "comparable_groups",
+        "type": "quantitative",
+        "title": "Comparable Groups"
+      },
+      {
+        "field": "win_rate_a",
+        "type": "quantitative",
+        "title": "Win Rate A"
+      },
+      {
+        "field": "win_rate_a_ci_low",
+        "type": "quantitative",
+        "title": "Win Rate A CI Low"
+      },
+      {
+        "field": "win_rate_a_ci_high",
+        "type": "quantitative",
+        "title": "Win Rate A CI High"
+      }
+    ]
+  }
+}

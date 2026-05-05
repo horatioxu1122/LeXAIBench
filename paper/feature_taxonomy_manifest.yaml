@@ -1,0 +1,610 @@
+taxonomy_definitions:
+  mutability:
+    I: immutable
+    PS: path-dependent short_or_medium_term_change_only
+    PL: path-dependent_long_term_change_only
+    M: directly_or_moderately_mutable
+    N: not_behaviorally_changeable
+    P: partially_mutable_or_lender_structured
+  verifiability:
+    Y: yes
+    P: partial
+    N: no
+  correctability:
+    Y: yes
+    P: partial
+    N: no
+  sensitivity:
+    S: directly_sensitive_or_protected_like
+    P: proxy_sensitive_or_socially_sensitive
+    N: not_obviously_sensitive
+  principal_reason:
+    High: usually_suitable_for_adverse_action_principal_reason
+    Medium: usable_with_translation_or_care
+    Low: should_usually_not_be_used_directly
+
+global_policy:
+  primary_track:
+    remove_identifiers: true
+    exclude_direct_sensitive_features_where_feasible: true
+    retain_sensitive_features_for_audit: true
+    principal_reasons_max_count: 4
+  audit_track:
+    broader_feature_retention: true
+    use_for_fairness_and_failure_analysis: true
+
+datasets:
+  heloc:
+    target: RiskPerformance
+    target_positive_label: Good
+    target_negative_label: Bad
+    primary_track_excluded_features:
+      - ExternalRiskEstimate
+    audit_track_excluded_features: []
+    features:
+      ExternalRiskEstimate:
+        plain_meaning: external_bureau_style_risk_estimate
+        mutability: N
+        verifiability: P
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      MSinceOldestTradeOpen:
+        plain_meaning: months_since_oldest_trade_open
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      MSinceMostRecentTradeOpen:
+        plain_meaning: months_since_most_recent_trade_open
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      AverageMInFile:
+        plain_meaning: average_months_in_file
+        mutability: PL
+        verifiability: P
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumSatisfactoryTrades:
+        plain_meaning: number_of_satisfactory_trades
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      NumTrades60Ever2DerogPubRec:
+        plain_meaning: number_of_60_plus_day_delinquencies_or_public_records
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      NumTrades90Ever2DerogPubRec:
+        plain_meaning: number_of_90_plus_day_delinquencies_or_public_records
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      PercentTradesNeverDelq:
+        plain_meaning: percent_of_trades_never_delinquent
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      MSinceMostRecentDelq:
+        plain_meaning: months_since_most_recent_delinquency
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      MaxDelq2PublicRecLast12M:
+        plain_meaning: worst_delinquency_or_public_record_in_last_12_months
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      MaxDelqEver:
+        plain_meaning: worst_delinquency_ever
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      NumTotalTrades:
+        plain_meaning: number_of_total_trades
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumTradesOpeninLast12M:
+        plain_meaning: number_of_trades_opened_in_last_12_months
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      PercentInstallTrades:
+        plain_meaning: percent_installment_trades
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Low
+      MSinceMostRecentInqexcl7days:
+        plain_meaning: months_since_recent_inquiry_excluding_last_week
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumInqLast6M:
+        plain_meaning: number_of_inquiries_last_6_months
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      NumInqLast6Mexcl7days:
+        plain_meaning: number_of_inquiries_last_6_months_excluding_last_week
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      NetFractionRevolvingBurden:
+        plain_meaning: revolving_balance_relative_to_limit
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      NetFractionInstallBurden:
+        plain_meaning: installment_balance_relative_to_original_loan_amount
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      NumRevolvingTradesWBalance:
+        plain_meaning: number_of_revolving_trades_with_balance
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumInstallTradesWBalance:
+        plain_meaning: number_of_installment_trades_with_balance
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumBank2NatlTradesWHighUtilization:
+        plain_meaning: number_of_bank_or_national_trades_with_high_utilization
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      PercentTradesWBalance:
+        plain_meaning: percent_of_trades_with_balance
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+
+  default_of_credit_card_clients:
+    target: default_payment_next_month
+    target_positive_label: "0"
+    target_negative_label: "1"
+    primary_track_excluded_features:
+      - ID
+      - SEX
+      - MARRIAGE
+      - AGE
+      - EDUCATION
+    audit_track_excluded_features:
+      - ID
+    features:
+      LIMIT_BAL:
+        plain_meaning: credit_limit
+        mutability: P
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      SEX:
+        plain_meaning: sex
+        mutability: I
+        verifiability: Y
+        correctability: N
+        sensitivity: S
+        principal_reason: Low
+      EDUCATION:
+        plain_meaning: education_level
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      MARRIAGE:
+        plain_meaning: marital_status
+        mutability: I
+        verifiability: Y
+        correctability: P
+        sensitivity: S
+        principal_reason: Low
+      AGE:
+        plain_meaning: age
+        mutability: I
+        verifiability: Y
+        correctability: N
+        sensitivity: S
+        principal_reason: Low
+      PAY_0:
+        plain_meaning: repayment_status_september_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      PAY_2:
+        plain_meaning: repayment_status_august_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      PAY_3:
+        plain_meaning: repayment_status_july_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      PAY_4:
+        plain_meaning: repayment_status_june_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      PAY_5:
+        plain_meaning: repayment_status_may_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      PAY_6:
+        plain_meaning: repayment_status_april_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      BILL_AMT1:
+        plain_meaning: bill_amount_september_2005
+        mutability: M
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      BILL_AMT2:
+        plain_meaning: bill_amount_august_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      BILL_AMT3:
+        plain_meaning: bill_amount_july_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      BILL_AMT4:
+        plain_meaning: bill_amount_june_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      BILL_AMT5:
+        plain_meaning: bill_amount_may_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Low
+      BILL_AMT6:
+        plain_meaning: bill_amount_april_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Low
+      PAY_AMT1:
+        plain_meaning: payment_amount_september_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      PAY_AMT2:
+        plain_meaning: payment_amount_august_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      PAY_AMT3:
+        plain_meaning: payment_amount_july_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Medium
+      PAY_AMT4:
+        plain_meaning: payment_amount_june_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Low
+      PAY_AMT5:
+        plain_meaning: payment_amount_may_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Low
+      PAY_AMT6:
+        plain_meaning: payment_amount_april_2005
+        mutability: PS
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: Low
+
+  give_me_some_credit:
+    target: FinancialDistressNextTwoYears
+    target_positive_label: "No"
+    target_negative_label: "Yes"
+    primary_track_excluded_features:
+      - age
+      - NumberOfDependents
+    audit_track_excluded_features: []
+    features:
+      RevolvingUtilizationOfUnsecuredLines:
+        plain_meaning: revolving_utilization_of_unsecured_lines
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      age:
+        plain_meaning: age_years
+        mutability: I
+        verifiability: Y
+        correctability: N
+        sensitivity: S
+        principal_reason: Low
+      NumberOfTime30-59DaysPastDueNotWorse:
+        plain_meaning: count_of_30_to_59_day_past_due_events
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      DebtRatio:
+        plain_meaning: debt_ratio
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      MonthlyIncome:
+        plain_meaning: monthly_income
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      NumberOfOpenCreditLinesAndLoans:
+        plain_meaning: number_of_open_credit_lines_and_loans
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      NumberOfTimes90DaysLate:
+        plain_meaning: count_of_90_day_late_events
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      NumberRealEstateLoansOrLines:
+        plain_meaning: number_of_real_estate_loans_or_lines
+        mutability: P
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      NumberOfTime60-89DaysPastDueNotWorse:
+        plain_meaning: count_of_60_to_89_day_past_due_events
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      NumberOfDependents:
+        plain_meaning: number_of_dependents
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+
+  south_german_credit:
+    target: credit_risk
+    target_positive_label: good
+    target_negative_label: bad
+    primary_track_excluded_features:
+      - personal_status_sex
+      - foreign_worker
+    audit_track_excluded_features: []
+    features:
+      status:
+        plain_meaning: checking_account_status
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      duration:
+        plain_meaning: credit_duration_months
+        mutability: P
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      credit_history:
+        plain_meaning: prior_credit_compliance_history
+        mutability: PL
+        verifiability: Y
+        correctability: Y
+        sensitivity: N
+        principal_reason: High
+      purpose:
+        plain_meaning: purpose_of_credit
+        mutability: P
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      amount:
+        plain_meaning: credit_amount
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      savings:
+        plain_meaning: savings_status
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      employment_duration:
+        plain_meaning: employment_duration
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      installment_rate:
+        plain_meaning: installment_burden_relative_to_income
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: High
+      personal_status_sex:
+        plain_meaning: combined_sex_and_marital_status_code
+        mutability: I
+        verifiability: P
+        correctability: N
+        sensitivity: S
+        principal_reason: Low
+      other_debtors:
+        plain_meaning: co_applicant_or_guarantor_status
+        mutability: P
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      present_residence:
+        plain_meaning: years_at_current_residence
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Medium
+      property:
+        plain_meaning: most_valuable_property_category
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      age:
+        plain_meaning: age_years
+        mutability: I
+        verifiability: Y
+        correctability: N
+        sensitivity: S
+        principal_reason: Low
+      other_installment_plans:
+        plain_meaning: other_installment_plans
+        mutability: M
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      housing:
+        plain_meaning: housing_type
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      number_credits:
+        plain_meaning: number_of_credits_at_this_bank
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: N
+        principal_reason: Medium
+      job:
+        plain_meaning: job_quality_category
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      people_liable:
+        plain_meaning: number_of_dependents
+        mutability: PS
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      telephone:
+        plain_meaning: telephone_landline_status
+        mutability: PL
+        verifiability: Y
+        correctability: P
+        sensitivity: P
+        principal_reason: Low
+      foreign_worker:
+        plain_meaning: foreign_worker_indicator
+        mutability: I
+        verifiability: Y
+        correctability: P
+        sensitivity: S
+        principal_reason: Low

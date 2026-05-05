@@ -1,0 +1,186 @@
+{
+  "datasets": {
+    "heloc": {
+      "target": "RiskPerformance",
+      "features": {
+        "ExternalRiskEstimate": {"plain_meaning": "external_bureau_style_risk_estimate", "mutability": "N", "verifiability": "P", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "MSinceOldestTradeOpen": {"plain_meaning": "months_since_oldest_trade_open", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "MSinceMostRecentTradeOpen": {"plain_meaning": "months_since_most_recent_trade_open", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "AverageMInFile": {"plain_meaning": "average_months_in_file", "mutability": "PL", "verifiability": "P", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumSatisfactoryTrades": {"plain_meaning": "number_of_satisfactory_trades", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "NumTrades60Ever2DerogPubRec": {"plain_meaning": "number_of_60_plus_day_delinquencies_or_public_records", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "NumTrades90Ever2DerogPubRec": {"plain_meaning": "number_of_90_plus_day_delinquencies_or_public_records", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "PercentTradesNeverDelq": {"plain_meaning": "percent_of_trades_never_delinquent", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "MSinceMostRecentDelq": {"plain_meaning": "months_since_most_recent_delinquency", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "MaxDelq2PublicRecLast12M": {"plain_meaning": "worst_delinquency_or_public_record_in_last_12_months", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "MaxDelqEver": {"plain_meaning": "worst_delinquency_ever", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumTotalTrades": {"plain_meaning": "number_of_total_trades", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumTradesOpeninLast12M": {"plain_meaning": "number_of_trades_opened_in_last_12_months", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "PercentInstallTrades": {"plain_meaning": "percent_installment_trades", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"},
+        "MSinceMostRecentInqexcl7days": {"plain_meaning": "months_since_recent_inquiry_excluding_last_week", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumInqLast6M": {"plain_meaning": "number_of_inquiries_last_6_months", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "NumInqLast6Mexcl7days": {"plain_meaning": "number_of_inquiries_last_6_months_excluding_last_week", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "NetFractionRevolvingBurden": {"plain_meaning": "revolving_balance_relative_to_limit", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "NetFractionInstallBurden": {"plain_meaning": "installment_balance_relative_to_original_loan_amount", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "NumRevolvingTradesWBalance": {"plain_meaning": "number_of_revolving_trades_with_balance", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumInstallTradesWBalance": {"plain_meaning": "number_of_installment_trades_with_balance", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumBank2NatlTradesWHighUtilization": {"plain_meaning": "number_of_bank_or_national_trades_with_high_utilization", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "PercentTradesWBalance": {"plain_meaning": "percent_of_trades_with_balance", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"}
+      }
+    },
+    "default_of_credit_card_clients": {
+      "target": "default_payment_next_month",
+      "features": {
+        "LIMIT_BAL": {"plain_meaning": "credit_limit", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "SEX": {"plain_meaning": "sex", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "EDUCATION": {"plain_meaning": "education_level", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "MARRIAGE": {"plain_meaning": "marital_status", "mutability": "I", "verifiability": "Y", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "AGE": {"plain_meaning": "age", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "PAY_0": {"plain_meaning": "repayment_status_september_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "PAY_2": {"plain_meaning": "repayment_status_august_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "PAY_3": {"plain_meaning": "repayment_status_july_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "PAY_4": {"plain_meaning": "repayment_status_june_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "PAY_5": {"plain_meaning": "repayment_status_may_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "PAY_6": {"plain_meaning": "repayment_status_april_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "BILL_AMT1": {"plain_meaning": "bill_amount_september_2005", "mutability": "M", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "BILL_AMT2": {"plain_meaning": "bill_amount_august_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "BILL_AMT3": {"plain_meaning": "bill_amount_july_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "BILL_AMT4": {"plain_meaning": "bill_amount_june_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "BILL_AMT5": {"plain_meaning": "bill_amount_may_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Low"},
+        "BILL_AMT6": {"plain_meaning": "bill_amount_april_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Low"},
+        "PAY_AMT1": {"plain_meaning": "payment_amount_september_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "PAY_AMT2": {"plain_meaning": "payment_amount_august_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "PAY_AMT3": {"plain_meaning": "payment_amount_july_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "PAY_AMT4": {"plain_meaning": "payment_amount_june_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Low"},
+        "PAY_AMT5": {"plain_meaning": "payment_amount_may_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Low"},
+        "PAY_AMT6": {"plain_meaning": "payment_amount_april_2005", "mutability": "PS", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Low"}
+      }
+    },
+    "give_me_some_credit": {
+      "target": "FinancialDistressNextTwoYears",
+      "features": {
+        "RevolvingUtilizationOfUnsecuredLines": {"plain_meaning": "revolving_utilization_of_unsecured_lines", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "NumberOfTime30-59DaysPastDueNotWorse": {"plain_meaning": "count_of_30_to_59_day_past_due_events", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "DebtRatio": {"plain_meaning": "debt_ratio", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "MonthlyIncome": {"plain_meaning": "monthly_income", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "NumberOfOpenCreditLinesAndLoans": {"plain_meaning": "number_of_open_credit_lines_and_loans", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "NumberOfTimes90DaysLate": {"plain_meaning": "count_of_90_day_late_events", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "NumberRealEstateLoansOrLines": {"plain_meaning": "number_of_real_estate_loans_or_lines", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "NumberOfTime60-89DaysPastDueNotWorse": {"plain_meaning": "count_of_60_to_89_day_past_due_events", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "NumberOfDependents": {"plain_meaning": "number_of_dependents", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"}
+      }
+    },
+    "south_german_credit": {
+      "target": "credit_risk",
+      "features": {
+        "status": {"plain_meaning": "checking_account_status", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "duration": {"plain_meaning": "credit_duration_months", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "credit_history": {"plain_meaning": "prior_credit_compliance_history", "mutability": "PL", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "purpose": {"plain_meaning": "purpose_of_credit", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "amount": {"plain_meaning": "credit_amount", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "savings": {"plain_meaning": "savings_status", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "employment_duration": {"plain_meaning": "employment_duration", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "installment_rate": {"plain_meaning": "installment_burden_relative_to_income", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "personal_status_sex": {"plain_meaning": "combined_sex_and_marital_status_code", "mutability": "I", "verifiability": "P", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "other_debtors": {"plain_meaning": "co_applicant_or_guarantor_status", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "present_residence": {"plain_meaning": "years_at_current_residence", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "property": {"plain_meaning": "most_valuable_property_category", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "other_installment_plans": {"plain_meaning": "other_installment_plans", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "housing": {"plain_meaning": "housing_type", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "number_credits": {"plain_meaning": "number_of_credits_at_this_bank", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "job": {"plain_meaning": "job_quality_category", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "people_liable": {"plain_meaning": "number_of_dependents", "mutability": "PS", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "telephone": {"plain_meaning": "telephone_landline_status", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "foreign_worker": {"plain_meaning": "foreign_worker_indicator", "mutability": "I", "verifiability": "Y", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"}
+      }
+    },
+    "hmda": {
+      "target": "mortgage_application_outcome",
+      "features": {
+        "loan_amount": {"plain_meaning": "loan_amount_dollars", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "loan_type": {"plain_meaning": "loan_type_category", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "loan_purpose": {"plain_meaning": "loan_purpose_category", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Medium"},
+        "occupancy_type": {"plain_meaning": "occupancy_type", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "derived_dwelling_category": {"plain_meaning": "derived_dwelling_category", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"},
+        "lien_status": {"plain_meaning": "lien_status", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "total_units": {"plain_meaning": "number_of_housing_units", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"},
+        "income": {"plain_meaning": "applicant_income_in_thousands", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "High"},
+        "debt_to_income_ratio": {"plain_meaning": "debt_to_income_ratio_band", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "combined_loan_to_value_ratio": {"plain_meaning": "combined_loan_to_value_ratio_band", "mutability": "M", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "applicant_age": {"plain_meaning": "applicant_age_band", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "co_applicant_age": {"plain_meaning": "co_applicant_age_band", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "derived_race": {"plain_meaning": "derived_race_category", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "derived_ethnicity": {"plain_meaning": "derived_ethnicity_category", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "derived_sex": {"plain_meaning": "derived_sex_category", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "state_code": {"plain_meaning": "state_code", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "county_code": {"plain_meaning": "county_code", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "census_tract": {"plain_meaning": "census_tract_identifier", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"}
+      }
+    },
+    "ny_courts_pretrial": {
+      "target": "pretrial_release_outcome",
+      "features": {
+        "gender": {"plain_meaning": "gender_from_arrest_report", "mutability": "I", "verifiability": "Y", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "race": {"plain_meaning": "race_from_arrest_report", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "ethnicity": {"plain_meaning": "ethnicity_from_arrest_report", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "age_at_arrest": {"plain_meaning": "age_at_arrest", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "county_name": {"plain_meaning": "county_name", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "court_type": {"plain_meaning": "court_type", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "arrest_type": {"plain_meaning": "custody_or_desk_appearance_ticket_status", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "top_charge_at_arraign": {"plain_meaning": "top_charge_at_arraignment", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "top_severity_at_arraign": {"plain_meaning": "top_charge_severity_at_arraignment", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "top_charge_weight_at_arraign": {"plain_meaning": "top_charge_weight_at_arraignment", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "top_charge_at_arraign_violent_felony_ind": {"plain_meaning": "violent_felony_indicator_for_top_arraignment_charge", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "arraign_charge_category": {"plain_meaning": "grouped_arraignment_charge_category", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "Medium"},
+        "representation_at_securing_order": {"plain_meaning": "attorney_assigned_by_arraignment", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"},
+        "prior_vfo_cnt": {"plain_meaning": "count_of_prior_violent_felony_convictions", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "prior_nonvfo_cnt": {"plain_meaning": "count_of_prior_nonviolent_felony_convictions", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "prior_misd_cnt": {"plain_meaning": "count_of_prior_misdemeanor_convictions", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"}
+      }
+    },
+    "ipums_cps_ui": {
+      "target": "ui_application_outcome",
+      "features": {
+        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "sex": {"plain_meaning": "sex", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "race": {"plain_meaning": "race", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "hispan": {"plain_meaning": "hispanic_origin", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "educ": {"plain_meaning": "educational_attainment", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "statefip": {"plain_meaning": "state_fips_code", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "empstat": {"plain_meaning": "employment_status", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "whyunemp": {"plain_meaning": "reason_for_unemployment", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
+        "classwkr": {"plain_meaning": "class_of_worker_for_current_or_recent_job", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"}
+      }
+    },
+    "nhamcs": {
+      "target": "triage_priority_outcome",
+      "features": {
+        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "sex": {"plain_meaning": "sex", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
+        "raceun": {"plain_meaning": "unimputed_race", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "ethun": {"plain_meaning": "unimputed_ethnicity", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
+        "paytyper": {"plain_meaning": "primary_expected_source_of_payment", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "tempf": {"plain_meaning": "initial_temperature_fahrenheit", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "pulse": {"plain_meaning": "initial_heart_rate", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "bpsys": {"plain_meaning": "initial_systolic_blood_pressure", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "bpdias": {"plain_meaning": "initial_diastolic_blood_pressure", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
+        "painscale": {"plain_meaning": "pain_scale_0_to_10", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "arrems": {"plain_meaning": "arrived_by_ambulance", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
+        "ambtransfer": {"plain_meaning": "transferred_from_another_hospital_or_urgent_care", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"}
+      }
+    },
+    "fda_inspections": {
+      "target": "inspection_classification_outcome",
+      "features": {
+        "program_area": {"plain_meaning": "fda_program_area", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "N", "principal_reason": "Medium"},
+        "project_area": {"plain_meaning": "fda_project_area", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "N", "principal_reason": "High"},
+        "state": {"plain_meaning": "facility_state_or_region", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "country": {"plain_meaning": "facility_country", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
+        "district": {"plain_meaning": "fda_district", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
+        "fiscal_year": {"plain_meaning": "inspection_fiscal_year", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "N", "principal_reason": "Low"}
+      }
+    }
+  }
+}

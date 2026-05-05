@@ -1,0 +1,91 @@
+schema_version: 0.1
+
+canonical_explanation:
+  required_fields:
+    instance_id: string
+    dataset_id: string
+    track: primary_or_audit
+    model_id: string
+    explainer_id: string
+    seed: integer_or_null
+    prediction:
+      score: float
+      label: string
+      threshold: float_or_null
+      decision_margin: float_or_null
+    explanation_family: attribution_or_rule_or_counterfactual
+    referenced_features: list
+    principal_reasons: list
+    counterfactual_changes: list
+    metadata: object
+
+  referenced_feature_item:
+    feature_name: string
+    plain_meaning: string
+    signed_direction: increases_denial_or_decreases_denial_or_neutral
+    importance_weight: float_or_null
+    rank: integer_or_null
+    raw_value: scalar_or_null
+    transformed_value: scalar_or_null
+    taxonomy:
+      mutability: I_or_PS_or_PL_or_M_or_N_or_P
+      verifiability: Y_or_P_or_N
+      correctability: Y_or_P_or_N
+      sensitivity: S_or_P_or_N
+      principal_reason: High_or_Medium_or_Low
+
+  principal_reason_item:
+    rank: integer
+    reason_text: string
+    supporting_features: list
+    signed_direction: increases_denial_or_decreases_denial_or_neutral
+    specificity_level: specific_or_partial_or_generic
+    grouped_reason_type: raw_feature_or_compressed_temporal_or_rule_or_counterfactual
+
+  counterfactual_change_item:
+    feature_name: string
+    from_value: scalar
+    to_value: scalar
+    delta: scalar_or_null
+    change_direction: increase_or_decrease_or_category_change
+    validity_flip: boolean_or_null
+    realism_score: float_or_null
+    effort_score: float_or_null
+    legality_flags:
+      direct_sensitive_feature: boolean
+      immutable_feature: boolean
+      proxy_sensitive_feature: boolean
+      lender_controlled_feature: boolean
+      low_principal_reason_feature: boolean
+
+  metadata:
+    raw_explanation_path: string_or_null
+    runtime_ms: integer_or_null
+    explainer_params: object
+    normalization_notes: list
+    compression_applied: boolean
+    confidence_or_precision: float_or_null
+    validity_score: float_or_null
+
+normalization_rules:
+  principal_reasons_max_count: 4
+  compress_correlated_temporal_features: true
+  suppress_direct_sensitive_features_in_primary_track: true
+  preserve_raw_explanation_for_audit: true
+
+family_specific_notes:
+  attribution:
+    expected_fields:
+      - referenced_features
+      - principal_reasons
+  rule:
+    expected_fields:
+      - referenced_features
+      - principal_reasons
+      - metadata.confidence_or_precision
+  counterfactual:
+    expected_fields:
+      - referenced_features
+      - principal_reasons
+      - counterfactual_changes
+      - metadata.validity_score

@@ -1,0 +1,7 @@
+metric,same_leader_count,comparison_count,flip_count,same_leader_rate
+faithfulness,12,12,0,1.0
+stability,8,12,4,0.6666666666666666
+comprehensibility,12,12,0,1.0
+css,12,12,0,1.0
+actionability,8,12,4,0.6666666666666666
+alf,8,12,4,0.6666666666666666

@@ -1,0 +1,86 @@
+normalization:
+  principal_reasons_max_count: 4
+  required_fields:
+    - referenced_features
+    - signed_direction
+    - magnitude_or_priority
+    - counterfactual_changes
+    - human_reason_text
+
+contestability_support_score:
+  weights:
+    verifiability: 0.30
+    correctability: 0.30
+    decision_sensitivity_visibility: 0.25
+    reason_specificity: 0.15
+  verifiability_map:
+    Y: 1.0
+    P: 0.5
+    N: 0.0
+  correctability_map:
+    Y: 1.0
+    P: 0.5
+    N: 0.0
+  decision_sensitivity_visibility:
+    components:
+      directionality: 0.4
+      threshold_visibility: 0.3
+      decision_flip_validity: 0.3
+  reason_specificity_levels:
+    specific_directional_reason: 1.0
+    partially_specific_reason: 0.5
+    generic_or_opaque_reason: 0.0
+
+actionability_legality_filter:
+  formula:
+    feasibility: 0.0
+    legality: 0.0
+    minimality: 0.0
+    combined: feasibility_times_legality_times_minimality
+  feasibility:
+    mutability_weights:
+      M: 1.0
+      PS: 0.6
+      PL: 0.4
+      P: 0.5
+      I: 0.0
+      N: 0.0
+    internal_weights:
+      mutability: 0.5
+      effort: 0.25
+      realism: 0.25
+  legality:
+    penalties:
+      sensitive_feature_change: 0.6
+      proxy_sensitive_feature_change: 0.2
+      lender_controlled_or_bureau_controlled_change: 0.1
+      low_principal_reason_suitability: 0.1
+    lower_bound: 0.0
+    upper_bound: 1.0
+  minimality:
+    weights:
+      sparsity: 0.5
+      proximity: 0.5
+  hard_rejection_rules:
+    - direct_sensitive_feature_changed
+    - immutable_feature_changed
+    - clearly_off_manifold_value
+    - primarily_low_principal_reason_features
+    - subject_cannot_reasonably_enact_or_verify_change
+
+unified_actionability_score:
+  weights:
+    advice_presence: 0.20
+    alf: 0.50
+    correction_support: 0.30
+
+reporting:
+  required_tables:
+    - css_by_dataset_method
+    - alf_by_dataset_method_for_recourse_methods
+    - invalid_recourse_rate
+    - feature_category_breakdown
+  required_ablations:
+    - heloc_externalriskestimate_included_vs_excluded
+    - stochastic_method_seed_stability
+    - retraining_stability_for_xgboost

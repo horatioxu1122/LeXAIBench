@@ -1,0 +1,556 @@
+import math
+import os
+import statistics
+from typing import Any
+
+from ..types import DatasetBundle, TabularDataset
+from .stubs import HeuristicModel, RowPrediction, fit_stub_model
+
+
+class VectorizedClassifierModel:
+    def __init__(
+        self,
+        *,
+        model_id: str,
+        backend_implementation: str,
+        dataset_bundle: DatasetBundle,
+        vectorizer: Any,
+        classifier: Any,
+        encoded_feature_names: list[str],
+        background_matrix: Any,
+        heuristic_helper: HeuristicModel,
+        feature_fill_values: dict[str, Any],
+        matrix_transformer: Any = None,
+        threshold: float = 0.5,
+    ) -> None:
+        self.model_id = model_id
+        self.backend_implementation = backend_implementation
+        self.dataset_bundle = dataset_bundle
+        self.vectorizer = vectorizer
+        self.classifier = classifier
+        self.encoded_feature_names = encoded_feature_names
+        self.background_matrix = background_matrix
+        self.heuristic_helper = heuristic_helper
+        self.feature_fill_values = feature_fill_values
+        self.matrix_transformer = matrix_transformer
+        self.threshold = threshold
+        self._shap_explainer: Any = None
+        self._shap_mode: str | None = None
+        self._lime_explainers: dict[int, Any] = {}
+
+    @property
+    def shap_mode(self) -> str | None:
+        return self._shap_mode
+
+    def predict_row(self, row: dict[str, Any], instance_id: str) -> RowPrediction:
+        vector = self.vectorize_row(row)
+        probability = float(self.classifier.predict_proba(vector)[0][1])
+        if hasattr(self.classifier, "decision_function"):
+            raw_score = float(self.classifier.decision_function(vector)[0])
+        else:
+            raw_score = _logit(probability)
+        label = (
+            self.dataset_bundle.negative_label
+            if probability >= self.threshold
+            else self.dataset_bundle.positive_label
+        )
+        return RowPrediction(
+            instance_id=instance_id,
+            score=probability,
+            label=label,
+            threshold=self.threshold,
+            decision_margin=probability - self.threshold,
+            raw_score=raw_score,
+            feature_contributions=self.original_feature_contributions(row),
+        )
+
+    def predict_rows(
+        self,
+        rows: list[dict[str, Any]],
+        *,
+        instance_id_prefix: str,
+    ) -> list[RowPrediction]:
+        if not rows:
+            return []
+        vector = self.vectorizer.transform([self._feature_dict(row) for row in rows])
+        if self.matrix_transformer is not None:
+            vector = self.matrix_transformer.transform(vector)
+        probabilities = self.classifier.predict_proba(vector)[:, 1]
+        if hasattr(self.classifier, "decision_function"):
+            raw_scores = self.classifier.decision_function(vector)
+        else:
+            raw_scores = [_logit(float(probability)) for probability in probabilities]
+
+        predictions: list[RowPrediction] = []
+        for index, (probability, raw_score) in enumerate(
+            zip(probabilities, raw_scores, strict=False)
+        ):
+            score = float(probability)
+            label = (
+                self.dataset_bundle.negative_label
+                if score >= self.threshold
+                else self.dataset_bundle.positive_label
+            )
+            predictions.append(
+                RowPrediction(
+                    instance_id=f"{instance_id_prefix}-row{index}",
+                    score=score,
+                    label=label,
+                    threshold=self.threshold,
+                    decision_margin=score - self.threshold,
+                    raw_score=float(raw_score),
+                    feature_contributions={},
+                )
+            )
+        return predictions
+
+    def recommend_changes(
+        self,
+        row: dict[str, Any],
+        prediction: RowPrediction,
+        allow_illegal: bool,
+        limit: int = 2,
+    ) -> list[dict[str, Any]]:
+        return self.heuristic_helper.recommend_changes(
+            row=self._feature_dict(row),
+            prediction=prediction,
+            allow_illegal=allow_illegal,
+            limit=limit,
+        )
+
+    def vectorize_row(self, row: dict[str, Any]) -> Any:
+        vector = self.vectorizer.transform([self._feature_dict(row)])
+        if self.matrix_transformer is not None:
+            return self.matrix_transformer.transform(vector)
+        return vector
+
+    def original_feature_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        proxy_prediction = self.heuristic_helper.predict_row(
+            row=self._feature_dict(row),
+            instance_id=f"{self.model_id}-proxy",
+        )
+        return proxy_prediction.feature_contributions
+
+    def get_shap_explainer(self) -> Any:
+        if self._shap_explainer is not None:
+            return self._shap_explainer
+
+        import shap
+
+        self._shap_explainer = shap.Explainer(
+            self.classifier.predict_proba,
+            self.background_matrix,
+            feature_names=self.encoded_feature_names,
+        )
+        self._shap_mode = "generic"
+        return self._shap_explainer
+
+    def get_lime_explainer(self, seed: int = 0) -> Any:
+        if seed in self._lime_explainers:
+            return self._lime_explainers[seed]
+
+        from lime.lime_tabular import LimeTabularExplainer
+
+        kernel_width = 0.75 * max(1, len(self.encoded_feature_names)) ** 0.5
+        explainer = LimeTabularExplainer(
+            training_data=self.background_matrix,
+            feature_names=self.encoded_feature_names,
+            class_names=[
+                self.dataset_bundle.positive_label,
+                self.dataset_bundle.negative_label,
+            ],
+            mode="classification",
+            kernel_width=kernel_width,
+            discretize_continuous=False,
+            random_state=seed,
+        )
+        self._lime_explainers[seed] = explainer
+        return explainer
+
+    def _feature_dict(self, row: dict[str, Any]) -> dict[str, Any]:
+        return {
+            feature_name: self._normalize_feature_value(feature_name, row.get(feature_name))
+            for feature_name in self.dataset_bundle.included_feature_names
+        }
+
+    def _normalize_feature_value(self, feature_name: str, value: Any) -> Any:
+        if _is_missing(value):
+            return self.feature_fill_values[feature_name]
+        return value
+
+    @staticmethod
+    def base_feature_name(encoded_feature_name: str) -> str:
+        if "=" in encoded_feature_name:
+            return encoded_feature_name.split("=", 1)[0]
+        return encoded_feature_name
+
+
+class SklearnLogisticRegressionModel(VectorizedClassifierModel):
+    def __init__(
+        self,
+        dataset_bundle: DatasetBundle,
+        vectorizer: Any,
+        classifier: Any,
+        encoded_feature_names: list[str],
+        background_matrix: Any,
+        heuristic_helper: HeuristicModel,
+        feature_fill_values: dict[str, Any],
+        matrix_transformer: Any = None,
+        threshold: float = 0.5,
+    ) -> None:
+        super().__init__(
+            model_id="logistic_regression",
+            backend_implementation="sklearn_logistic_regression",
+            dataset_bundle=dataset_bundle,
+            vectorizer=vectorizer,
+            classifier=classifier,
+            encoded_feature_names=encoded_feature_names,
+            background_matrix=background_matrix,
+            heuristic_helper=heuristic_helper,
+            feature_fill_values=feature_fill_values,
+            matrix_transformer=matrix_transformer,
+            threshold=threshold,
+        )
+        self.background_reference_vector = background_matrix.mean(axis=0)
+
+    def original_feature_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        vector = self.vectorize_row(row)[0]
+        coefficients = self.classifier.coef_[0]
+        contributions = {
+            feature_name: 0.0
+            for feature_name in self.dataset_bundle.included_feature_names
+        }
+        for encoded_name, value, coefficient in zip(
+            self.encoded_feature_names,
+            vector,
+            coefficients,
+            strict=False,
+        ):
+            base_name = self.base_feature_name(encoded_name)
+            if base_name in contributions:
+                contributions[base_name] += float(value) * float(coefficient)
+        return contributions
+
+    def get_shap_explainer(self) -> Any:
+        self._shap_mode = "linear_exact"
+        return self._shap_explainer
+
+    def exact_shap_values(self, row: dict[str, Any]) -> list[float]:
+        vector = self.vectorize_row(row)[0]
+        coefficients = self.classifier.coef_[0]
+        centered = vector - self.background_reference_vector
+        return [
+            float(value) * float(coefficient)
+            for value, coefficient in zip(centered, coefficients, strict=False)
+        ]
+
+
+class XGBoostClassifierModel(VectorizedClassifierModel):
+    def __init__(
+        self,
+        dataset_bundle: DatasetBundle,
+        vectorizer: Any,
+        classifier: Any,
+        encoded_feature_names: list[str],
+        background_matrix: Any,
+        heuristic_helper: HeuristicModel,
+        feature_fill_values: dict[str, Any],
+        threshold: float = 0.5,
+    ) -> None:
+        super().__init__(
+            model_id="xgboost",
+            backend_implementation="xgboost_classifier",
+            dataset_bundle=dataset_bundle,
+            vectorizer=vectorizer,
+            classifier=classifier,
+            encoded_feature_names=encoded_feature_names,
+            background_matrix=background_matrix,
+            heuristic_helper=heuristic_helper,
+            feature_fill_values=feature_fill_values,
+            threshold=threshold,
+        )
+
+    def get_shap_explainer(self) -> Any:
+        if self._shap_explainer is not None:
+            return self._shap_explainer
+
+        import shap
+
+        try:
+            self._shap_explainer = shap.TreeExplainer(self.classifier)
+            self._shap_mode = "tree"
+        except Exception:
+            self._shap_explainer = shap.Explainer(
+                self.classifier.predict_proba,
+                self.background_matrix,
+                feature_names=self.encoded_feature_names,
+            )
+            self._shap_mode = "generic"
+        return self._shap_explainer
+
+
+class EBMClassifierModel(VectorizedClassifierModel):
+    def __init__(
+        self,
+        dataset_bundle: DatasetBundle,
+        vectorizer: Any,
+        classifier: Any,
+        encoded_feature_names: list[str],
+        background_matrix: Any,
+        heuristic_helper: HeuristicModel,
+        feature_fill_values: dict[str, Any],
+        threshold: float = 0.5,
+    ) -> None:
+        super().__init__(
+            model_id="ebm",
+            backend_implementation="ebm_classifier",
+            dataset_bundle=dataset_bundle,
+            vectorizer=vectorizer,
+            classifier=classifier,
+            encoded_feature_names=encoded_feature_names,
+            background_matrix=background_matrix,
+            heuristic_helper=heuristic_helper,
+            feature_fill_values=feature_fill_values,
+            threshold=threshold,
+        )
+
+
+def fit_sklearn_logistic_regression_model(
+    dataset_bundle: DatasetBundle,
+    table: TabularDataset,
+    threshold: float = 0.5,
+) -> SklearnLogisticRegressionModel:
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+
+    vectorizer, matrix, encoded_feature_names, labels, raw_background_matrix = (
+        _prepare_vectorized_training_inputs(dataset_bundle, table)
+    )
+    scaler = StandardScaler()
+    scaled_matrix = scaler.fit_transform(matrix)
+    background_matrix = scaler.transform(raw_background_matrix)
+    classifier = LogisticRegression(
+        max_iter=4000,
+        random_state=0,
+        solver="lbfgs",
+    )
+    classifier.fit(scaled_matrix, labels)
+
+    heuristic_helper = fit_stub_model(
+        model_id="logistic_regression",
+        dataset_bundle=dataset_bundle,
+        table=_sanitize_tabular_dataset(
+            table,
+            dataset_bundle.included_feature_names,
+            vectorizer.feature_fill_values_,
+        ),
+    )
+    return SklearnLogisticRegressionModel(
+        dataset_bundle=dataset_bundle,
+        vectorizer=vectorizer,
+        classifier=classifier,
+        encoded_feature_names=encoded_feature_names,
+        background_matrix=background_matrix,
+        heuristic_helper=heuristic_helper,
+        feature_fill_values=vectorizer.feature_fill_values_,
+        matrix_transformer=scaler,
+        threshold=threshold,
+    )
+
+
+def fit_xgboost_model(
+    dataset_bundle: DatasetBundle,
+    table: TabularDataset,
+    threshold: float = 0.5,
+) -> XGBoostClassifierModel:
+    from xgboost import XGBClassifier
+
+    vectorizer, matrix, encoded_feature_names, labels, background_matrix = (
+        _prepare_vectorized_training_inputs(dataset_bundle, table)
+    )
+    classifier = XGBClassifier(
+        n_estimators=48,
+        max_depth=3,
+        learning_rate=0.1,
+        subsample=1.0,
+        colsample_bytree=1.0,
+        objective="binary:logistic",
+        eval_metric="logloss",
+        random_state=0,
+        verbosity=0,
+        n_jobs=1,
+    )
+    classifier.fit(matrix, labels)
+
+    heuristic_helper = fit_stub_model(
+        model_id="xgboost",
+        dataset_bundle=dataset_bundle,
+        table=_sanitize_tabular_dataset(
+            table,
+            dataset_bundle.included_feature_names,
+            vectorizer.feature_fill_values_,
+        ),
+    )
+    return XGBoostClassifierModel(
+        dataset_bundle=dataset_bundle,
+        vectorizer=vectorizer,
+        classifier=classifier,
+        encoded_feature_names=encoded_feature_names,
+        background_matrix=background_matrix,
+        heuristic_helper=heuristic_helper,
+        feature_fill_values=vectorizer.feature_fill_values_,
+        threshold=threshold,
+    )
+
+
+def fit_ebm_model(
+    dataset_bundle: DatasetBundle,
+    table: TabularDataset,
+    threshold: float = 0.5,
+) -> EBMClassifierModel:
+    from interpret.glassbox import ExplainableBoostingClassifier
+
+    vectorizer, matrix, encoded_feature_names, labels, background_matrix = (
+        _prepare_vectorized_training_inputs(dataset_bundle, table)
+    )
+    interactions = _env_int("LEGALBENCH_EBM_INTERACTIONS", 4)
+    max_bins = _env_int("LEGALBENCH_EBM_MAX_BINS", 64)
+    max_rounds = _env_int("LEGALBENCH_EBM_MAX_ROUNDS", 200)
+    classifier = ExplainableBoostingClassifier(
+        interactions=interactions,
+        max_bins=max_bins,
+        max_rounds=max_rounds,
+        random_state=0,
+        n_jobs=1,
+    )
+    classifier.fit(matrix, labels)
+
+    heuristic_helper = fit_stub_model(
+        model_id="ebm",
+        dataset_bundle=dataset_bundle,
+        table=_sanitize_tabular_dataset(
+            table,
+            dataset_bundle.included_feature_names,
+            vectorizer.feature_fill_values_,
+        ),
+    )
+    return EBMClassifierModel(
+        dataset_bundle=dataset_bundle,
+        vectorizer=vectorizer,
+        classifier=classifier,
+        encoded_feature_names=encoded_feature_names,
+        background_matrix=background_matrix,
+        heuristic_helper=heuristic_helper,
+        feature_fill_values=vectorizer.feature_fill_values_,
+        threshold=threshold,
+    )
+
+
+def _prepare_vectorized_training_inputs(
+    dataset_bundle: DatasetBundle,
+    table: TabularDataset,
+) -> tuple[Any, Any, list[str], list[int], Any]:
+    from sklearn.feature_extraction import DictVectorizer
+
+    feature_fill_values = _infer_feature_fill_values(table.rows, table.feature_names)
+    feature_rows = [
+        {
+            feature_name: _normalize_feature_value(
+                row.get(feature_name),
+                feature_fill_values[feature_name],
+            )
+            for feature_name in table.feature_names
+        }
+        for row in table.rows
+    ]
+    labels = [
+        1 if str(row[dataset_bundle.target]) == dataset_bundle.negative_label else 0
+        for row in table.rows
+    ]
+    if len(set(labels)) < 2:
+        raise ValueError("real backend requires at least two target classes")
+
+    vectorizer = DictVectorizer(sparse=False, sort=False)
+    matrix = vectorizer.fit_transform(feature_rows)
+    vectorizer.feature_fill_values_ = feature_fill_values
+    encoded_feature_names = list(vectorizer.get_feature_names_out())
+    background_rows = min(len(feature_rows), 64)
+    background_matrix = matrix[:background_rows]
+    return vectorizer, matrix, encoded_feature_names, labels, background_matrix
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
+
+
+def _logit(probability: float) -> float:
+    clipped = min(max(probability, 1e-6), 1.0 - 1e-6)
+    return float(math.log(clipped / (1.0 - clipped)))
+
+
+def _is_missing(value: Any) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, float):
+        return math.isnan(value)
+    return False
+
+
+def _infer_feature_fill_values(
+    rows: list[dict[str, Any]],
+    feature_names: list[str],
+) -> dict[str, Any]:
+    fill_values: dict[str, Any] = {}
+    for feature_name in feature_names:
+        observed = [
+            row.get(feature_name)
+            for row in rows
+            if not _is_missing(row.get(feature_name))
+        ]
+        if not observed:
+            fill_values[feature_name] = 0.0
+            continue
+        if all(isinstance(value, (int, float, bool)) for value in observed):
+            numeric_values = [float(value) for value in observed]
+            fill_values[feature_name] = float(statistics.median(numeric_values))
+            continue
+        fill_values[feature_name] = "__MISSING__"
+    return fill_values
+
+
+def _normalize_feature_value(value: Any, fill_value: Any) -> Any:
+    if _is_missing(value):
+        return fill_value
+    return value
+
+
+def _sanitize_tabular_dataset(
+    table: TabularDataset,
+    feature_names: list[str],
+    fill_values: dict[str, Any],
+) -> TabularDataset:
+    sanitized_rows: list[dict[str, Any]] = []
+    for row in table.rows:
+        sanitized_row = dict(row)
+        for feature_name in feature_names:
+            sanitized_row[feature_name] = _normalize_feature_value(
+                row.get(feature_name),
+                fill_values[feature_name],
+            )
+        sanitized_rows.append(sanitized_row)
+    return TabularDataset(
+        dataset_id=table.dataset_id,
+        display_name=table.display_name,
+        track=table.track,
+        target=table.target,
+        feature_names=table.feature_names,
+        rows=sanitized_rows,
+        source_kind=table.source_kind,
+        source_path=table.source_path,
+    )

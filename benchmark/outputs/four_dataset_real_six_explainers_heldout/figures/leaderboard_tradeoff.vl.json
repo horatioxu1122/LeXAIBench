@@ -1,0 +1,81 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Overall explainer tradeoffs between contestability and actionability.",
+  "data": {
+    "url": "../by_explainer.csv"
+  },
+  "mark": {
+    "type": "point",
+    "filled": true,
+    "size": 180
+  },
+  "encoding": {
+    "x": {
+      "field": "mean_css",
+      "type": "quantitative",
+      "title": "Mean Contestability Support Score"
+    },
+    "y": {
+      "field": "mean_actionability",
+      "type": "quantitative",
+      "title": "Mean Unified Actionability"
+    },
+    "color": {
+      "field": "explainer_id",
+      "type": "nominal",
+      "title": "Explainer"
+    },
+    "size": {
+      "field": "total_instances",
+      "type": "quantitative",
+      "title": "Evaluated Instances"
+    },
+    "tooltip": [
+      {
+        "field": "explainer_id",
+        "type": "nominal",
+        "title": "Explainer"
+      },
+      {
+        "field": "group_count",
+        "type": "quantitative",
+        "title": "Groups"
+      },
+      {
+        "field": "total_instances",
+        "type": "quantitative",
+        "title": "Instances"
+      },
+      {
+        "field": "mean_faithfulness",
+        "type": "quantitative",
+        "title": "Mean Faithfulness"
+      },
+      {
+        "field": "mean_stability",
+        "type": "quantitative",
+        "title": "Mean Stability"
+      },
+      {
+        "field": "mean_comprehensibility",
+        "type": "quantitative",
+        "title": "Mean Comprehensibility"
+      },
+      {
+        "field": "mean_css",
+        "type": "quantitative",
+        "title": "Mean CSS"
+      },
+      {
+        "field": "mean_actionability",
+        "type": "quantitative",
+        "title": "Mean Actionability"
+      },
+      {
+        "field": "mean_alf",
+        "type": "quantitative",
+        "title": "Mean ALF"
+      }
+    ]
+  }
+}

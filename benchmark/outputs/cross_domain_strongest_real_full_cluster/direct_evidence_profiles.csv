@@ -1,0 +1,13 @@
+scenario_name,scope,explainer_id,composite_score,rank
+balanced,all_explainers,anchors,0.6000000000000001,1
+balanced,all_explainers,shap,0.41963682739398156,2
+balanced,all_explainers,lime,0.3349682701465869,3
+reliability_focused,all_explainers,shap,0.8049092068484954,1
+reliability_focused,all_explainers,lime,0.3327608649016834,2
+reliability_focused,all_explainers,anchors,0.2,3
+applicant_facing,all_explainers,anchors,0.8999999999999999,1
+applicant_facing,all_explainers,lime,0.3257666785822252,2
+applicant_facing,all_explainers,shap,0.13436444793946775,3
+contestability_focused,all_explainers,anchors,0.9,1
+contestability_focused,all_explainers,lime,0.2754324060142689,2
+contestability_focused,all_explainers,shap,0.14909206848495393,3

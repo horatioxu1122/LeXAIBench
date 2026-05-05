@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "legalbench-xai"
+version = "0.1.0"
+description = "A cross-domain benchmark for legally meaningful explanation quality in high-stakes algorithmic decisions."
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+
+[project.scripts]
+legalbench-xai = "legalbench_xai.cli:main"
+legalbench_xai = "legalbench_xai.cli:main"
+
+[project.optional-dependencies]
+benchmark-empirical = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "xlrd>=2.0.1",
+  "scikit-learn>=1.5",
+  "xgboost>=2.1",
+  "shap>=0.46",
+  "lime>=0.2.0.1",
+  "interpret>=0.6",
+]
+
+[tool.setuptools]
+package-dir = {"" = "benchmark/src"}
+
+[tool.setuptools.packages.find]
+where = ["benchmark/src"]

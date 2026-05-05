@@ -1,0 +1,78 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Explainer performance by model family across benchmark metrics.",
+  "data": {
+    "url": "../by_model_explainer.csv"
+  },
+  "transform": [
+    {
+      "fold": [
+        "mean_faithfulness",
+        "mean_stability",
+        "mean_comprehensibility",
+        "mean_css",
+        "mean_actionability",
+        "mean_alf"
+      ],
+      "as": [
+        "metric",
+        "value"
+      ]
+    }
+  ],
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "explainer_id",
+      "type": "nominal",
+      "title": "Explainer"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "Metric Value"
+    },
+    "color": {
+      "field": "explainer_id",
+      "type": "nominal",
+      "legend": null
+    },
+    "column": {
+      "field": "model_id",
+      "type": "nominal",
+      "title": "Model Family"
+    },
+    "row": {
+      "field": "metric",
+      "type": "nominal",
+      "title": "Metric"
+    },
+    "tooltip": [
+      {
+        "field": "model_id",
+        "type": "nominal",
+        "title": "Model"
+      },
+      {
+        "field": "explainer_id",
+        "type": "nominal",
+        "title": "Explainer"
+      },
+      {
+        "field": "metric",
+        "type": "nominal",
+        "title": "Metric"
+      },
+      {
+        "field": "value",
+        "type": "quantitative",
+        "title": "Value"
+      },
+      {
+        "field": "total_instances",
+        "type": "quantitative",
+        "title": "Instances"
+      }
+    ]
+  }
+}
