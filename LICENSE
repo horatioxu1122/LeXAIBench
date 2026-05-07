@@ -22,7 +22,7 @@ SOFTWARE.
 
 ---
 
-Note on dataset licensing: The LegalBench-XAI benchmark composes data from
+Note on dataset licensing: The LeXAIBench benchmark composes data from
 several public sources. Each underlying dataset retains its own license:
 
 - HMDA (Home Mortgage Disclosure Act data): public-domain U.S. government work,
