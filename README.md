@@ -5,7 +5,7 @@ high-stakes algorithmic decisions, spanning consumer credit, mortgage lending,
 pretrial release, and regulatory enforcement.
 
 This repository accompanies a paper under double-blind review at NeurIPS
-Datasets and Benchmarks 2026.
+Evaluations and Datasets 2026.
 
 ## Repository layout
 
