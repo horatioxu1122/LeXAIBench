@@ -1,15 +1,15 @@
-# LegalBench-XAI Artifact Card
+# LeXAIBench Artifact Card
 
 ## Purpose
 
 This artifact packages the benchmark implementation, prepared benchmark CSVs,
 released held-out result bundles, and reproduction tooling for the
-LegalBench-XAI submission.
+LeXAIBench submission.
 
 ## What The Artifact Contains
 
 - benchmark configs in [`benchmark/configs/`](benchmark/configs/)
-- the LegalBench-XAI Python package in
+- the LeXAIBench Python package in
   [`benchmark/src/legalbench_xai/`](benchmark/src/legalbench_xai/), implementing
   dataset preparation, model and explainer backends, the canonical-explanation
   schema, the six-dimensional scoring suite, hierarchical-bootstrap reporting,
