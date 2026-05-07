@@ -1,8 +1,8 @@
-# LegalBench-XAI Benchmark Card
+# LeXAIBench Benchmark Card
 
 ## Benchmark Name
 
-`LegalBench-XAI`
+`LeXAIBench`
 
 ## Primary Goal
 
