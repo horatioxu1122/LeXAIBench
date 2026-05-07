@@ -1,4 +1,4 @@
-# LegalBench-XAI Empirical Runtime Setup
+# LeXAIBench Empirical Runtime Setup
 
 This document describes the dependency stack and the operational setup needed
 to reproduce the headline results. For the manuscript-facing reproduction
