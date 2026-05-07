@@ -1,4 +1,4 @@
-# LegalBench-XAI
+# LeXAIBench
 
 A cross-domain benchmark for legally meaningful explanation quality in
 high-stakes algorithmic decisions, spanning consumer credit, mortgage lending,
@@ -11,7 +11,7 @@ Datasets and Benchmarks 2026.
 
 ```text
 .
-|-- benchmark/        the LegalBench-XAI Python package, runtime configs,
+|-- benchmark/        the LeXAL-Bench Python package, runtime configs,
 |                     prepared benchmark CSVs, released result bundles,
 |                     and reproduction scripts
 |-- paper/            the canonical explanation schema, feature taxonomy,
