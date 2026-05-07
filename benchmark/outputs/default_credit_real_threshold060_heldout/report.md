@@ -2,7 +2,7 @@
 
 - Experiment: `legalbench_xai_default_credit_real_threshold060`
 - Generated at (UTC): `2026-03-15T19:20:35.917139+00:00`
-- Total groups: `30`
+- Total configurations: `30`
 - Datasets: `default_of_credit_card_clients`
 - Tracks: `audit, primary`
 - Models: `ebm, logistic_regression, xgboost`
@@ -32,7 +32,7 @@
 
 ## Explainer Leaderboard
 
-| Explainer | Groups | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
+| Explainer | Configurations | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 6 | 72 | 0.929 | 0.621 | 0.986 | 0.884 | 0.324 | n/a | n/a |
 | dice | 6 | 72 | 0.944 | 0.416 | 0.723 | 0.985 | 0.742 | 0.511 | 0.028 |
@@ -133,7 +133,7 @@
 - ALF baseline leader under observed scoring: `dice`.
 - ALF alternative definitions preserving the same leader: `5` / `6`.
 
-| Family | Scenario | Leader | Score | Leader Changed |
+| Method | Scenario | Leader | Score | Leader Changed |
 | --- | --- | --- | ---: | --- |
 | CSS | observed_css | dice | 0.985 | no |
 | CSS | reconstructed_css | dice | 0.985 | no |
@@ -186,18 +186,18 @@
 
 ## Pairwise Win Leaders
 
-- `actionability`: `wachter` leads with `22` wins across `24` comparable pairwise group matchups.
-- `alf`: `wachter` leads with `4` wins across `6` comparable pairwise group matchups.
-- `comprehensibility`: `anchors` leads with `24` wins across `24` comparable pairwise group matchups.
-- `css`: `wachter` leads with `18` wins across `24` comparable pairwise group matchups.
-- `faithfulness`: `wachter` leads with `19` wins across `24` comparable pairwise group matchups.
-- `stability`: `lime` leads with `23` wins across `24` comparable pairwise group matchups.
+- `actionability`: `wachter` leads with `22` wins across `24` comparable pairwise configuration matchups.
+- `alf`: `wachter` leads with `4` wins across `6` comparable pairwise configuration matchups.
+- `comprehensibility`: `anchors` leads with `24` wins across `24` comparable pairwise configuration matchups.
+- `css`: `wachter` leads with `18` wins across `24` comparable pairwise configuration matchups.
+- `faithfulness`: `wachter` leads with `19` wins across `24` comparable pairwise configuration matchups.
+- `stability`: `lime` leads with `23` wins across `24` comparable pairwise configuration matchups.
 
-## Best Groups
+## Best Configurations
 
-- Best faithfulness group: `default_of_credit_card_clients` / `primary` / `ebm` / `dice` with `mean_faithfulness=0.979`
-- Best stability group: `default_of_credit_card_clients` / `audit` / `logistic_regression` / `lime` with `mean_stability=0.989`
-- Best comprehensibility group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `anchors` with `mean_comprehensibility=1.000`
-- Best CSS group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.998`
-- Best actionability group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_actionability=0.758`
-- Best ALF group: `default_of_credit_card_clients` / `primary` / `ebm` / `wachter` with `mean_alf=0.527`
+- Best faithfulness configuration: `default_of_credit_card_clients` / `primary` / `ebm` / `dice` with `mean_faithfulness=0.979`
+- Best stability configuration: `default_of_credit_card_clients` / `audit` / `logistic_regression` / `lime` with `mean_stability=0.989`
+- Best comprehensibility configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `anchors` with `mean_comprehensibility=1.000`
+- Best CSS configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.998`
+- Best actionability configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_actionability=0.758`
+- Best ALF configuration: `default_of_credit_card_clients` / `primary` / `ebm` / `wachter` with `mean_alf=0.527`

@@ -107,11 +107,11 @@ def write_figure_pack(
                 "caption_anchor": "fig_dataset_track_actionability",
             },
             {
-                "figure_id": "fig_model_family_metrics",
-                "title": "Model Family Metric Comparison",
+                "figure_id": "fig_model_class_metrics",
+                "title": "Model Class Metric Comparison",
                 "spec_file": repo_relative_path(figures_dir / files["model_metric_bars"]),
                 "source_data": "by_model_explainer.csv",
-                "caption_anchor": "fig_model_family_metrics",
+                "caption_anchor": "fig_model_class_metrics",
             },
             {
                 "figure_id": "fig_pairwise_faithfulness",
@@ -230,7 +230,7 @@ def _leaderboard_tradeoff_spec() -> dict[str, Any]:
             },
             "tooltip": [
                 {"field": "explainer_id", "type": "nominal", "title": "Explainer"},
-                {"field": "group_count", "type": "quantitative", "title": "Groups"},
+                {"field": "group_count", "type": "quantitative", "title": "Configurations"},
                 {"field": "total_instances", "type": "quantitative", "title": "Instances"},
                 {
                     "field": "mean_faithfulness",
@@ -302,7 +302,7 @@ def _dataset_track_heatmap_spec(metric_field: str, metric_title: str) -> dict[st
 def _model_metric_bars_spec() -> dict[str, Any]:
     return {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-        "description": "Explainer performance by model family across benchmark metrics.",
+        "description": "Explainer performance by model class across benchmark metrics.",
         "data": {"url": "../by_model_explainer.csv"},
         "transform": [
             {
@@ -322,7 +322,7 @@ def _model_metric_bars_spec() -> dict[str, Any]:
             "x": {"field": "explainer_id", "type": "nominal", "title": "Explainer"},
             "y": {"field": "value", "type": "quantitative", "title": "Metric Value"},
             "color": {"field": "explainer_id", "type": "nominal", "legend": None},
-            "column": {"field": "model_id", "type": "nominal", "title": "Model Family"},
+            "column": {"field": "model_id", "type": "nominal", "title": "Model class"},
             "row": {"field": "metric", "type": "nominal", "title": "Metric"},
             "tooltip": [
                 {"field": "model_id", "type": "nominal", "title": "Model"},
@@ -366,9 +366,9 @@ def _pairwise_heatmap_spec(metric: str) -> dict[str, Any]:
                 {"field": "wins_b", "type": "quantitative", "title": "Wins B"},
                 {"field": "ties", "type": "quantitative", "title": "Ties"},
                 {
-                    "field": "comparable_groups",
+                    "field": "comparable_configurations",
                     "type": "quantitative",
-                    "title": "Comparable Groups",
+                    "title": "Comparable Configurations",
                 },
                 {"field": "win_rate_a", "type": "quantitative", "title": "Win Rate A"},
                 {
@@ -398,7 +398,7 @@ def _captions_markdown() -> str:
             "Heatmap of mean Contestability Support Score by dataset, track, and explainer. This figure is useful for showing whether contestability performance is stable across domains and whether the primary versus audit split materially changes the rankings.",
             "",
             "## fig_dataset_track_stability",
-            "Heatmap of mean explanation stability by dataset, track, and explainer. This figure is useful for showing whether some explanation families remain consistent across local neighborhood perturbations while others fluctuate more across otherwise similar denied applicants.",
+            "Heatmap of mean explanation stability by dataset, track, and explainer. This figure is useful for showing whether some explanation methods remain consistent across local neighborhood perturbations while others fluctuate more across otherwise similar denied applicants.",
             "",
             "## fig_dataset_track_comprehensibility",
             "Heatmap of mean comprehensibility by dataset, track, and explainer. This figure is useful for showing whether applicant-facing simplicity is robust across domains or whether some methods become hard to read once real credit factors accumulate.",
@@ -406,20 +406,20 @@ def _captions_markdown() -> str:
             "## fig_dataset_track_actionability",
             "Heatmap of mean unified actionability by dataset, track, and explainer. This is the clearest appendix companion to the CSS heatmap and helps surface whether recourse-oriented explainers outperform attribution methods consistently across settings.",
             "",
-            "## fig_model_family_metrics",
-            "Model-family comparison across faithfulness, stability, comprehensibility, CSS, actionability, and ALF. This figure is designed to answer whether observed explainer rankings are robust across linear, additive, and boosted model families rather than being artifacts of a single predictive backend.",
+            "## fig_model_class_metrics",
+            "Model-class comparison across faithfulness, stability, comprehensibility, CSS, actionability, and ALF. This figure is designed to answer whether observed explainer rankings are robust across linear, additive, and boosted model classes rather than being artifacts of a single predictive backend.",
             "",
             "## fig_pairwise_faithfulness",
-            "Pairwise win-rate heatmap for faithfulness. This figure is useful when arguing that explanation methods that look intuitive do not necessarily align equally well with the underlying model behavior across matched dataset-track-model groups.",
+            "Pairwise win-rate heatmap for faithfulness. This figure is useful when arguing that explanation methods that look intuitive do not necessarily align equally well with the underlying model behavior across matched dataset-track-model configurations.",
             "",
             "## fig_pairwise_stability",
-            "Pairwise win-rate heatmap for stability. This figure is useful when arguing that some explanation families vary more across similar denied applicants or across random seeds, even when they perform well on other benchmark dimensions.",
+            "Pairwise win-rate heatmap for stability. This figure is useful when arguing that some explanation methods vary more across similar denied applicants or across random seeds, even when they perform well on other benchmark dimensions.",
             "",
             "## fig_pairwise_comprehensibility",
-            "Pairwise win-rate heatmap for comprehensibility. This figure is useful when arguing that some explanation families are consistently easier to parse even when they are not the strongest on faithfulness or actionability.",
+            "Pairwise win-rate heatmap for comprehensibility. This figure is useful when arguing that some explanation methods are consistently easier to parse even when they are not the strongest on faithfulness or actionability.",
             "",
             "## fig_pairwise_css",
-            "Pairwise win-rate heatmap for CSS. Each cell reports the share of matched dataset-track-model groups where Explainer A outperforms Explainer B on contestability support.",
+            "Pairwise win-rate heatmap for CSS. Each cell reports the share of matched dataset-track-model configurations where Explainer A outperforms Explainer B on contestability support.",
             "",
             "## fig_pairwise_actionability",
             "Pairwise win-rate heatmap for unified actionability. This figure makes it easy to state whether recourse-oriented methods consistently dominate attribution-style methods when explanations are evaluated for applicant-facing actionability.",

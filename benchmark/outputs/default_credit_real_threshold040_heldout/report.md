@@ -2,7 +2,7 @@
 
 - Experiment: `legalbench_xai_default_credit_real_threshold040`
 - Generated at (UTC): `2026-03-15T19:19:37.140762+00:00`
-- Total groups: `30`
+- Total configurations: `30`
 - Datasets: `default_of_credit_card_clients`
 - Tracks: `audit, primary`
 - Models: `ebm, logistic_regression, xgboost`
@@ -32,7 +32,7 @@
 
 ## Explainer Leaderboard
 
-| Explainer | Groups | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
+| Explainer | Configurations | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 6 | 72 | 0.935 | 0.677 | 0.987 | 0.891 | 0.331 | n/a | n/a |
 | dice | 6 | 72 | 0.937 | 0.434 | 0.720 | 0.982 | 0.750 | 0.531 | 0.007 |
@@ -133,7 +133,7 @@
 - ALF baseline leader under observed scoring: `wachter`.
 - ALF alternative definitions preserving the same leader: `4` / `6`.
 
-| Family | Scenario | Leader | Score | Leader Changed |
+| Method | Scenario | Leader | Score | Leader Changed |
 | --- | --- | --- | ---: | --- |
 | CSS | observed_css | dice | 0.982 | no |
 | CSS | reconstructed_css | dice | 0.982 | no |
@@ -186,18 +186,18 @@
 
 ## Pairwise Win Leaders
 
-- `actionability`: `wachter` leads with `22` wins across `24` comparable pairwise group matchups.
-- `alf`: `wachter` leads with `4` wins across `6` comparable pairwise group matchups.
-- `comprehensibility`: `anchors` leads with `24` wins across `24` comparable pairwise group matchups.
-- `css`: `wachter` leads with `18` wins across `24` comparable pairwise group matchups.
-- `faithfulness`: `dice` leads with `17` wins across `24` comparable pairwise group matchups.
-- `stability`: `lime` leads with `22` wins across `24` comparable pairwise group matchups.
+- `actionability`: `wachter` leads with `22` wins across `24` comparable pairwise configuration matchups.
+- `alf`: `wachter` leads with `4` wins across `6` comparable pairwise configuration matchups.
+- `comprehensibility`: `anchors` leads with `24` wins across `24` comparable pairwise configuration matchups.
+- `css`: `wachter` leads with `18` wins across `24` comparable pairwise configuration matchups.
+- `faithfulness`: `dice` leads with `17` wins across `24` comparable pairwise configuration matchups.
+- `stability`: `lime` leads with `22` wins across `24` comparable pairwise configuration matchups.
 
-## Best Groups
+## Best Configurations
 
-- Best faithfulness group: `default_of_credit_card_clients` / `primary` / `xgboost` / `dice` with `mean_faithfulness=0.972`
-- Best stability group: `default_of_credit_card_clients` / `audit` / `logistic_regression` / `wachter` with `mean_stability=1.000`
-- Best comprehensibility group: `default_of_credit_card_clients` / `audit` / `xgboost` / `anchors` with `mean_comprehensibility=1.000`
-- Best CSS group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.994`
-- Best actionability group: `default_of_credit_card_clients` / `primary` / `xgboost` / `wachter` with `mean_actionability=0.759`
-- Best ALF group: `default_of_credit_card_clients` / `primary` / `xgboost` / `wachter` with `mean_alf=0.551`
+- Best faithfulness configuration: `default_of_credit_card_clients` / `primary` / `xgboost` / `dice` with `mean_faithfulness=0.972`
+- Best stability configuration: `default_of_credit_card_clients` / `audit` / `logistic_regression` / `wachter` with `mean_stability=1.000`
+- Best comprehensibility configuration: `default_of_credit_card_clients` / `audit` / `xgboost` / `anchors` with `mean_comprehensibility=1.000`
+- Best CSS configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.994`
+- Best actionability configuration: `default_of_credit_card_clients` / `primary` / `xgboost` / `wachter` with `mean_actionability=0.759`
+- Best ALF configuration: `default_of_credit_card_clients` / `primary` / `xgboost` / `wachter` with `mean_alf=0.551`

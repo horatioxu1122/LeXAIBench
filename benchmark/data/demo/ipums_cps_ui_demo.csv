@@ -1,4 +1,0 @@
-ui_application_outcome,age,sex,race,hispan,educ,statefip,empstat,whyunemp,classwkr
-not_received,46,male,white,not_hispanic,bachelor_degree,6,unemployed,job_loser_private_wage_job,private_wage_salary
-received,31,female,black,not_hispanic,some_college,36,unemployed,on_layoff,private_wage_salary
-received,39,female,white,hispanic,high_school,48,unemployed,temporary_job_ended,state_government_employee

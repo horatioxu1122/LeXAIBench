@@ -140,37 +140,6 @@
         "prior_misd_cnt": {"plain_meaning": "count_of_prior_misdemeanor_convictions", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"}
       }
     },
-    "ipums_cps_ui": {
-      "target": "ui_application_outcome",
-      "features": {
-        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
-        "sex": {"plain_meaning": "sex", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
-        "race": {"plain_meaning": "race", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
-        "hispan": {"plain_meaning": "hispanic_origin", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
-        "educ": {"plain_meaning": "educational_attainment", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
-        "statefip": {"plain_meaning": "state_fips_code", "mutability": "N", "verifiability": "Y", "correctability": "N", "sensitivity": "P", "principal_reason": "Low"},
-        "empstat": {"plain_meaning": "employment_status", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
-        "whyunemp": {"plain_meaning": "reason_for_unemployment", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "High"},
-        "classwkr": {"plain_meaning": "class_of_worker_for_current_or_recent_job", "mutability": "PL", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"}
-      }
-    },
-    "nhamcs": {
-      "target": "triage_priority_outcome",
-      "features": {
-        "age": {"plain_meaning": "age_years", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
-        "sex": {"plain_meaning": "sex", "mutability": "I", "verifiability": "Y", "correctability": "N", "sensitivity": "S", "principal_reason": "Low"},
-        "raceun": {"plain_meaning": "unimputed_race", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
-        "ethun": {"plain_meaning": "unimputed_ethnicity", "mutability": "I", "verifiability": "P", "correctability": "P", "sensitivity": "S", "principal_reason": "Low"},
-        "paytyper": {"plain_meaning": "primary_expected_source_of_payment", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "P", "principal_reason": "Low"},
-        "tempf": {"plain_meaning": "initial_temperature_fahrenheit", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
-        "pulse": {"plain_meaning": "initial_heart_rate", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
-        "bpsys": {"plain_meaning": "initial_systolic_blood_pressure", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
-        "bpdias": {"plain_meaning": "initial_diastolic_blood_pressure", "mutability": "N", "verifiability": "Y", "correctability": "Y", "sensitivity": "N", "principal_reason": "High"},
-        "painscale": {"plain_meaning": "pain_scale_0_to_10", "mutability": "P", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
-        "arrems": {"plain_meaning": "arrived_by_ambulance", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Medium"},
-        "ambtransfer": {"plain_meaning": "transferred_from_another_hospital_or_urgent_care", "mutability": "N", "verifiability": "Y", "correctability": "P", "sensitivity": "N", "principal_reason": "Low"}
-      }
-    },
     "fda_inspections": {
       "target": "inspection_classification_outcome",
       "features": {

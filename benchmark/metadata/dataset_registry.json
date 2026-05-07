@@ -121,49 +121,6 @@
         "paper/feature_taxonomy_manifest.yaml"
       ]
     },
-    "ipums_cps_ui": {
-      "display_name": "IPUMS CPS Unemployment Insurance",
-      "task": "ui_application_receipt",
-      "target": "ui_application_outcome",
-      "positive_label": "received",
-      "negative_label": "not_received",
-      "demo_data_path": "benchmark/data/demo/ipums_cps_ui_demo.csv",
-      "file_format": "csv",
-      "primary_track_excluded_features": [
-        "age",
-        "sex",
-        "race",
-        "hispan",
-        "educ",
-        "statefip"
-      ],
-      "audit_track_excluded_features": [],
-      "paper_sources": [
-        "paper/dataset_cards_and_feature_taxonomy.md",
-        "paper/feature_taxonomy_manifest.yaml"
-      ]
-    },
-    "nhamcs": {
-      "display_name": "NHAMCS Emergency Department Triage",
-      "task": "ed_triage_priority",
-      "target": "triage_priority_outcome",
-      "positive_label": "high_priority",
-      "negative_label": "low_priority",
-      "demo_data_path": "benchmark/data/demo/nhamcs_demo.csv",
-      "file_format": "csv",
-      "primary_track_excluded_features": [
-        "age",
-        "sex",
-        "raceun",
-        "ethun",
-        "paytyper"
-      ],
-      "audit_track_excluded_features": [],
-      "paper_sources": [
-        "paper/dataset_cards_and_feature_taxonomy.md",
-        "paper/feature_taxonomy_manifest.yaml"
-      ]
-    },
     "fda_inspections": {
       "display_name": "FDA Inspection Classifications",
       "task": "inspection_classification_action",

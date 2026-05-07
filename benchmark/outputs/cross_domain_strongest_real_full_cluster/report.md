@@ -2,7 +2,7 @@
 
 - Experiment: `legalbench_xai_cross_domain_strongest_real_template`
 - Generated at (UTC): `2026-04-26T23:43:09.734784+00:00`
-- Total groups: `90`
+- Total configurations: `90`
 - Datasets: `fda_inspections, hmda, ny_courts_pretrial`
 - Tracks: `audit, primary`
 - Models: `ebm, logistic_regression, xgboost`
@@ -44,7 +44,7 @@
 
 ## Explainer Leaderboard
 
-| Explainer | Groups | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
+| Explainer | Configurations | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 18 | 216 | 0.842 | 0.661 | 0.942 | 0.733 | 0.196 | n/a | n/a |
 | dice | 18 | 216 | 0.821 | 0.672 | 0.725 | 0.796 | 0.468 | 0.259 | 0.222 |
@@ -104,7 +104,7 @@
 - Strongest positive group-level Spearman correlation: `actionability` vs `css` = `0.788` over `90` groups.
 - Weakest group-level Spearman correlation: `comprehensibility` vs `css` = `-0.659` over `90` groups.
 
-| Metric A | Metric B | Spearman Rank Correlation | Shared Groups |
+| Metric A | Metric B | Spearman Rank Correlation | Shared Configurations |
 | --- | --- | ---: | ---: |
 | actionability | alf | 0.474 | 36 |
 | actionability | comprehensibility | -0.571 | 90 |
@@ -182,9 +182,9 @@
 - Included groups with direct faithfulness evidence only: `54` across explainers `anchors, lime, shap`.
 - Direct-evidence faithfulness leader: `shap` with mean faithfulness `0.961`.
 - Balanced direct-evidence composite leader: `anchors` with composite score `0.600`.
-- Direct-evidence pairwise faithfulness champion: `shap` with `30` matched-group wins.
+- Direct-evidence pairwise faithfulness champion: `shap` with `30` matched-configuration wins.
 
-| Explainer | Groups | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |
+| Explainer | Configurations | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 18 | 216 | 0.842 | 0.661 | 0.942 | 0.733 | 0.196 |
 | lime | 18 | 216 | 0.886 | 0.751 | 0.742 | 0.694 | 0.195 |
@@ -226,7 +226,7 @@
 - ALF baseline leader under observed scoring: `wachter`.
 - ALF alternative definitions preserving the same leader: `6` / `6`.
 
-| Family | Scenario | Leader | Score | Leader Changed |
+| Method | Scenario | Leader | Score | Leader Changed |
 | --- | --- | --- | ---: | --- |
 | CSS | observed_css | dice | 0.796 | no |
 | CSS | reconstructed_css | dice | 0.796 | no |
@@ -301,18 +301,18 @@
 
 ## Pairwise Win Leaders
 
-- `actionability`: `dice` leads with `60` wins across `72` comparable pairwise group matchups.
-- `alf`: `wachter` leads with `6` wins across `18` comparable pairwise group matchups.
-- `comprehensibility`: `anchors` leads with `66` wins across `72` comparable pairwise group matchups.
-- `css`: `dice` leads with `60` wins across `72` comparable pairwise group matchups.
-- `faithfulness`: `shap` leads with `66` wins across `72` comparable pairwise group matchups.
-- `stability`: `shap` leads with `61` wins across `72` comparable pairwise group matchups.
+- `actionability`: `dice` leads with `60` wins across `72` comparable pairwise configuration matchups.
+- `alf`: `wachter` leads with `6` wins across `18` comparable pairwise configuration matchups.
+- `comprehensibility`: `anchors` leads with `66` wins across `72` comparable pairwise configuration matchups.
+- `css`: `dice` leads with `60` wins across `72` comparable pairwise configuration matchups.
+- `faithfulness`: `shap` leads with `66` wins across `72` comparable pairwise configuration matchups.
+- `stability`: `shap` leads with `61` wins across `72` comparable pairwise configuration matchups.
 
-## Best Groups
+## Best Configurations
 
-- Best faithfulness group: `fda_inspections` / `primary` / `logistic_regression` / `shap` with `mean_faithfulness=1.000`
-- Best stability group: `fda_inspections` / `primary` / `logistic_regression` / `anchors` with `mean_stability=1.000`
-- Best comprehensibility group: `fda_inspections` / `primary` / `xgboost` / `lime` with `mean_comprehensibility=1.000`
-- Best CSS group: `ny_courts_pretrial` / `primary` / `logistic_regression` / `dice` with `mean_css=0.929`
-- Best actionability group: `hmda` / `primary` / `xgboost` / `dice` with `mean_actionability=0.623`
-- Best ALF group: `hmda` / `primary` / `xgboost` / `wachter` with `mean_alf=0.605`
+- Best faithfulness configuration: `fda_inspections` / `primary` / `logistic_regression` / `shap` with `mean_faithfulness=1.000`
+- Best stability configuration: `fda_inspections` / `primary` / `logistic_regression` / `anchors` with `mean_stability=1.000`
+- Best comprehensibility configuration: `fda_inspections` / `primary` / `xgboost` / `lime` with `mean_comprehensibility=1.000`
+- Best CSS configuration: `ny_courts_pretrial` / `primary` / `logistic_regression` / `dice` with `mean_css=0.929`
+- Best actionability configuration: `hmda` / `primary` / `xgboost` / `dice` with `mean_actionability=0.623`
+- Best ALF configuration: `hmda` / `primary` / `xgboost` / `wachter` with `mean_alf=0.605`

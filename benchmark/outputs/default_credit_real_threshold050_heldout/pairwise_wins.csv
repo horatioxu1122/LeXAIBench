@@ -1,4 +1,4 @@
-metric,explainer_a,explainer_b,wins_a,wins_b,ties,comparable_groups,win_rate_a,win_rate_b,win_rate_a_ci_low,win_rate_a_ci_high,win_rate_b_ci_low,win_rate_b_ci_high
+metric,explainer_a,explainer_b,wins_a,wins_b,ties,comparable_configurations,win_rate_a,win_rate_b,win_rate_a_ci_low,win_rate_a_ci_high,win_rate_b_ci_low,win_rate_b_ci_high
 actionability,anchors,dice,0,6,0,6,0.0,1.0,0.0,0.0,1.0,1.0
 actionability,anchors,lime,3,3,0,6,0.5,0.5,0.16666666666666666,1.0,0.0,1.0
 actionability,anchors,shap,1,5,0,6,0.16666666666666666,0.8333333333333334,0.0,0.5,0.5,1.0

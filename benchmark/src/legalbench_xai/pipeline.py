@@ -11,11 +11,9 @@ from .datasets.registry import build_dataset_loader
 from .datasets.io import read_csv_header
 from .datasets.prepare import (
     prepare_fda_inspections_dataset,
-    prepare_ipums_cps_ui_dataset,
     prepare_give_me_some_credit_dataset_from_openml,
     prepare_heloc_dataset_from_openml,
     prepare_hmda_dataset,
-    prepare_nhamcs_dataset,
     prepare_ny_courts_pretrial_dataset,
     prepare_default_credit_dataset,
     prepare_south_german_credit_dataset,
@@ -225,30 +223,6 @@ class BenchmarkPipeline:
         )
         csv_output = output_path or "benchmark/data/real/ny_courts_pretrial.csv"
         return prepare_ny_courts_pretrial_dataset(
-            input_path=resolve_repo_path(raw_input),
-            output_path=resolve_repo_path(csv_output),
-        )
-
-    def prepare_ipums_cps_ui(
-        self,
-        input_path: str | None = None,
-        output_path: str | None = None,
-    ) -> dict:
-        raw_input = input_path or "benchmark/data/raw/ipums_cps_ui/ipums_cps_ui_extract.csv"
-        csv_output = output_path or "benchmark/data/real/ipums_cps_ui.csv"
-        return prepare_ipums_cps_ui_dataset(
-            input_path=resolve_repo_path(raw_input),
-            output_path=resolve_repo_path(csv_output),
-        )
-
-    def prepare_nhamcs(
-        self,
-        input_path: str | None = None,
-        output_path: str | None = None,
-    ) -> dict:
-        raw_input = input_path or "benchmark/data/raw/nhamcs/nhamcs_ed_extract.csv"
-        csv_output = output_path or "benchmark/data/real/nhamcs.csv"
-        return prepare_nhamcs_dataset(
             input_path=resolve_repo_path(raw_input),
             output_path=resolve_repo_path(csv_output),
         )

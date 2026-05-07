@@ -58,7 +58,7 @@
         "title": "Ties"
       },
       {
-        "field": "comparable_groups",
+        "field": "comparable_configurations",
         "type": "quantitative",
         "title": "Comparable Groups"
       },

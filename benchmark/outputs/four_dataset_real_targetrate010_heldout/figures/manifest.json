@@ -36,11 +36,11 @@
       "caption_anchor": "fig_dataset_track_actionability"
     },
     {
-      "figure_id": "fig_model_family_metrics",
-      "title": "Model Family Metric Comparison",
+      "figure_id": "fig_model_class_metrics",
+      "title": "Model Class Metric Comparison",
       "spec_file": "benchmark\\outputs\\four_dataset_real_targetrate010_heldout\\figures\\model_metric_bars.vl.json",
       "source_data": "by_model_explainer.csv",
-      "caption_anchor": "fig_model_family_metrics"
+      "caption_anchor": "fig_model_class_metrics"
     },
     {
       "figure_id": "fig_pairwise_faithfulness",

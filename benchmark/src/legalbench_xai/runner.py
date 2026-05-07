@@ -979,14 +979,6 @@ def _subgroup_attributes(dataset_id: str, row: dict[str, Any]) -> dict[str, str]
             )
 
     if dataset_id == "south_german_credit":
-        age_value = _safe_float(row.get("age_in_years"))
-        if age_value is not None:
-            attributes["age_band"] = _bucket_numeric(
-                age_value,
-                thresholds=[(30, "<30"), (50, "30-49")],
-                default_label="50+",
-            )
-
         status_value = str(row.get("personal_status_sex", "")).strip()
         if status_value:
             normalized = status_value.lower()
@@ -994,13 +986,6 @@ def _subgroup_attributes(dataset_id: str, row: dict[str, Any]) -> dict[str, str]
                 attributes["sex_status_group"] = "female"
             elif "male" in normalized:
                 attributes["sex_status_group"] = "male"
-
-    if dataset_id == "heloc":
-        delinquency_value = _safe_float(row.get("NumDelqLast6M"))
-        if delinquency_value is not None:
-            attributes["recent_delinquency_group"] = (
-                "0" if delinquency_value == 0 else "1+"
-            )
 
     return attributes
 

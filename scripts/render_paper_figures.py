@@ -6,9 +6,10 @@ Usage (from repo root):
         python scripts/render_paper_figures.py
 
 Outputs three PNG/PDF figure pairs into manuscript/latex manuscript/figures/:
-    cross_domain_tradeoff.{png,pdf}  -- Figure 1 candidate (replaces overall_tradeoff)
-    family_radar.{png,pdf}           -- Figure 2 candidate (six-dim quality vector)
-    pairwise_wins_grid.{png,pdf}     -- Figure 3 candidate (matched-group wins)
+    family_radar.{png,pdf}           -- Manuscript Figure 1 (six-dim quality vector)
+    cross_domain_tradeoff.{png,pdf}  -- Manuscript Figure 2 (CSS-actionability tradeoff)
+    pairwise_wins_grid.{png,pdf}     -- Released as artifact-side figure only
+                                        (not included in the main paper)
 """
 from __future__ import annotations
 
@@ -86,7 +87,7 @@ def save(fig, name: str) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Figure 1 candidate: side-by-side cross-domain CSS x Actionability scatter
+# Manuscript Figure 2: side-by-side cross-domain CSS x Actionability scatter
 # ---------------------------------------------------------------------------
 def fig_cross_domain_tradeoff() -> None:
     credit = load_by_explainer(CREDIT_BUNDLE)
@@ -94,8 +95,8 @@ def fig_cross_domain_tradeoff() -> None:
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.8), sharey=True)
     panels = [
-        (axes[0], credit, "Credit Subpanel (4 datasets, 24 groups)"),
-        (axes[1], noncredit, "Non-Credit Subpanel (HMDA, NY Pretrial, FDA; 18 groups)"),
+        (axes[0], credit, "Credit Subset (4 datasets, 24 configurations)"),
+        (axes[1], noncredit, "Non-Credit Subset (HMDA, NY Pretrial, FDA; 18 configurations)"),
     ]
     for ax, df, title in panels:
         # Background bands highlighting the recourse vs. non-recourse separation.
@@ -128,7 +129,7 @@ def fig_cross_domain_tradeoff() -> None:
         ax.text(
             0.572,
             0.79,
-            "recourse-family band",
+            "recourse-method band",
             fontsize=8,
             color="#8a4f12",
             alpha=0.85,
@@ -136,7 +137,7 @@ def fig_cross_domain_tradeoff() -> None:
         ax.text(
             0.572,
             0.05,
-            "attribution / rule-family band",
+            "attribution / rule-based band",
             fontsize=8,
             color="#1f426f",
             alpha=0.85,
@@ -157,7 +158,7 @@ def fig_cross_domain_tradeoff() -> None:
         bbox_to_anchor=(0.5, -0.04),
     )
     fig.suptitle(
-        "Family-level subject-facing tradeoffs replicate across legal-decision domains",
+        "Method-category subject-facing tradeoffs replicate across legal-decision domains",
         y=1.02,
         fontsize=12,
         fontweight="bold",
@@ -166,7 +167,7 @@ def fig_cross_domain_tradeoff() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Figure 2 candidate: six-dimensional quality vector radar
+# Manuscript Figure 1: six-dimensional quality vector radar
 # ---------------------------------------------------------------------------
 def fig_family_radar() -> None:
     credit = load_by_explainer(CREDIT_BUNDLE)
@@ -175,15 +176,16 @@ def fig_family_radar() -> None:
     angles = np.linspace(0, 2 * math.pi, len(METRICS), endpoint=False).tolist()
     angles += angles[:1]
 
-    fig, axes = plt.subplots(1, 2, figsize=(11.0, 5.6), subplot_kw={"projection": "polar"})
-    panels = [(axes[0], credit, "Credit Subpanel"), (axes[1], noncredit, "Non-Credit Subpanel")]
+    fig, axes = plt.subplots(1, 2, figsize=(13.0, 6.4), subplot_kw={"projection": "polar"})
+    fig.subplots_adjust(wspace=0.55, left=0.08, right=0.92, top=0.84, bottom=0.16)
+    panels = [(axes[0], credit, "Credit Subset"), (axes[1], noncredit, "Non-Credit Subset")]
     for ax, df, title in panels:
         for ex in EXPLAINERS:
             vals = []
             for m in METRICS:
                 v = df.loc[ex, f"mean_{m}"]
                 if pd.isna(v):
-                    v = 0.0  # ALF undefined for non-recourse families -> floor at 0
+                    v = 0.0  # ALF undefined for non-recourse methods -> floor at 0
                 vals.append(float(v))
             vals += vals[:1]
             ax.plot(
@@ -197,12 +199,13 @@ def fig_family_radar() -> None:
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels([METRIC_LABELS[m] for m in METRICS])
         ax.set_ylim(0, 1.0)
+        # Keep the gridline rings (set_yticks) but suppress numeric tick labels —
+        # they were colliding with the outer ring and the axis labels.
         ax.set_yticks([0.25, 0.5, 0.75, 1.0])
-        ax.set_yticklabels(["0.25", "0.50", "0.75", "1.00"], fontsize=7, color="#666")
-        ax.set_rlabel_position(30)  # between Faithfulness (0 deg) and Stability (60 deg)
-        ax.set_title(title, y=1.10, fontweight="bold")
+        ax.set_yticklabels([])
+        ax.set_title(title, y=1.14, fontweight="bold")
         ax.grid(alpha=0.3)
-        ax.tick_params(axis="x", pad=8)
+        ax.tick_params(axis="x", pad=22)
 
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(
@@ -211,10 +214,10 @@ def fig_family_radar() -> None:
         loc="lower center",
         ncol=5,
         frameon=False,
-        bbox_to_anchor=(0.5, -0.04),
+        bbox_to_anchor=(0.5, 0.04),
     )
     fig.suptitle(
-        "Six-dimensional explanation-quality profiles per family",
+        "Six-dimensional explanation-quality profiles per method",
         y=1.02,
         fontsize=12,
         fontweight="bold",
@@ -223,7 +226,7 @@ def fig_family_radar() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Figure 3 candidate: 6-panel pairwise-wins grid (credit subpanel)
+# Released as artifact-side figure only: 6-subplot pairwise-wins grid (credit subset)
 # ---------------------------------------------------------------------------
 def build_pairwise_matrix(df_metric: pd.DataFrame) -> np.ndarray:
     M = np.full((len(EXPLAINERS), len(EXPLAINERS)), np.nan)
@@ -285,7 +288,7 @@ def fig_pairwise_wins() -> None:
         pad=0.02,
     )
     fig.suptitle(
-        "Pairwise win rates on matched dataset-track-model groups (credit subpanel, 24 groups)",
+        "Pairwise win rates on matched dataset-track-model configurations (credit subset, 24 configurations)",
         y=1.00,
         fontsize=12,
         fontweight="bold",

@@ -11,12 +11,12 @@
 - Overall CSS leader: `dice` with mean CSS `0.796` and `[0.677, 0.910]` bootstrap CI.
 - Overall actionability leader: `wachter` with mean actionability `0.469` and `[0.305, 0.573]` bootstrap CI.
 - Overall ALF leader: `wachter` with mean ALF `0.329` and `[0.192, 0.591]` bootstrap CI.
-- Pairwise faithfulness leader: `shap` with `66` matched-group wins.
-- Pairwise stability leader: `shap` with `61` matched-group wins.
-- Pairwise comprehensibility leader: `anchors` with `66` matched-group wins.
-- Pairwise CSS leader: `dice` with `60` matched-group wins.
-- Pairwise actionability leader: `dice` with `60` matched-group wins.
-- Pairwise ALF leader: `wachter` with `6` matched-group wins.
+- Pairwise faithfulness leader: `shap` with `66` matched-configuration wins.
+- Pairwise stability leader: `shap` with `61` matched-configuration wins.
+- Pairwise comprehensibility leader: `anchors` with `66` matched-configuration wins.
+- Pairwise CSS leader: `dice` with `60` matched-configuration wins.
+- Pairwise actionability leader: `dice` with `60` matched-configuration wins.
+- Pairwise ALF leader: `wachter` with `6` matched-configuration wins.
 
 ## Draft Results Language
 
@@ -30,7 +30,7 @@ Across the current benchmark run, faithfulness, stability, comprehensibility, an
 - Recourse-oriented methods dominate attribution methods on actionability and legality-aware recourse in this cross-domain bundle, but Wachter's mean actionability edge over DiCE is narrow and DiCE wins the matched pairwise actionability comparison.
 - Contestability-support rankings are close enough that CSS should be discussed as a tradeoff, not only as a single leaderboard.
 - Primary-versus-audit track effects are visible in the current full-source run, especially for faithfulness and stability, so cross-domain track effects should be framed descriptively rather than as a settled policy result.
-- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model families.
+- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model classes.
 
 ## Uncertainty Note
 

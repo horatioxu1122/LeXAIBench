@@ -10,7 +10,7 @@
 
 ## Interpretation
 
-High positive rank correlation suggests two metrics are ordering the explainer families similarly and may be partly redundant in the current benchmark slice.
+High positive rank correlation suggests two metrics are ordering the explainer methods similarly and may be partly redundant in the current benchmark slice.
 Low or near-zero rank correlation suggests the metrics are capturing genuinely different aspects of explanation quality, which strengthens the case for a multi-dimensional benchmark.
 Pairs with fewer than three shared explainers should be treated as descriptive only; this matters especially for ALF, which is only defined for the recourse methods.
 

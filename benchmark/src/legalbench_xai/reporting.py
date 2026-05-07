@@ -681,7 +681,7 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
         "",
         f"- Experiment: `{payload['experiment_name']}`",
         f"- Generated at (UTC): `{payload['generated_at_utc']}`",
-        f"- Total groups: `{overview['total_groups']}`",
+        f"- Total configurations: `{overview['total_groups']}`",
         f"- Datasets: `{', '.join(overview['datasets'])}`",
         f"- Tracks: `{', '.join(overview['tracks'])}`",
         f"- Models: `{', '.join(overview['models'])}`",
@@ -733,7 +733,7 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
             "",
         "## Explainer Leaderboard",
         "",
-        "| Explainer | Groups | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |",
+        "| Explainer | Configurations | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
@@ -876,7 +876,7 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
                 else "- Weakest group-level Spearman correlation: n/a"
             ),
             "",
-            "| Metric A | Metric B | Spearman Rank Correlation | Shared Groups |",
+            "| Metric A | Metric B | Spearman Rank Correlation | Shared Configurations |",
             "| --- | --- | ---: | ---: |",
         ]
     )
@@ -985,12 +985,12 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
             (
                 f"- Direct-evidence pairwise faithfulness champion: "
                 f"`{direct_evidence_pairwise['faithfulness']['explainer_id']}` "
-                f"with `{direct_evidence_pairwise['faithfulness']['win_count']}` matched-group wins."
+                f"with `{direct_evidence_pairwise['faithfulness']['win_count']}` matched-configuration wins."
                 if direct_evidence_pairwise.get("faithfulness")
                 else "- Direct-evidence pairwise faithfulness champion: n/a."
             ),
             "",
-            "| Explainer | Groups | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |",
+            "| Explainer | Configurations | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |",
             "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
         ]
     )
@@ -1102,7 +1102,7 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
                 else "- ALF alternative-definition leader stability: n/a."
             ),
             "",
-            "| Family | Scenario | Leader | Score | Leader Changed |",
+            "| Method | Scenario | Leader | Score | Leader Changed |",
             "| --- | --- | --- | ---: | --- |",
         ]
     )
@@ -1236,7 +1236,7 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
         lines.extend(
             [
                 "",
-                "## Subgroup Slices",
+                "## Subpopulation Slices",
                 "",
                 "| Dataset | Track | Feature | Value | Explainer | Instances | Mean Stability | Mean CSS | Mean Actionability | Mean ALF |",
                 "| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |",
@@ -1266,9 +1266,9 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
         lines.extend(
             [
                 "",
-                "## Subgroup Spread Summary",
+                "## Subpopulation Spread Summary",
                 "",
-                "| Dataset | Track | Feature | Metric | Leader Set Across Subgroups | Max-Spread Explainer | Max Spread |",
+                "| Dataset | Track | Feature | Metric | Leader Set Across Subpopulations | Max-Spread Explainer | Max Spread |",
                 "| --- | --- | --- | --- | --- | --- | ---: |",
             ]
         )
@@ -1334,42 +1334,42 @@ def _build_markdown_report(payload: dict[str, Any], analysis: dict[str, Any]) ->
         lines.append(
             (
                 "- `{metric}`: `{explainer_id}` leads with `{win_count}` wins across "
-                "`{comparable_groups}` comparable pairwise group matchups."
+                "`{comparable_configurations}` comparable pairwise configuration matchups."
             ).format(
                 metric=row["metric"],
                 explainer_id=row["explainer_id"],
                 win_count=row["win_count"],
-                comparable_groups=row["comparable_groups"],
+                comparable_configurations=row["comparable_configurations"],
             )
         )
 
     lines.extend(
         [
             "",
-            "## Best Groups",
+            "## Best Configurations",
             "",
             _best_group_line(
-                "Best faithfulness group",
+                "Best faithfulness configuration",
                 overview["best_faithfulness_group"],
                 "mean_faithfulness",
             ),
             _best_group_line(
-                "Best stability group",
+                "Best stability configuration",
                 overview["best_stability_group"],
                 "mean_stability",
             ),
             _best_group_line(
-                "Best comprehensibility group",
+                "Best comprehensibility configuration",
                 overview["best_comprehensibility_group"],
                 "mean_comprehensibility",
             ),
-            _best_group_line("Best CSS group", overview["best_css_group"], "mean_css"),
+            _best_group_line("Best CSS configuration", overview["best_css_group"], "mean_css"),
             _best_group_line(
-                "Best actionability group",
+                "Best actionability configuration",
                 overview["best_actionability_group"],
                 "mean_actionability",
             ),
-            _best_group_line("Best ALF group", overview["best_alf_group"], "mean_alf"),
+            _best_group_line("Best ALF configuration", overview["best_alf_group"], "mean_alf"),
         ]
     )
 
@@ -1383,7 +1383,7 @@ def _build_latex_leaderboard(analysis: dict[str, Any]) -> str:
         "% Auto-generated by LegalBench-XAI reporting",
         "\\begin{tabular}{lrrrrrrrrr}",
         "\\toprule",
-        "Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF & Pairwise Wins \\\\",
+        "Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF & Pairwise Wins \\\\",
         "\\midrule",
     ]
     for row in rows:
@@ -1877,11 +1877,11 @@ def _pairwise_wins(
                         "wins_a": 0,
                         "wins_b": 0,
                         "ties": 0,
-                        "comparable_groups": 0,
+                        "comparable_configurations": 0,
                         "_matchups": [],
                     },
                 )
-                totals["comparable_groups"] += 1
+                totals["comparable_configurations"] += 1
                 if row_a[metric_key] > row_b[metric_key]:
                     totals["wins_a"] += 1
                     outcome_a = 1.0
@@ -1905,7 +1905,7 @@ def _pairwise_wins(
                 )
         for pair_index, key in enumerate(sorted(comparison_totals)):
             item = comparison_totals[key]
-            comparable = item["comparable_groups"]
+            comparable = item["comparable_configurations"]
             item["win_rate_a"] = item["wins_a"] / comparable if comparable else None
             item["win_rate_b"] = item["wins_b"] / comparable if comparable else None
             matchups = item.pop("_matchups")
@@ -1934,14 +1934,14 @@ def _pairwise_wins(
 
 def _pairwise_champions(pairwise_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     per_metric: dict[str, dict[str, dict[str, int]]] = defaultdict(
-        lambda: defaultdict(lambda: {"win_count": 0, "comparable_groups": 0})
+        lambda: defaultdict(lambda: {"win_count": 0, "comparable_configurations": 0})
     )
     for row in pairwise_rows:
         metric = row["metric"]
         per_metric[metric][row["explainer_a"]]["win_count"] += row["wins_a"]
-        per_metric[metric][row["explainer_a"]]["comparable_groups"] += row["comparable_groups"]
+        per_metric[metric][row["explainer_a"]]["comparable_configurations"] += row["comparable_configurations"]
         per_metric[metric][row["explainer_b"]]["win_count"] += row["wins_b"]
-        per_metric[metric][row["explainer_b"]]["comparable_groups"] += row["comparable_groups"]
+        per_metric[metric][row["explainer_b"]]["comparable_configurations"] += row["comparable_configurations"]
 
     champions: list[dict[str, Any]] = []
     for metric in sorted(per_metric):
@@ -1954,7 +1954,7 @@ def _pairwise_champions(pairwise_rows: list[dict[str, Any]]) -> list[dict[str, A
                 "metric": metric,
                 "explainer_id": best_explainer,
                 "win_count": stats["win_count"],
-                "comparable_groups": stats["comparable_groups"],
+                "comparable_configurations": stats["comparable_configurations"],
             }
         )
     return champions
@@ -3202,7 +3202,7 @@ def _bootstrap_note_line(analysis: dict[str, Any]) -> str:
         )
     return (
         f"- `{level}%` group-bootstrap confidence intervals with "
-        f"`{bootstrap['num_resamples']}` resamples over matched benchmark groups."
+        f"`{bootstrap['num_resamples']}` resamples over matched benchmark configurations."
     )
 
 

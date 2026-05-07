@@ -14,11 +14,11 @@ Datasets and Benchmarks 2026.
 |-- benchmark/        the LegalBench-XAI Python package, runtime configs,
 |                     prepared benchmark CSVs, released result bundles,
 |                     and reproduction scripts
-|-- manuscript/       the LaTeX manuscript and accompanying figures
-|-- paper/            the legal-XAI background paper from which the
-|                     benchmark's evaluation criteria are derived,
-|                     plus the canonical explanation schema, feature
-|                     taxonomy, and metric scoring YAML manifests
+|-- paper/            the canonical explanation schema, feature taxonomy,
+|                     and metric scoring YAML manifests that define the
+|                     benchmark's evaluation criteria
+|-- BENCHMARK_CARD.md scope, datasets, methods, and intended uses
+|-- ARTIFACT_CARD.md  artifact contents, entry points, and bundle inventory
 |-- pyproject.toml    Python project metadata
 |-- uv.lock           uv-resolved dependency lockfile
 |-- LICENSE           MIT license (code) plus per-dataset notice
@@ -27,7 +27,8 @@ Datasets and Benchmarks 2026.
 
 ## Quick start
 
-Install with the empirical extras and run the environment check:
+Requires Python 3.12 or newer. Install with the empirical extras and run the
+environment check:
 
 ```sh
 uv sync --extra benchmark-empirical

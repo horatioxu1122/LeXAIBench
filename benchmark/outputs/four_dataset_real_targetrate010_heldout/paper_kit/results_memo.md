@@ -11,12 +11,12 @@
 - Overall CSS leader: `dice` with mean CSS `0.893` and `[0.838, 0.956]` bootstrap CI.
 - Overall actionability leader: `wachter` with mean actionability `0.683` and `[0.639, 0.729]` bootstrap CI.
 - Overall ALF leader: `wachter` with mean ALF `0.509` and `[0.477, 0.542]` bootstrap CI.
-- Pairwise faithfulness leader: `shap` with `80` matched-group wins.
-- Pairwise stability leader: `lime` with `86` matched-group wins.
-- Pairwise comprehensibility leader: `anchors` with `96` matched-group wins.
-- Pairwise CSS leader: `dice` with `73` matched-group wins.
-- Pairwise actionability leader: `wachter` with `92` matched-group wins.
-- Pairwise ALF leader: `wachter` with `20` matched-group wins.
+- Pairwise faithfulness leader: `shap` with `80` matched-configuration wins.
+- Pairwise stability leader: `lime` with `86` matched-configuration wins.
+- Pairwise comprehensibility leader: `anchors` with `96` matched-configuration wins.
+- Pairwise CSS leader: `dice` with `73` matched-configuration wins.
+- Pairwise actionability leader: `wachter` with `92` matched-configuration wins.
+- Pairwise ALF leader: `wachter` with `20` matched-configuration wins.
 
 ## Draft Results Language
 
@@ -30,7 +30,7 @@ Across the current benchmark run, faithfulness, stability, comprehensibility, an
 - Recourse-oriented methods appear to dominate attribution methods on applicant-facing actionability.
 - Contestability-support rankings are close enough that CSS should be discussed as a tradeoff, not only as a single leaderboard.
 - Primary-versus-audit track effects are limited in the current benchmark run, but this should be retested on full datasets.
-- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model families.
+- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model classes.
 
 ## Uncertainty Note
 

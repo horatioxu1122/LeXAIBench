@@ -2,7 +2,7 @@
 
 - Experiment: `legalbench_xai_four_dataset_real_highbudget`
 - Generated at (UTC): `2026-03-15T22:29:00.007268+00:00`
-- Total groups: `120`
+- Total configurations: `120`
 - Datasets: `default_of_credit_card_clients, give_me_some_credit, heloc, south_german_credit`
 - Tracks: `audit, primary`
 - Models: `ebm, logistic_regression, xgboost`
@@ -50,7 +50,7 @@
 
 ## Explainer Leaderboard
 
-| Explainer | Groups | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
+| Explainer | Configurations | Instances | Mean Faithfulness | Mean Stability | Mean Comprehensibility | Mean CSS | Mean Actionability | Mean ALF | Mean Invalid Recourse Rate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 24 | 288 | 0.797 | 0.630 | 0.944 | 0.828 | 0.286 | n/a | n/a |
 | dice | 24 | 288 | 0.840 | 0.479 | 0.681 | 0.896 | 0.667 | 0.468 | 0.101 |
@@ -110,7 +110,7 @@
 - Strongest positive group-level Spearman correlation: `actionability` vs `css` = `0.847` over `120` groups.
 - Weakest group-level Spearman correlation: `actionability` vs `stability` = `-0.543` over `120` groups.
 
-| Metric A | Metric B | Spearman Rank Correlation | Shared Groups |
+| Metric A | Metric B | Spearman Rank Correlation | Shared Configurations |
 | --- | --- | ---: | ---: |
 | actionability | alf | 0.708 | 48 |
 | actionability | comprehensibility | -0.290 | 120 |
@@ -188,9 +188,9 @@
 - Included groups with direct faithfulness evidence only: `72` across explainers `anchors, lime, shap`.
 - Direct-evidence faithfulness leader: `shap` with mean faithfulness `0.908`.
 - Balanced direct-evidence composite leader: `anchors` with composite score `0.600`.
-- Direct-evidence pairwise faithfulness champion: `shap` with `40` matched-group wins.
+- Direct-evidence pairwise faithfulness champion: `shap` with `40` matched-configuration wins.
 
-| Explainer | Groups | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |
+| Explainer | Configurations | Instances | Faithfulness | Stability | Comprehensibility | CSS | Actionability |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | anchors | 24 | 288 | 0.797 | 0.630 | 0.944 | 0.828 | 0.286 |
 | lime | 24 | 288 | 0.839 | 0.917 | 0.722 | 0.780 | 0.275 |
@@ -232,7 +232,7 @@
 - ALF baseline leader under observed scoring: `wachter`.
 - ALF alternative definitions preserving the same leader: `6` / `6`.
 
-| Family | Scenario | Leader | Score | Leader Changed |
+| Method | Scenario | Leader | Score | Leader Changed |
 | --- | --- | --- | ---: | --- |
 | CSS | observed_css | dice | 0.896 | no |
 | CSS | reconstructed_css | dice | 0.896 | no |
@@ -300,7 +300,7 @@
 | south_german_credit | actionability | wachter | 0.696 |
 | south_german_credit | alf | wachter | 0.481 |
 
-## Subgroup Slices
+## Subpopulation Slices
 
 | Dataset | Track | Feature | Value | Explainer | Instances | Mean Stability | Mean CSS | Mean Actionability | Mean ALF |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -335,9 +335,9 @@
 | default_of_credit_card_clients | audit | education_group | university | shap | 18 | 0.873 | 0.889 | 0.335 | n/a |
 | default_of_credit_card_clients | audit | education_group | university | wachter | 18 | 0.588 | 0.985 | 0.740 | 0.510 |
 
-## Subgroup Spread Summary
+## Subpopulation Spread Summary
 
-| Dataset | Track | Feature | Metric | Leader Set Across Subgroups | Max-Spread Explainer | Max Spread |
+| Dataset | Track | Feature | Metric | Leader Set Across Subpopulations | Max-Spread Explainer | Max Spread |
 | --- | --- | --- | --- | --- | --- | ---: |
 | default_of_credit_card_clients | audit | age_band | actionability | dice|wachter | anchors | 0.032 |
 | default_of_credit_card_clients | audit | age_band | alf | dice|wachter | wachter | 0.027 |
@@ -385,18 +385,18 @@
 
 ## Pairwise Win Leaders
 
-- `actionability`: `wachter` leads with `86` wins across `96` comparable pairwise group matchups.
-- `alf`: `wachter` leads with `14` wins across `24` comparable pairwise group matchups.
-- `comprehensibility`: `anchors` leads with `96` wins across `96` comparable pairwise group matchups.
-- `css`: `dice` leads with `78` wins across `96` comparable pairwise group matchups.
-- `faithfulness`: `shap` leads with `80` wins across `96` comparable pairwise group matchups.
-- `stability`: `lime` leads with `85` wins across `96` comparable pairwise group matchups.
+- `actionability`: `wachter` leads with `86` wins across `96` comparable pairwise configuration matchups.
+- `alf`: `wachter` leads with `14` wins across `24` comparable pairwise configuration matchups.
+- `comprehensibility`: `anchors` leads with `96` wins across `96` comparable pairwise configuration matchups.
+- `css`: `dice` leads with `78` wins across `96` comparable pairwise configuration matchups.
+- `faithfulness`: `shap` leads with `80` wins across `96` comparable pairwise configuration matchups.
+- `stability`: `lime` leads with `85` wins across `96` comparable pairwise configuration matchups.
 
-## Best Groups
+## Best Configurations
 
-- Best faithfulness group: `give_me_some_credit` / `primary` / `logistic_regression` / `shap` with `mean_faithfulness=0.997`
-- Best stability group: `heloc` / `audit` / `logistic_regression` / `lime` with `mean_stability=1.000`
-- Best comprehensibility group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `anchors` with `mean_comprehensibility=1.000`
-- Best CSS group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.996`
-- Best actionability group: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_actionability=0.757`
-- Best ALF group: `heloc` / `primary` / `ebm` / `wachter` with `mean_alf=0.557`
+- Best faithfulness configuration: `give_me_some_credit` / `primary` / `logistic_regression` / `shap` with `mean_faithfulness=0.997`
+- Best stability configuration: `heloc` / `audit` / `logistic_regression` / `lime` with `mean_stability=1.000`
+- Best comprehensibility configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `anchors` with `mean_comprehensibility=1.000`
+- Best CSS configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_css=0.996`
+- Best actionability configuration: `default_of_credit_card_clients` / `primary` / `logistic_regression` / `dice` with `mean_actionability=0.757`
+- Best ALF configuration: `heloc` / `primary` / `ebm` / `wachter` with `mean_alf=0.557`

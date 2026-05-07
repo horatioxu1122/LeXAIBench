@@ -120,40 +120,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Destination CSV path, relative to repo root unless absolute.",
     )
 
-    prepare_ipums_parser = subparsers.add_parser("prepare-ipums-cps-ui")
-    prepare_ipums_parser.add_argument(
-        "--config",
-        default="benchmark/configs/experiment_default.json",
-        help="Path to the benchmark experiment config JSON, relative to repo root.",
-    )
-    prepare_ipums_parser.add_argument(
-        "--input-csv",
-        default="benchmark/data/raw/ipums_cps_ui/ipums_cps_ui_extract.csv",
-        help="Path to a local IPUMS CPS UI CSV extract, relative to repo root unless absolute.",
-    )
-    prepare_ipums_parser.add_argument(
-        "--output-csv",
-        default="benchmark/data/real/ipums_cps_ui.csv",
-        help="Destination CSV path, relative to repo root unless absolute.",
-    )
-
-    prepare_nhamcs_parser = subparsers.add_parser("prepare-nhamcs")
-    prepare_nhamcs_parser.add_argument(
-        "--config",
-        default="benchmark/configs/experiment_default.json",
-        help="Path to the benchmark experiment config JSON, relative to repo root.",
-    )
-    prepare_nhamcs_parser.add_argument(
-        "--input-csv",
-        default="benchmark/data/raw/nhamcs/nhamcs_ed_extract.csv",
-        help="Path to a local NHAMCS emergency-department CSV extract, relative to repo root unless absolute.",
-    )
-    prepare_nhamcs_parser.add_argument(
-        "--output-csv",
-        default="benchmark/data/real/nhamcs.csv",
-        help="Destination CSV path, relative to repo root unless absolute.",
-    )
-
     prepare_fda_parser = subparsers.add_parser("prepare-fda-inspections")
     prepare_fda_parser.add_argument(
         "--config",
@@ -254,7 +220,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--explainer",
         required=True,
         choices=["shap", "lime", "leave_one_out", "anchors", "dice", "wachter"],
-        help="Explainer family to adapt.",
+        help="Explainer method to adapt.",
     )
 
     score_parser = subparsers.add_parser("score-example")
@@ -288,7 +254,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--explainer",
         required=True,
         choices=["shap", "lime", "leave_one_out", "anchors", "dice", "wachter"],
-        help="Explainer family to adapt and score.",
+        help="Explainer method to adapt and score.",
     )
 
     batch_parser = subparsers.add_parser("run-demo-benchmark")
@@ -412,24 +378,6 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "prepare-ny-courts-pretrial":
         config = load_experiment_config(args.config)
         payload = BenchmarkPipeline(config).prepare_ny_courts_pretrial(
-            input_path=args.input_csv,
-            output_path=args.output_csv,
-        )
-        print(json.dumps(payload, indent=2))
-        return 0
-
-    if args.command == "prepare-ipums-cps-ui":
-        config = load_experiment_config(args.config)
-        payload = BenchmarkPipeline(config).prepare_ipums_cps_ui(
-            input_path=args.input_csv,
-            output_path=args.output_csv,
-        )
-        print(json.dumps(payload, indent=2))
-        return 0
-
-    if args.command == "prepare-nhamcs":
-        config = load_experiment_config(args.config)
-        payload = BenchmarkPipeline(config).prepare_nhamcs(
             input_path=args.input_csv,
             output_path=args.output_csv,
         )

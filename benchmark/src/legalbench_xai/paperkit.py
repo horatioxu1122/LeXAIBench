@@ -136,7 +136,7 @@ def _build_results_memo(payload: dict[str, Any], analysis: dict[str, Any]) -> st
         "- Recourse-oriented methods appear to dominate attribution methods on applicant-facing actionability.",
         "- Contestability-support rankings are close enough that CSS should be discussed as a tradeoff, not only as a single leaderboard.",
         "- Primary-versus-audit track effects are limited in the current benchmark run, but this should be retested on full datasets.",
-        "- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model families.",
+        "- Pairwise win tables are likely to be more persuasive than raw averages when arguing robustness across datasets and model classes.",
         "",
         "## Uncertainty Note",
         "",
@@ -164,7 +164,7 @@ def _build_main_tables_tex(payload: dict[str, Any], analysis: dict[str, Any]) ->
         "\\label{tab:overall_leaderboard}",
         "\\begin{tabular}{lrrrrrrrrr}",
         "\\toprule",
-        "Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF & Invalid Recourse \\\\",
+        "Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF & Invalid Recourse \\\\",
         "\\midrule",
     ]
     for row in by_explainer:
@@ -273,7 +273,7 @@ def _build_metric_sensitivity_memo(payload: dict[str, Any], analysis: dict[str, 
         "## Interpretation",
         "",
         (
-            "High positive rank correlation suggests two metrics are ordering the explainer families similarly and may be partly redundant in the current benchmark slice."
+            "High positive rank correlation suggests two metrics are ordering the explainer methods similarly and may be partly redundant in the current benchmark slice."
         ),
         (
             "Low or near-zero rank correlation suggests the metrics are capturing genuinely different aspects of explanation quality, which strengthens the case for a multi-dimensional benchmark."
@@ -695,7 +695,7 @@ def _build_discussion_memo(payload: dict[str, Any], analysis: dict[str, Any]) ->
             "The bootstrap intervals in the current results pack reinforce that we should write this as a tradeoff story rather than a search for a universal winner. Some leader identities are robust, but the intervals still argue for caution when turning leaderboard gaps into strong claims."
         ),
         (
-            "The comprehensibility results also matter because they suggest that cognitively simple explanations should not be treated as automatically superior. In the current benchmark run, the easiest explanation family to read is not the same family that dominates on faithfulness or on applicant-facing recourse."
+            "The comprehensibility results also matter because they suggest that cognitively simple explanations should not be treated as automatically superior. In the current benchmark run, the easiest explanation method to read is not the same family that dominates on faithfulness or on applicant-facing recourse."
         ),
         track_clause,
         "",
@@ -783,11 +783,11 @@ def _build_appendix_tables_tex(payload: dict[str, Any], analysis: dict[str, Any]
         "\\subsection{Dataset and Track Slices}",
         "\\begin{longtable}{lllrrrrrrrr}",
         "\\toprule",
-        "Dataset & Track & Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
+        "Dataset & Track & Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
         "\\midrule",
         "\\endfirsthead",
         "\\toprule",
-        "Dataset & Track & Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
+        "Dataset & Track & Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
         "\\midrule",
         "\\endhead",
     ]
@@ -879,14 +879,14 @@ def _build_appendix_tables_tex(payload: dict[str, Any], analysis: dict[str, Any]
             "\\bottomrule",
             "\\end{longtable}",
             "",
-            "\\subsection{Model Family Slices}",
+            "\\subsection{Model Class Slices}",
             "\\begin{longtable}{llrrrrrrrr}",
             "\\toprule",
-            "Model & Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
+            "Model & Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
             "\\midrule",
             "\\endfirsthead",
             "\\toprule",
-            "Model & Explainer & Groups & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
+            "Model & Explainer & Configurations & Inst. & Faithfulness & Stability & Comprehensibility & CSS & Actionability & ALF \\\\",
             "\\midrule",
             "\\endhead",
         ]
@@ -938,7 +938,7 @@ def _build_appendix_tables_tex(payload: dict[str, Any], analysis: dict[str, Any]
                 wins_a=row["wins_a"],
                 wins_b=row["wins_b"],
                 ties=row["ties"],
-                groups=row["comparable_groups"],
+                groups=row["comparable_configurations"],
                 win_rate_a=_fmt(row["win_rate_a"]),
                 win_rate_a_ci=_tex_escape(_fmt_pairwise_ci(row, "win_rate_a")),
             )
@@ -1163,7 +1163,7 @@ def _pairwise_headline(label: str, row: dict[str, Any] | None) -> str:
         return f"- {label}: not available in this run."
     return (
         f"- {label}: `{row['explainer_id']}` "
-        f"with `{row['win_count']}` matched-group wins."
+        f"with `{row['win_count']}` matched-configuration wins."
     )
 
 
@@ -1187,7 +1187,7 @@ def _bootstrap_note_line(analysis: dict[str, Any]) -> str:
         )
     return (
         f"- `{level}%` group-bootstrap confidence intervals with "
-        f"`{bootstrap['num_resamples']}` resamples over benchmark groups are included in the analysis bundle."
+        f"`{bootstrap['num_resamples']}` resamples over benchmark configurations are included in the analysis bundle."
     )
 
 
@@ -1389,16 +1389,16 @@ def _limitations_next_steps(payload: dict[str, Any]) -> list[str]:
     steps: list[str] = []
     if _backend_mode(payload) == "scaffold":
         steps.append("- Replace heuristic models with at least one real training backend.")
-        steps.append("- Replace demo explainer generators with at least one real explainer family.")
+        steps.append("- Replace demo explainer generators with at least one real explainer method.")
         return steps
 
     if model_usage.get("heuristic_model", 0) > 0:
         steps.append(
-            "- Replace the remaining heuristic model groups with real backends so the benchmark is no longer partially dominated by scaffold models."
+            "- Replace the remaining heuristic model configurations with real backends so the benchmark is no longer partially dominated by scaffold models."
         )
     if explainer_usage.get("demo_generator", 0) > 0:
         steps.append(
-            "- Replace the remaining scaffold explainer groups with real rule and recourse backends so the comparison is no longer dominated by demo explainers."
+            "- Replace the remaining scaffold explainer methods with real rule and recourse backends so the comparison is no longer dominated by demo explainers."
         )
     return steps
 
