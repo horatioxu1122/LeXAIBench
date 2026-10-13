@@ -109,6 +109,11 @@ class FeatureSpec:
     correctability: str
     sensitivity: str
     principal_reason: str
+    # Optional provenance fields (taxonomy v2). They never enter the canonical
+    # explanation or any score, so v1 taxonomy files load and behave as before.
+    rationale: str | None = None
+    legal_basis: str | None = None
+    review_status: str | None = None
 
     def taxonomy_record(self) -> FeatureTaxonomyRecord:
         return FeatureTaxonomyRecord(

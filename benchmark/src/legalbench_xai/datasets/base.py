@@ -13,10 +13,15 @@ class DatasetLoader(ABC):
         dataset_spec: DatasetSpec,
         feature_specs: dict[str, FeatureSpec],
         source_override: str | None = None,
+        *,
+        numeric_parsing_fix: bool = False,
     ) -> None:
         self.dataset_spec = dataset_spec
         self.feature_specs = feature_specs
         self.source_override = source_override
+        # cslaw corrections numeric_parsing_fix (v2): parse exponent-notation numbers.
+        # False reproduces the v1 CSV parsing of the published bundles.
+        self.numeric_parsing_fix = numeric_parsing_fix
 
     def build_bundle(self, track: str) -> DatasetBundle:
         if track not in {"primary", "audit"}:
@@ -60,7 +65,10 @@ class DatasetLoader(ABC):
                 f"Unsupported file format '{self.dataset_spec.file_format}' for dataset "
                 f"'{self.dataset_spec.dataset_id}'."
             )
-        rows = load_csv_rows(Path(resolved_path))
+        rows = load_csv_rows(
+            Path(resolved_path),
+            numeric_parsing_fix=self.numeric_parsing_fix,
+        )
 
         filtered_rows: list[dict[str, object]] = []
         feature_names = bundle.included_feature_names

@@ -3,11 +3,23 @@ import os
 import statistics
 from typing import Any
 
+from ..corrections import V1, CorrectionOptions, model_corrections
 from ..types import DatasetBundle, TabularDataset
 from .stubs import HeuristicModel, RowPrediction, fit_stub_model
 
 
 class VectorizedClassifierModel:
+    # Opt-in (cslaw.use_native_contributions_for_ranking): when True, explainer-internal
+    # feature ranking uses the fitted model's own additive contributions instead of the
+    # heuristic proxy returned by original_feature_contributions. Default False keeps the
+    # baseline behaviour unchanged.
+    use_native_ranking: bool = False
+    # Versioned corrections (legalbench_xai.corrections). The runner sets the instance
+    # attribute after fit_model; explainers read it via model_corrections(model).
+    corrections: CorrectionOptions = V1
+    # How native_feature_contributions_batch decomposes the score. Subclasses override.
+    native_contribution_source: str = "heuristic_stub"
+
     def __init__(
         self,
         *,
@@ -110,12 +122,14 @@ class VectorizedClassifierModel:
         prediction: RowPrediction,
         allow_illegal: bool,
         limit: int = 2,
+        block_nonactionable: bool = False,
     ) -> list[dict[str, Any]]:
         return self.heuristic_helper.recommend_changes(
             row=self._feature_dict(row),
             prediction=prediction,
             allow_illegal=allow_illegal,
             limit=limit,
+            block_nonactionable=block_nonactionable,
         )
 
     def vectorize_row(self, row: dict[str, Any]) -> Any:
@@ -130,6 +144,158 @@ class VectorizedClassifierModel:
             instance_id=f"{self.model_id}-proxy",
         )
         return proxy_prediction.feature_contributions
+
+    @property
+    def native_ranking_active(self) -> bool:
+        """True when explainer-internal ranking uses native contributions.
+
+        Either the legacy switch use_native_ranking or correction native_contributions
+        (v2) turns it on, so a runner that resets use_native_ranking from the legacy
+        cslaw flag cannot silently undo the v2 correction.
+        """
+        return bool(self.use_native_ranking) or model_corrections(self).native_contributions
+
+    def ranking_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        """Per-feature contributions that explainers use to rank candidate features.
+
+        Correction native_contributions (v2), also the round-1 use_native_ranking switch:
+        returns native_feature_contributions(row) (the fitted model's own additive
+        log-odds contributions; LR coef x standardized x, EBM eval_terms, XGBoost
+        pred_contribs). Otherwise returns original_feature_contributions(row), which for
+        EBM and XGBoost is a taxonomy-weighted heuristic proxy. With the defaults
+        (use_native_ranking False, corrections V1) this is exactly the baseline input.
+        """
+        if self.native_ranking_active:
+            return self.native_feature_contributions(row)
+        return self.original_feature_contributions(row)
+
+    def native_feature_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        """Single-row convenience wrapper around native_feature_contributions_batch.
+
+        Units: log-odds of the ADVERSE class (classifier label 1); positive values push
+        toward denial. Keys: every bundle included (base) feature name. The reference
+        point and the interaction split rule are those of the subclass's
+        native_feature_contributions_batch.
+        """
+        contributions, _bias = self.native_feature_contributions_batch([row])
+        return contributions[0]
+
+    def native_feature_contributions_batch(
+        self,
+        rows: list[dict[str, Any]],
+    ) -> tuple[list[dict[str, float]], float]:
+        """Fitted-model additive contributions for many rows in one vectorized call.
+
+        Returns (per-row dicts, bias). Each dict covers ALL bundle included feature
+        names (base names, initialised to 0.0; one-hot columns "feat=value" are summed
+        back to "feat"). Values are in log-odds of the ADVERSE class (positive = pushes
+        toward denial) and sum(values) + bias == the model's raw score
+        (decision_function, or logit(P(adverse)) for XGBoost). Rows are vectorized
+        exactly as predict_rows does (_feature_dict + vectorizer + matrix_transformer).
+
+        This base class has no fitted-model decomposition, so it returns the heuristic
+        proxy (original_feature_contributions) with bias 0.0 and
+        native_contribution_source "heuristic_stub"; the proxy is unitless and NOT
+        additive to the model score. Subclasses override _native_decomposition.
+        """
+        if not self._has_native_decomposition():
+            return [self.original_feature_contributions(row) for row in rows], 0.0
+        if not rows:
+            _values, bias = self.native_feature_contributions_from_matrix(
+                self.background_matrix[:1]
+            )
+            return [], bias
+        return self.native_feature_contributions_from_matrix(self._model_input_matrix(rows))
+
+    def native_feature_contributions_from_matrix(
+        self,
+        matrix: Any,
+    ) -> tuple[list[dict[str, float]], float]:
+        """Same as native_feature_contributions_batch, but takes a model-input matrix.
+
+        `matrix` must already be in the classifier's input space (vectorized, and scaled
+        for logistic regression), e.g. self.background_matrix. Units, sign, keys and
+        bias are as in native_feature_contributions_batch. When no fitted-model
+        decomposition exists, rows are reconstructed from the matrix and the heuristic
+        proxy is returned with bias 0.0.
+        """
+        decomposition = self._native_decomposition(matrix)
+        if decomposition is None:
+            rows = self.rows_from_model_matrix(matrix)
+            return [self.original_feature_contributions(row) for row in rows], 0.0
+        column_values, bias = decomposition
+        return self._aggregate_native_columns(column_values), bias
+
+    def rows_from_model_matrix(self, matrix: Any) -> list[dict[str, Any]]:
+        """Reconstruct feature dicts from a model-input matrix (inverse of vectorizing).
+
+        Undoes matrix_transformer (if any); numeric columns become floats, and an active
+        one-hot column "feat=value" (encoded value > 0.5) becomes {"feat": "value"}.
+        """
+        import numpy as np
+
+        raw = matrix
+        if self.matrix_transformer is not None:
+            raw = self.matrix_transformer.inverse_transform(matrix)
+        rows: list[dict[str, Any]] = []
+        for values in np.asarray(raw, dtype=float).tolist():
+            row: dict[str, Any] = {}
+            for encoded_name, value in zip(self.encoded_feature_names, values, strict=False):
+                if "=" in encoded_name:
+                    if value > 0.5:
+                        base_name, category = encoded_name.split("=", 1)
+                        row[base_name] = category
+                    continue
+                row[encoded_name] = float(value)
+            rows.append(row)
+        return rows
+
+    def _native_decomposition(self, matrix: Any) -> tuple[list[list[float]], float] | None:
+        """Return (per-row values for each _native_column_shares column, bias) or None.
+
+        None means that no fitted-model decomposition is available (base class).
+        """
+        return None
+
+    def _has_native_decomposition(self) -> bool:
+        return (
+            type(self)._native_decomposition
+            is not VectorizedClassifierModel._native_decomposition
+        )
+
+    def _native_column_shares(self) -> list[list[tuple[str, float]]]:
+        """Map each decomposition column to (base feature name, share) pairs.
+
+        Default: one column per encoded feature, assigned fully to its base feature.
+        """
+        return [
+            [(self.base_feature_name(encoded_name), 1.0)]
+            for encoded_name in self.encoded_feature_names
+        ]
+
+    def _aggregate_native_columns(
+        self,
+        column_values: list[list[float]],
+    ) -> list[dict[str, float]]:
+        shares = self._native_column_shares()
+        feature_names = list(self.dataset_bundle.included_feature_names)
+        aggregated_rows: list[dict[str, float]] = []
+        for values in column_values:
+            contributions = {feature_name: 0.0 for feature_name in feature_names}
+            for value, column_shares in zip(values, shares, strict=False):
+                for base_name, share in column_shares:
+                    if base_name in contributions:
+                        contributions[base_name] += (
+                            float(value) if share == 1.0 else float(value) * share
+                        )
+            aggregated_rows.append(contributions)
+        return aggregated_rows
+
+    def _model_input_matrix(self, rows: list[dict[str, Any]]) -> Any:
+        matrix = self.vectorizer.transform([self._feature_dict(row) for row in rows])
+        if self.matrix_transformer is not None:
+            matrix = self.matrix_transformer.transform(matrix)
+        return matrix
 
     def get_shap_explainer(self) -> Any:
         if self._shap_explainer is not None:
@@ -186,6 +352,8 @@ class VectorizedClassifierModel:
 
 
 class SklearnLogisticRegressionModel(VectorizedClassifierModel):
+    native_contribution_source = "lr_coef_x_standardized"
+
     def __init__(
         self,
         dataset_bundle: DatasetBundle,
@@ -231,6 +399,22 @@ class SklearnLogisticRegressionModel(VectorizedClassifierModel):
                 contributions[base_name] += float(value) * float(coefficient)
         return contributions
 
+    def _native_decomposition(self, matrix: Any) -> tuple[list[list[float]], float]:
+        """Logistic regression: coef_j * standardized x_j per encoded column.
+
+        Units: log-odds of the adverse class; positive = toward denial. Reference: the
+        training-split mean (StandardScaler centres each column, so x_scaled = 0 at the
+        training mean; one-hot dummies are centred too). Bias = intercept_[0], so
+        sum(contributions) + bias == decision_function. Aggregated by base feature this
+        equals original_feature_contributions(row) exactly (same products, same
+        summation order). No interaction terms.
+        """
+        import numpy as np
+
+        coefficients = np.asarray(self.classifier.coef_[0], dtype=float)
+        products = np.asarray(matrix, dtype=float) * coefficients
+        return products.tolist(), float(self.classifier.intercept_[0])
+
     def get_shap_explainer(self) -> Any:
         self._shap_mode = "linear_exact"
         return self._shap_explainer
@@ -246,6 +430,8 @@ class SklearnLogisticRegressionModel(VectorizedClassifierModel):
 
 
 class XGBoostClassifierModel(VectorizedClassifierModel):
+    native_contribution_source = "xgb_pred_contribs"
+
     def __init__(
         self,
         dataset_bundle: DatasetBundle,
@@ -288,8 +474,37 @@ class XGBoostClassifierModel(VectorizedClassifierModel):
             self._shap_mode = "generic"
         return self._shap_explainer
 
+    def _native_decomposition(self, matrix: Any) -> tuple[list[list[float]], float]:
+        """XGBoost: exact TreeSHAP from booster.predict(DMatrix(X), pred_contribs=True).
+
+        Units: log-odds (output margin) of the adverse class; positive = toward denial.
+        Columns 0..p-1 are per encoded column (aggregated to base names); the last
+        column is the bias, i.e. the cover-weighted training expectation of the margin
+        (constant across rows), so sum(contributions) + bias == output margin ==
+        logit(P(adverse)) up to float32 rounding. TreeSHAP already distributes
+        interaction effects among features; no further split rule is applied.
+        """
+        import numpy as np
+        import xgboost
+
+        contributions = self.classifier.get_booster().predict(
+            xgboost.DMatrix(np.asarray(matrix, dtype=float)),
+            pred_contribs=True,
+        )
+        contributions = np.asarray(contributions, dtype=float)
+        expected_columns = len(self.encoded_feature_names) + 1
+        if contributions.ndim != 2 or contributions.shape[1] != expected_columns:
+            raise ValueError(
+                "unexpected XGBoost pred_contribs shape "
+                f"{contributions.shape}; expected (n, {expected_columns})"
+            )
+        bias = float(contributions[0, -1]) if contributions.shape[0] else 0.0
+        return contributions[:, :-1].tolist(), bias
+
 
 class EBMClassifierModel(VectorizedClassifierModel):
+    native_contribution_source = "ebm_eval_terms_pair_split"
+
     def __init__(
         self,
         dataset_bundle: DatasetBundle,
@@ -313,6 +528,51 @@ class EBMClassifierModel(VectorizedClassifierModel):
             feature_fill_values=feature_fill_values,
             threshold=threshold,
         )
+
+    def _native_decomposition(self, matrix: Any) -> tuple[list[list[float]], float]:
+        """EBM: per-term scores from classifier.eval_terms(X) (interpret >= 0.7).
+
+        Units: log-odds of the adverse class; positive = toward denial. Each term score
+        is the term's shape-function value at x; EBM centres terms on the training data,
+        so the reference is the training-set average score. Bias = intercept_, so
+        sum(term scores) + bias == decision_function. Terms are mapped through
+        term_features_ (indices into the encoded input columns, i.e. into
+        encoded_feature_names, including one-hot "feat=value" columns) and then to base
+        feature names. Pair-split rule: an interaction term over k encoded columns is
+        split equally, 1/k per column (50/50 for pairs); when both columns of a pair map
+        to the same base feature, that feature receives the whole term.
+        """
+        import numpy as np
+
+        feature_names_in = getattr(self.classifier, "feature_names_in_", None)
+        if feature_names_in is not None and len(feature_names_in) != len(
+            self.encoded_feature_names
+        ):
+            raise ValueError(
+                "EBM input feature count does not match the encoded feature count"
+            )
+        term_scores = np.asarray(self.classifier.eval_terms(matrix), dtype=float)
+        if term_scores.ndim != 2 or term_scores.shape[1] != len(self.classifier.term_features_):
+            raise ValueError(
+                f"unexpected EBM eval_terms shape {term_scores.shape} for a binary classifier"
+            )
+        intercept = np.ravel(np.asarray(self.classifier.intercept_, dtype=float))
+        if intercept.size != 1:
+            raise ValueError("expected a single EBM intercept for binary classification")
+        return term_scores.tolist(), float(intercept[0])
+
+    def _native_column_shares(self) -> list[list[tuple[str, float]]]:
+        shares: list[list[tuple[str, float]]] = []
+        for feature_indexes in self.classifier.term_features_:
+            indexes = [int(index) for index in feature_indexes]
+            share = 1.0 / len(indexes) if indexes else 0.0
+            shares.append(
+                [
+                    (self.base_feature_name(self.encoded_feature_names[index]), share)
+                    for index in indexes
+                ]
+            )
+        return shares
 
 
 def fit_sklearn_logistic_regression_model(

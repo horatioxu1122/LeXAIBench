@@ -219,7 +219,16 @@ def build_parser() -> argparse.ArgumentParser:
     adapt_parser.add_argument(
         "--explainer",
         required=True,
-        choices=["shap", "lime", "leave_one_out", "anchors", "dice", "wachter"],
+        choices=[
+            "shap",
+            "lime",
+            "leave_one_out",
+            "anchors",
+            "dice",
+            "wachter",
+            "random_reasons",
+            "global_ranking",
+        ],
         help="Explainer method to adapt.",
     )
 
@@ -253,7 +262,16 @@ def build_parser() -> argparse.ArgumentParser:
     score_adapted_parser.add_argument(
         "--explainer",
         required=True,
-        choices=["shap", "lime", "leave_one_out", "anchors", "dice", "wachter"],
+        choices=[
+            "shap",
+            "lime",
+            "leave_one_out",
+            "anchors",
+            "dice",
+            "wachter",
+            "random_reasons",
+            "global_ranking",
+        ],
         help="Explainer method to adapt and score.",
     )
 

@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .adapters import adapt_raw_example
+from .corrections import model_corrections
 from .explainers import generate_raw_explanation
 from .models.stubs import FeatureProfile, RowPrediction
 from .normalization import ExplanationCanonicalizer
@@ -30,7 +31,12 @@ def compute_stability_evidence(
     if not hasattr(model, "heuristic_helper") or not hasattr(model.heuristic_helper, "profiles"):
         return None
 
-    canonicalizer = ExplanationCanonicalizer(dataset_bundle)
+    # Same corrections as the runner's canonicalizer (V1 unless the runner attached
+    # options to the model), so probe explanations are normalized like the scored one.
+    canonicalizer = ExplanationCanonicalizer(
+        dataset_bundle,
+        corrections=model_corrections(model),
+    )
     base_canonical = canonicalizer.canonicalize(adapted_payload)
     base_signature = _signature(base_canonical)
 
@@ -167,7 +173,9 @@ def _seed_consistency(
     canonicalizer: ExplanationCanonicalizer,
     base_signature: ExplanationSignature,
 ) -> float:
-    if explainer_id != "lime":
+    # Seed-dependent explainers are re-run under seeds 1..lime_seed_trials-1: LIME
+    # (baseline behaviour) and the random_reasons null baseline.
+    if explainer_id not in {"lime", "random_reasons"}:
         return 1.0
 
     seed_trials = max(2, int(probe_cfg.get("lime_seed_trials", 3)))

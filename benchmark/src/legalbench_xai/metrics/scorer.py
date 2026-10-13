@@ -2,6 +2,7 @@ import math
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
+from ..corrections import V1, CorrectionOptions
 from ..types import CanonicalExplanation, CounterfactualChange, ReferencedFeature
 
 
@@ -68,6 +69,47 @@ class UnifiedActionabilityBreakdown:
 
 
 class ExplanationScorer:
+    def __init__(self, corrections: CorrectionOptions | None = V1) -> None:
+        """Scorer; corrections defaults to V1 (the published scoring, unchanged).
+
+        Corrections read here:
+        - faithfulness_quality_weight w: faithfulness =
+          (0.45*coverage + 0.35*direction + w*quality) / (0.80 + w). v1 w = 0.20
+          (denominator 1.0, the published formula, kept as a literal code path);
+          v2 w = 0.0, so the self-reported quality signal (constant per model type
+          for SHAP) no longer enters the score. The signal is still recorded in
+          explanation_quality_signal.
+        - cf_respect_nonactionable: counterfactual changes to taxonomy mutability
+          "N" hard-fail like "I" (label "nonactionable_feature_changed").
+        - persist_score_subcomponents: adds "faithfulness_quality_weight" to the
+          faithfulness dict and "dsv_directionality", "dsv_threshold_visibility",
+          "dsv_flip_validity" to the contestability dict (dict keys only; the
+          breakdown dataclasses are unchanged).
+        - common_faithfulness_reference: rule-family (Anchors) and
+          counterfactual-family (DiCE/Wachter) features are scored as
+          direction-neutral in faithfulness's directional term. An anchor rule
+          claims no direction (the adapters' "increases_denial" label is kept for
+          reasons and CSS). Counterfactual reasons take their signed_direction
+          from the sign of the model's native contribution (v2
+          counterfactual_reasons_from_changes; v1 ranking under native ranking),
+          which is the common reference itself, so the term would be 1.0 by
+          construction. Both families therefore get the same neutral 0.5 and the
+          directional term only separates attribution-family explainers.
+        The common faithfulness reference itself is injected upstream, in
+        explainers/registry.generate_raw_explanation.
+        """
+        if corrections is None:
+            corrections = V1
+        if not isinstance(corrections, CorrectionOptions):
+            raise TypeError(
+                f"corrections must be a CorrectionOptions, got {type(corrections).__name__}"
+            )
+        self.corrections = corrections
+        self._is_v1 = corrections.is_v1
+        self._quality_weight = float(corrections.faithfulness_quality_weight)
+        self._block_nonactionable = bool(corrections.cf_respect_nonactionable)
+        self._persist_subcomponents = bool(corrections.persist_score_subcomponents)
+
     def score(self, explanation: CanonicalExplanation) -> dict[str, Any]:
         faithfulness = self._faithfulness(explanation)
         stability = self._stability(explanation)
@@ -75,11 +117,22 @@ class ExplanationScorer:
         css = self._contestability(explanation)
         alf = self._actionability_legality(explanation)
         actionability = self._unified_actionability(explanation, alf)
+        faithfulness_scores = asdict(faithfulness)
+        css_scores = asdict(css)
+        if self._persist_subcomponents:
+            # Correction persist_score_subcomponents: extra dict keys only.
+            faithfulness_scores["faithfulness_quality_weight"] = self._quality_weight
+            directionality, threshold_visibility, flip_validity = (
+                self._decision_sensitivity_components(explanation)
+            )
+            css_scores["dsv_directionality"] = directionality
+            css_scores["dsv_threshold_visibility"] = threshold_visibility
+            css_scores["dsv_flip_validity"] = flip_validity
         return {
-            "faithfulness_score": asdict(faithfulness),
+            "faithfulness_score": faithfulness_scores,
             "stability_score": asdict(stability),
             "comprehensibility_score": asdict(comprehensibility),
-            "contestability_support_score": asdict(css),
+            "contestability_support_score": css_scores,
             "actionability_legality_filter": asdict(alf),
             "unified_actionability_score": asdict(actionability),
         }
@@ -93,10 +146,31 @@ class ExplanationScorer:
                 explanation.referenced_features,
                 reference_contributions,
             )
-            directional = self._directional_agreement(
-                explanation.referenced_features,
-                reference_contributions,
-            )
+            if (
+                self.corrections.common_faithfulness_reference
+                and explanation.explanation_family in ("rule", "counterfactual")
+            ):
+                # Under the common reference an anchor rule ("x in R keeps the
+                # decision") makes no claim about the sign of a feature's effect, yet
+                # adapters label every anchor feature "increases_denial". Its features
+                # are scored as direction-neutral here (match 0.5, or 1.0 when the
+                # reference is exactly 0), so the direction term does not measure the
+                # hard-coded label. Counterfactual (DiCE/Wachter) reasons copy their
+                # signed_direction from the sign of the native contribution, i.e. from
+                # this very reference, so their match would be 1.0 by construction;
+                # they are scored direction-neutral too, which puts both non-attribution
+                # families on the same 0.5. Faithfulness only: reasons and CSS keep
+                # signed_direction.
+                directional = self._directional_agreement(
+                    explanation.referenced_features,
+                    reference_contributions,
+                    neutral_directions=True,
+                )
+            else:
+                directional = self._directional_agreement(
+                    explanation.referenced_features,
+                    reference_contributions,
+                )
             evidence_source = str(evidence.get("source", "provided_reference_contributions"))
         else:
             coverage = self._reason_feature_coverage(explanation)
@@ -104,7 +178,14 @@ class ExplanationScorer:
             evidence_source = "structural_proxy"
 
         quality_signal = self._faithfulness_quality_signal(explanation, evidence)
-        score = 0.45 * coverage + 0.35 * directional + 0.20 * quality_signal
+        quality_weight = self._quality_weight
+        if self._is_v1 or quality_weight == 0.20:
+            score = 0.45 * coverage + 0.35 * directional + 0.20 * quality_signal
+        else:
+            # Correction faithfulness_quality_weight: renormalized weights.
+            score = (
+                0.45 * coverage + 0.35 * directional + quality_weight * quality_signal
+            ) / (0.80 + quality_weight)
 
         return FaithfulnessBreakdown(
             evidence_source=evidence_source,
@@ -211,11 +292,9 @@ class ExplanationScorer:
             if feature.taxonomy is not None
         )
 
-        directionality = 1.0 if any(
-            reason.signed_direction != "neutral" for reason in explanation.principal_reasons
-        ) else 0.0
-        threshold_visibility = self._threshold_visibility(explanation)
-        flip_validity = self._flip_validity(explanation.counterfactual_changes)
+        directionality, threshold_visibility, flip_validity = (
+            self._decision_sensitivity_components(explanation)
+        )
         sensitivity = 0.4 * directionality + 0.3 * threshold_visibility + 0.3 * flip_validity
 
         specificity = 0.0
@@ -301,6 +380,22 @@ class ExplanationScorer:
             return [1.0 / len(features)] * len(features)
         return [value / total for value in raw]
 
+    def _decision_sensitivity_components(
+        self,
+        explanation: CanonicalExplanation,
+    ) -> tuple[float, float, float]:
+        """(directionality, threshold_visibility, flip_validity) of CSS's DSV term."""
+        directionality = 1.0 if any(
+            reason.signed_direction != "neutral" for reason in explanation.principal_reasons
+        ) else 0.0
+        threshold_visibility = self._threshold_visibility(explanation)
+        flip_validity = self._flip_validity(explanation.counterfactual_changes)
+        return directionality, threshold_visibility, flip_validity
+
+    @staticmethod
+    def _is_nonactionable(change: CounterfactualChange) -> bool:
+        return change.taxonomy is not None and change.taxonomy.mutability == "N"
+
     def _threshold_visibility(self, explanation: CanonicalExplanation) -> float:
         if explanation.explanation_family == "counterfactual":
             return 1.0 if explanation.counterfactual_changes else 0.0
@@ -368,7 +463,11 @@ class ExplanationScorer:
         for change in changes:
             if change.legality_flags.direct_sensitive_feature:
                 failures.append(f"{change.feature_name}:direct_sensitive_feature_changed")
-            if change.legality_flags.immutable_feature:
+            if self._block_nonactionable and self._is_nonactionable(change):
+                # Correction cf_respect_nonactionable: mutability "N" hard-fails like
+                # "I" (whether or not the canonicalizer already set the immutable flag).
+                failures.append(f"{change.feature_name}:nonactionable_feature_changed")
+            elif change.legality_flags.immutable_feature:
                 failures.append(f"{change.feature_name}:immutable_feature_changed")
             if (change.realism_score or 0.5) < 0.2:
                 failures.append(f"{change.feature_name}:clearly_off_manifold_value")
@@ -410,11 +509,12 @@ class ExplanationScorer:
         self,
         features: list[ReferencedFeature],
         reference_contributions: dict[str, Any],
+        neutral_directions: bool = False,
     ) -> float:
         if not reference_contributions:
             return 0.0
         explained = {
-            feature.feature_name: feature.signed_direction
+            feature.feature_name: "neutral" if neutral_directions else feature.signed_direction
             for feature in features
             if feature.feature_name in reference_contributions
         }

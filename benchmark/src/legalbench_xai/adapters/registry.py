@@ -64,6 +64,28 @@ def _adapt_leave_one_out(raw_payload: dict) -> dict:
     }
 
 
+def _adapt_null_baseline(raw_payload: dict, explainer_id: str) -> dict:
+    """Attribution adapter for the null baselines (random_reasons, global_ranking)."""
+    return {
+        "instance_id": raw_payload["instance_id"],
+        "model_id": raw_payload["model_id"],
+        "explainer_id": explainer_id,
+        "explanation_family": "attribution",
+        "prediction": raw_payload["prediction"],
+        "features": [
+            {
+                "feature_name": item["feature_name"],
+                "importance_weight": item["weight"],
+                "raw_value": item.get("raw_value"),
+            }
+            for item in raw_payload.get("local_explanation", [])
+        ],
+        "metadata": raw_payload.get("metadata", {}),
+        "counterfactual_changes": [],
+        "seed": raw_payload.get("seed"),
+    }
+
+
 def _adapt_anchors(raw_payload: dict) -> dict:
     return {
         "instance_id": raw_payload["instance_id"],
@@ -90,6 +112,20 @@ def _adapt_anchors(raw_payload: dict) -> dict:
     }
 
 
+def _counterfactual_feature(item: dict) -> dict:
+    feature = {
+        "feature_name": item["feature_name"],
+        "importance_weight": item["weight"],
+        "raw_value": item.get("raw_value"),
+    }
+    # v2 reasons from changes carry the native sign explicitly
+    # (generators.counterfactual_change_reasons); v1 items have no such key, so the
+    # v1 feature dict is unchanged and the canonicalizer infers it from the weight.
+    if item.get("signed_direction") is not None:
+        feature["signed_direction"] = item["signed_direction"]
+    return feature
+
+
 def _adapt_counterfactual(raw_payload: dict, explainer_id: str) -> dict:
     counterfactuals = raw_payload.get("counterfactuals") or [{}]
     first_cf = counterfactuals[0]
@@ -112,11 +148,7 @@ def _adapt_counterfactual(raw_payload: dict, explainer_id: str) -> dict:
         "explanation_family": "counterfactual",
         "prediction": raw_payload["prediction"],
         "features": [
-            {
-                "feature_name": item["feature_name"],
-                "importance_weight": item["weight"],
-                "raw_value": item.get("raw_value"),
-            }
+            _counterfactual_feature(item)
             for item in raw_payload.get("feature_importances", [])
         ],
         "metadata": raw_payload.get("metadata", {}),
@@ -138,6 +170,8 @@ def adapt_raw_example(dataset_bundle: DatasetBundle, explainer_id: str, raw_payl
         return _adapt_counterfactual(raw_payload, explainer_id="dice")
     if explainer_id == "wachter":
         return _adapt_counterfactual(raw_payload, explainer_id="wachter")
+    if explainer_id in {"random_reasons", "global_ranking"}:
+        return _adapt_null_baseline(raw_payload, explainer_id=explainer_id)
     raise KeyError(
         f"Unsupported explainer '{explainer_id}' for dataset '{dataset_bundle.dataset_id}'."
     )

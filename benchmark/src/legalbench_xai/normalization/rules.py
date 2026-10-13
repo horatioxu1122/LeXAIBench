@@ -7,9 +7,23 @@ TEMPORAL_GROUP_PREFIXES = {
     "PAY_AMT": "recent payment amounts",
 }
 
+# Correction reason_grouping_fix (v2): match the longest prefix first, so PAY_AMT1-6
+# (payment amounts) group under "recent payment amounts" instead of matching "PAY_"
+# ("recent late payment history"). The v1 order above is kept for the default path.
+_LONGEST_PREFIX_FIRST = tuple(
+    sorted(TEMPORAL_GROUP_PREFIXES.items(), key=lambda item: -len(item[0]))
+)
 
-def grouped_reason_label(feature_name: str) -> str | None:
-    for prefix, label in TEMPORAL_GROUP_PREFIXES.items():
+
+def grouped_reason_label(feature_name: str, *, fix_prefix_order: bool = False) -> str | None:
+    """Temporal reason group for a feature name, or None.
+
+    fix_prefix_order=False (v1) checks prefixes in TEMPORAL_GROUP_PREFIXES order, so
+    "PAY_" also captures "PAY_AMT*". fix_prefix_order=True (correction
+    reason_grouping_fix) checks the longest prefix first.
+    """
+    prefixes = _LONGEST_PREFIX_FIRST if fix_prefix_order else TEMPORAL_GROUP_PREFIXES.items()
+    for prefix, label in prefixes:
         if feature_name.startswith(prefix):
             return label
     return None

@@ -256,4 +256,66 @@ def sample_raw_payload(dataset_bundle: DatasetBundle, explainer_id: str) -> dict
             },
         }
 
+    if explainer_id in {"random_reasons", "global_ranking"}:
+        feature_names = dataset_bundle.included_feature_names
+        if explainer_id == "random_reasons":
+            weights = [0.91, -0.62, 0.37]
+            raw_values = [3, 1500, 1]
+            settings = {
+                "weight_distribution": "sign_uniform_pm1_times_magnitude_uniform_0_1",
+                "generation_mode": "full",
+            }
+        else:
+            weights = [0.44, 0.31, 0.12]
+            raw_values = [2, 4100, 0]
+            settings = {
+                "aggregation": "mean_abs_contribution_over_background_rows",
+                "contribution_source": "demo_reference_contributions",
+            }
+        return {
+            "instance_id": f"{dataset_bundle.dataset_id}-raw-{explainer_id}-001",
+            "model_id": "logistic_regression",
+            "seed": 0 if explainer_id == "random_reasons" else None,
+            "prediction": {
+                "score": 0.7,
+                "label": dataset_bundle.negative_label,
+                "threshold": 0.5,
+                "decision_margin": 0.2,
+            },
+            "local_explanation": [
+                {
+                    "feature_name": feature_names[index],
+                    "weight": weights[index],
+                    "raw_value": raw_values[index],
+                }
+                for index in range(3)
+            ],
+            "metadata": {
+                "raw_family": "attribution",
+                "null_baseline_settings": {
+                    **settings,
+                    "num_features": 3,
+                    "faithfulness_reference": "self",
+                    "reference_contribution_source": "self",
+                },
+                "faithfulness_evidence": {
+                    "source": f"null_{explainer_id}",
+                    "reference_signed_contributions": {
+                        feature_names[index]: weights[index] for index in range(3)
+                    },
+                },
+                "stability_evidence": {
+                    "source": "demo_local_neighborhood_probe",
+                    "neighborhood_consistency": (
+                        0.2 if explainer_id == "random_reasons" else 1.0
+                    ),
+                    "rank_consistency": 0.15 if explainer_id == "random_reasons" else 1.0,
+                    "direction_consistency": (
+                        0.5 if explainer_id == "random_reasons" else 1.0
+                    ),
+                    "seed_consistency": 0.2 if explainer_id == "random_reasons" else 1.0,
+                },
+            },
+        }
+
     raise KeyError(f"Unsupported explainer example '{explainer_id}'.")

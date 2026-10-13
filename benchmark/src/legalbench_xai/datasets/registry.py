@@ -1,4 +1,5 @@
 from ..config import ExperimentConfig
+from ..corrections import corrections_from_config
 from ..metadata import load_dataset_registry
 from ..taxonomy import load_feature_taxonomy
 from .base import DatasetLoader
@@ -21,6 +22,7 @@ def build_dataset_loader(config: ExperimentConfig, dataset_id: str) -> DatasetLo
         dataset_spec=dataset_registry[dataset_id],
         feature_specs=feature_taxonomy[dataset_id],
         source_override=config.dataset_source_override(dataset_id),
+        numeric_parsing_fix=corrections_from_config(config).numeric_parsing_fix,
     )
 
 

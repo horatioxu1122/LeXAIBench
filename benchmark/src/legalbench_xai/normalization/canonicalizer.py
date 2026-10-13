@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
+from ..corrections import V1, CorrectionOptions
 from ..types import (
     CanonicalExplanation,
     CounterfactualChange,
@@ -34,9 +35,33 @@ class NormalizationInput:
 
 
 class ExplanationCanonicalizer:
-    def __init__(self, dataset_bundle: DatasetBundle, principal_reason_limit: int = 4) -> None:
+    def __init__(
+        self,
+        dataset_bundle: DatasetBundle,
+        principal_reason_limit: int = 4,
+        *,
+        corrections: CorrectionOptions | None = V1,
+    ) -> None:
+        """Canonicalizer for one dataset bundle.
+
+        corrections (default V1, i.e. the published behaviour) switches on:
+        - reason_grouping_fix: PAY_AMT* groups as "recent payment amounts"
+          (normalization/rules.py longest-prefix-first matching);
+        - cf_respect_nonactionable: counterfactual changes to taxonomy mutability "N"
+          (not actionable by the applicant) get legality_flags.immutable_feature=True,
+          like mutability "I", so the scorer hard-fails them.
+        """
+        if corrections is None:
+            corrections = V1
+        if not isinstance(corrections, CorrectionOptions):
+            raise TypeError(
+                f"corrections must be a CorrectionOptions, got {type(corrections).__name__}"
+            )
         self.dataset_bundle = dataset_bundle
         self.principal_reason_limit = principal_reason_limit
+        self.corrections = corrections
+        self._fix_reason_grouping = bool(corrections.reason_grouping_fix)
+        self._block_nonactionable = bool(corrections.cf_respect_nonactionable)
         self._feature_index = {
             feature.feature_name: feature for feature in dataset_bundle.included_features
         }
@@ -133,9 +158,14 @@ class ExplanationCanonicalizer:
 
             from_value = raw_change["from_value"]
             to_value = raw_change["to_value"]
+            immutable_feature = feature_spec.mutability == "I"
+            if self._block_nonactionable and feature_spec.mutability == "N":
+                # Correction cf_respect_nonactionable: "N" (not actionable by the
+                # applicant) is treated like "I" (immutable).
+                immutable_feature = True
             flags = CounterfactualLegalityFlags(
                 direct_sensitive_feature=feature_spec.sensitivity == "S",
-                immutable_feature=feature_spec.mutability == "I",
+                immutable_feature=immutable_feature,
                 proxy_sensitive_feature=feature_spec.sensitivity == "P",
                 lender_controlled_feature=feature_spec.mutability == "P",
                 low_principal_reason_feature=feature_spec.principal_reason == "Low",
@@ -173,8 +203,11 @@ class ExplanationCanonicalizer:
         reasons: list[PrincipalReason] = []
         seen_groups: set[str] = set()
 
+        fix_prefix_order = self._fix_reason_grouping
         for feature in referenced_features:
-            grouped_label = grouped_reason_label(feature.feature_name)
+            grouped_label = grouped_reason_label(
+                feature.feature_name, fix_prefix_order=fix_prefix_order
+            )
             if grouped_label is not None and grouped_label in seen_groups:
                 continue
 
@@ -188,7 +221,10 @@ class ExplanationCanonicalizer:
                 [
                     candidate.feature_name
                     for candidate in referenced_features
-                    if grouped_reason_label(candidate.feature_name) == grouped_label
+                    if grouped_reason_label(
+                        candidate.feature_name, fix_prefix_order=fix_prefix_order
+                    )
+                    == grouped_label
                 ]
                 if grouped_label is not None
                 else [feature.feature_name]
@@ -209,7 +245,17 @@ class ExplanationCanonicalizer:
                 break
 
         if explanation_family == "counterfactual" and counterfactual_changes and len(reasons) < self.principal_reason_limit:
+            # Correction counterfactual_reasons_from_changes: the referenced features
+            # already are the changed features, so a change already cited above is
+            # not cited a second time (with the opposite direction). v1 is unchanged.
+            already_cited = (
+                {name for reason in reasons for name in reason.supporting_features}
+                if self.corrections.counterfactual_reasons_from_changes
+                else set()
+            )
             for change in counterfactual_changes:
+                if change.feature_name in already_cited:
+                    continue
                 feature = self._feature_index[change.feature_name]
                 reasons.append(
                     PrincipalReason(

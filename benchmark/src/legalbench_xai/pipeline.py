@@ -7,6 +7,7 @@ from .adapters import adapt_raw_example
 from .adapters.examples import sample_raw_payload
 from .capabilities import detect_capabilities, empirical_readiness
 from .config import ExperimentConfig
+from .corrections import corrections_from_config
 from .datasets.registry import build_dataset_loader
 from .datasets.io import read_csv_header
 from .datasets.prepare import (
@@ -325,7 +326,10 @@ class BenchmarkPipeline:
         loader = build_dataset_loader(self.config, dataset_id)
         bundle = loader.build_bundle(track)
         payload = sample_payload(bundle)
-        canonicalizer = ExplanationCanonicalizer(bundle)
+        canonicalizer = ExplanationCanonicalizer(
+            bundle,
+            corrections=corrections_from_config(self.config),
+        )
         return canonicalizer.canonicalize(payload).to_dict()
 
     def adapt_example(self, dataset_id: str, track: str, explainer_id: str) -> dict:
@@ -356,8 +360,11 @@ class BenchmarkPipeline:
             explainer_id=explainer_id,
             raw_payload=raw_payload,
         )
-        canonical = ExplanationCanonicalizer(bundle).canonicalize(adapted_payload)
-        scores = ExplanationScorer().score(canonical)
+        corrections = corrections_from_config(self.config)
+        canonical = ExplanationCanonicalizer(bundle, corrections=corrections).canonicalize(
+            adapted_payload
+        )
+        scores = ExplanationScorer(corrections=corrections).score(canonical)
         return {
             "raw_payload": raw_payload,
             "adapted_payload": adapted_payload,

@@ -2,6 +2,7 @@ import math
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..corrections import V1, CorrectionOptions
 from ..types import DatasetBundle, TabularDataset
 
 
@@ -38,6 +39,13 @@ class RowPrediction:
 
 
 class HeuristicModel:
+    # Same opt-in switch as VectorizedClassifierModel. The stub has no fitted model, so
+    # its native and original contributions coincide and ranking is unaffected.
+    use_native_ranking: bool = False
+    native_contribution_source: str = "heuristic_stub"
+    # Versioned corrections; the runner sets the instance attribute after fit_model.
+    corrections: CorrectionOptions = V1
+
     def __init__(
         self,
         model_id: str,
@@ -76,13 +84,63 @@ class HeuristicModel:
             feature_contributions=contributions,
         )
 
+    def original_feature_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        """Heuristic per-feature contributions (the same dict predict_row attaches).
+
+        Unitless proxy: taxonomy weight x centred min-max value (numeric) or
+        weight x (category adverse rate - 0.5); positive = toward denial. Not additive
+        to any fitted model score.
+        """
+        return self.predict_row(
+            row=row,
+            instance_id=f"{self.model_id}-proxy",
+        ).feature_contributions
+
+    def ranking_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        """Stub ranking input: always the heuristic (original) contributions."""
+        return self.original_feature_contributions(row)
+
+    def native_feature_contributions(self, row: dict[str, Any]) -> dict[str, float]:
+        """Single-row form of native_feature_contributions_batch (heuristic proxy)."""
+        contributions, _bias = self.native_feature_contributions_batch([row])
+        return contributions[0]
+
+    def native_feature_contributions_batch(
+        self,
+        rows: list[dict[str, Any]],
+    ) -> tuple[list[dict[str, float]], float]:
+        """Stub "native" contributions: the heuristic feature_contributions per row.
+
+        Source "heuristic_stub". Keys: every bundle included feature (0.0 if absent from
+        the profiles). Values are the unitless heuristic proxy (positive = toward
+        denial), NOT log-odds, and bias is 0.0, so sum(values) + bias does not equal
+        raw_score in general.
+        """
+        feature_names = list(self.dataset_bundle.included_feature_names)
+        results: list[dict[str, float]] = []
+        for row in rows:
+            contributions = self.original_feature_contributions(row)
+            results.append(
+                {
+                    feature_name: float(contributions.get(feature_name, 0.0))
+                    for feature_name in feature_names
+                }
+            )
+        return results, 0.0
+
     def recommend_changes(
         self,
         row: dict[str, Any],
         prediction: RowPrediction,
         allow_illegal: bool,
         limit: int = 2,
+        block_nonactionable: bool = False,
     ) -> list[dict[str, Any]]:
+        """Heuristic counterfactual changes (stub backend).
+
+        block_nonactionable (correction cf_respect_nonactionable) treats mutability
+        "N" like "I": skipped whenever immutable features are skipped.
+        """
         ranked = sorted(
             prediction.feature_contributions.items(),
             key=lambda item: item[1],
@@ -94,7 +152,9 @@ class HeuristicModel:
                 continue
             profile = self.profiles[feature_name]
             if not allow_illegal and (
-                profile.mutability == "I" or profile.sensitivity == "S"
+                profile.mutability == "I"
+                or profile.sensitivity == "S"
+                or (block_nonactionable and profile.mutability == "N")
             ):
                 continue
             current_value = row.get(feature_name)

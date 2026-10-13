@@ -11,6 +11,9 @@ LIGHT_EBM=0
 FAST_BUDGET=0
 SUMMARY_ONLY=0
 FULL_VALIDATE=0
+CSLAW_NATIVE=0
+CSLAW_V2=0
+TRACKS="both"
 OUTPUT_NAME="cross_domain_strongest_real_full"
 HMDA_PATH="benchmark/data/real/hmda.csv"
 NY_PATH="benchmark/data/real/ny_courts_pretrial.csv"
@@ -38,6 +41,23 @@ while [[ $# -gt 0 ]]; do
       FULL_VALIDATE=1
       shift
       ;;
+    --cslaw-native)
+      # Opt-in CS&Law instrumentation (native ranking contributions, persisted
+      # explanations/contributions, Reg B reference means). Off by default.
+      CSLAW_NATIVE=1
+      shift
+      ;;
+    --cslaw-v2)
+      # LeXAIBench v2: cslaw.corrections=v2, v2 taxonomy/registry, 24 instances per
+      # group (unless --fast-budget). Supersedes --cslaw-native. Off by default.
+      CSLAW_V2=1
+      shift
+      ;;
+    --tracks)
+      # both (default) | primary | audit
+      TRACKS="$2"
+      shift 2
+      ;;
     --output-name)
       OUTPUT_NAME="$2"
       shift 2
@@ -61,6 +81,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+if [[ ${CSLAW_NATIVE} -eq 1 && ${CSLAW_V2} -eq 1 ]]; then
+  echo "--cslaw-native and --cslaw-v2 are mutually exclusive" >&2
+  exit 1
+fi
+case "${TRACKS}" in
+  both | primary | audit) ;;
+  *)
+    echo "--tracks must be both, primary or audit (got '${TRACKS}')" >&2
+    exit 1
+    ;;
+esac
+
 cd "${REPO_ROOT}"
 
 if [[ ${PREPARE_FIRST} -eq 1 ]]; then
@@ -83,6 +115,9 @@ do
 done
 
 MAX_INSTANCES=12
+if [[ ${CSLAW_V2} -eq 1 ]]; then
+  MAX_INSTANCES=24
+fi
 BOOTSTRAP_RESAMPLES=1000
 if [[ ${FAST_BUDGET} -eq 1 ]]; then
   MAX_INSTANCES=4
@@ -98,13 +133,24 @@ fi
 
 RUNTIME_CONFIG="benchmark/outputs/${OUTPUT_NAME}/runtime_config.json"
 mkdir -p "benchmark/outputs/${OUTPUT_NAME}"
-python "${CONFIG_BUILDER}" \
-  --output "${RUNTIME_CONFIG}" \
-  --hmda-path "${HMDA_PATH}" \
-  --ny-path "${NY_PATH}" \
-  --fda-path "${FDA_PATH}" \
-  --max-instances "${MAX_INSTANCES}" \
+CONFIG_BUILDER_ARGS=(
+  --output "${RUNTIME_CONFIG}"
+  --hmda-path "${HMDA_PATH}"
+  --ny-path "${NY_PATH}"
+  --fda-path "${FDA_PATH}"
+  --max-instances "${MAX_INSTANCES}"
   --bootstrap-resamples "${BOOTSTRAP_RESAMPLES}"
+)
+if [[ ${CSLAW_NATIVE} -eq 1 ]]; then
+  CONFIG_BUILDER_ARGS+=(--cslaw-native)
+fi
+if [[ ${CSLAW_V2} -eq 1 ]]; then
+  CONFIG_BUILDER_ARGS+=(--cslaw-v2)
+fi
+if [[ "${TRACKS}" != "both" ]]; then
+  CONFIG_BUILDER_ARGS+=(--tracks "${TRACKS}")
+fi
+python "${CONFIG_BUILDER}" "${CONFIG_BUILDER_ARGS[@]}"
 
 if [[ ${FULL_VALIDATE} -eq 1 ]]; then
   "${RUNNER}" validate --config "${RUNTIME_CONFIG}"

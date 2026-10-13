@@ -4,8 +4,15 @@ from dataclasses import dataclass
 import os
 from typing import Any
 
+from ..corrections import model_corrections
 from ..models.real import SklearnLogisticRegressionModel, VectorizedClassifierModel
 from ..models.stubs import FeatureProfile, RowPrediction
+from .generators import (
+    counterfactual_change_reasons,
+    random_reason_weights,
+    resolve_null_baseline_options,
+    top_null_baseline_features,
+)
 
 
 @dataclass(slots=True)
@@ -215,6 +222,161 @@ def generate_real_leave_one_out_explanation(
     }
 
 
+def generate_real_random_reasons_explanation(
+    model: VectorizedClassifierModel,
+    row: dict[str, Any],
+    prediction: RowPrediction,
+    seed: int = 0,
+    generation_mode: str = "full",
+) -> dict[str, Any]:
+    """Null baseline "random_reasons": random signed reasons, unrelated to the model.
+
+    Every included feature gets weight = sign * magnitude, sign uniform on {+1, -1} and
+    magnitude ~ U(0, 1), drawn from a private random.Random seeded with
+    zlib.crc32(f"{seed}|{instance_id}|{generation_mode}"); the global random/numpy RNGs
+    and LIME's cached RandomState are never touched. Weights are unitless. The top
+    num_features by |weight| form the explanation (attribution family).
+    Faithfulness reference (null_baseline_options["faithfulness_reference"]): "self" =
+    the baseline's own full weight vector (mirrors SHAP/LIME/LOO self-reference);
+    "native" = model.native_feature_contributions(row) (log-odds of the adverse class).
+    No local_quality_score is emitted, so the scorer uses its 0.5 default.
+    """
+    options = resolve_null_baseline_options(model)
+    weights = random_reason_weights(
+        list(model.dataset_bundle.included_feature_names),
+        seed=seed,
+        instance_id=prediction.instance_id,
+        generation_mode=generation_mode,
+    )
+    return _null_baseline_payload(
+        explainer_id="random_reasons",
+        model=model,
+        row=row,
+        prediction=prediction,
+        weights=weights,
+        options=options,
+        seed=seed,
+        settings={
+            "weight_distribution": "sign_uniform_pm1_times_magnitude_uniform_0_1",
+            "rng": "random.Random(zlib.crc32('{seed}|{instance_id}|{generation_mode}'))",
+            "generation_mode": generation_mode,
+        },
+    )
+
+
+def generate_real_global_ranking_explanation(
+    model: VectorizedClassifierModel,
+    row: dict[str, Any],
+    prediction: RowPrediction,
+) -> dict[str, Any]:
+    """Null baseline "global_ranking": the same canned reasons for every applicant.
+
+    One fixed vector per model (cached on the model object): the mean |native
+    contribution| per included feature over model.background_matrix (the first 64
+    training rows), i.e. mean |log-odds contribution toward the adverse class| for
+    LR/EBM/XGBoost; falls back to original_feature_contributions over the reconstructed
+    background rows if the native decomposition fails. All weights are >= 0, so every
+    listed feature "increases denial". The top num_features by weight form the
+    explanation. Faithfulness reference: "self" = this global vector; "native" =
+    model.native_feature_contributions(row). No local_quality_score is emitted.
+    """
+    options = resolve_null_baseline_options(model)
+    weights, contribution_source, background_rows = _global_ranking_vector(model)
+    return _null_baseline_payload(
+        explainer_id="global_ranking",
+        model=model,
+        row=row,
+        prediction=prediction,
+        weights=weights,
+        options=options,
+        seed=None,
+        settings={
+            "aggregation": "mean_abs_contribution_over_background_rows",
+            "contribution_source": contribution_source,
+            "background_rows": background_rows,
+        },
+    )
+
+
+def _global_ranking_vector(
+    model: VectorizedClassifierModel,
+) -> tuple[dict[str, float], str, int]:
+    cached = getattr(model, "_null_global_ranking_cache", None)
+    if cached is not None:
+        return cached
+    feature_names = list(model.dataset_bundle.included_feature_names)
+    background = model.background_matrix
+    try:
+        contributions, _bias = model.native_feature_contributions_from_matrix(background)
+        contribution_source = str(model.native_contribution_source)
+    except Exception:
+        contributions = [
+            model.original_feature_contributions(background_row)
+            for background_row in model.rows_from_model_matrix(background)
+        ]
+        contribution_source = "original_feature_contributions_fallback"
+    row_count = len(contributions)
+    vector = {
+        feature_name: (
+            sum(abs(float(item.get(feature_name, 0.0))) for item in contributions) / row_count
+            if row_count
+            else 0.0
+        )
+        for feature_name in feature_names
+    }
+    cached = (vector, contribution_source, row_count)
+    model._null_global_ranking_cache = cached
+    return cached
+
+
+def _null_baseline_payload(
+    *,
+    explainer_id: str,
+    model: VectorizedClassifierModel,
+    row: dict[str, Any],
+    prediction: RowPrediction,
+    weights: dict[str, float],
+    options: dict[str, Any],
+    seed: int | None,
+    settings: dict[str, Any],
+) -> dict[str, Any]:
+    top_values = top_null_baseline_features(weights, options["num_features"])
+    if options["faithfulness_reference"] == "native":
+        reference = dict(model.native_feature_contributions(row))
+        reference_source = str(model.native_contribution_source)
+    else:
+        reference = dict(weights)
+        reference_source = "self"
+    return {
+        "instance_id": prediction.instance_id,
+        "model_id": model.model_id,
+        "seed": seed,
+        "prediction": _prediction_block(prediction),
+        "local_explanation": [
+            {
+                "feature_name": feature_name,
+                "weight": weight,
+                "raw_value": row.get(feature_name),
+            }
+            for feature_name, weight in top_values
+        ],
+        "metadata": {
+            "generated_from": model.backend_implementation,
+            "raw_family": "attribution",
+            "null_baseline_settings": {
+                **settings,
+                "num_features": options["num_features"],
+                "faithfulness_reference": options["faithfulness_reference"],
+                "reference_contribution_source": reference_source,
+            },
+            "faithfulness_evidence": {
+                "source": f"null_{explainer_id}",
+                "reference_signed_contributions": reference,
+            },
+        },
+    }
+
+
 def generate_real_anchor_explanation(
     model: VectorizedClassifierModel,
     row: dict[str, Any],
@@ -270,6 +432,7 @@ def generate_real_anchor_explanation(
                 "local_quality_score": precision,
                 "reference_signed_contributions": selected_references,
             },
+            **_native_ranking_metadata(model),
         },
     }
 
@@ -312,12 +475,33 @@ def generate_real_counterfactual_explanation(
             )
         ]
 
-    contributions = model.original_feature_contributions(row)
-    ranked_features = sorted(
-        contributions.items(),
-        key=lambda item: abs(item[1]),
-        reverse=True,
-    )[:6]
+    reason_metadata: dict[str, Any] = {}
+    if model_corrections(model).counterfactual_reasons_from_changes:
+        # Correction counterfactual_reasons_from_changes (v2): cite the features the
+        # selected counterfactuals change (see generators.counterfactual_change_reasons).
+        feature_importances, reason_metadata = counterfactual_change_reasons(
+            changed_feature_sets=[list(candidate.changes) for candidate in selected],
+            flip_flags=[bool(candidate.validity_flip) for candidate in selected],
+            native_contributions=model.native_feature_contributions(row),
+            native_source=str(getattr(model, "native_contribution_source", "unknown")),
+            row=row,
+        )
+    else:
+        # v1: borrowed attribution ranking (identical for DiCE and Wachter).
+        contributions = _ranking_contributions(model, row)
+        ranked_features = sorted(
+            contributions.items(),
+            key=lambda item: abs(item[1]),
+            reverse=True,
+        )[:6]
+        feature_importances = [
+            {
+                "feature_name": feature_name,
+                "weight": weight,
+                "raw_value": row.get(feature_name),
+            }
+            for feature_name, weight in ranked_features
+        ]
     successful = sum(1 for candidate in selected if candidate.validity_flip)
     quality_score = successful / max(1, len(selected))
 
@@ -326,14 +510,7 @@ def generate_real_counterfactual_explanation(
         "model_id": model.model_id,
         "seed": 0 if explainer_id == "dice" else None,
         "prediction": _prediction_block(prediction),
-        "feature_importances": [
-            {
-                "feature_name": feature_name,
-                "weight": weight,
-                "raw_value": row.get(feature_name),
-            }
-            for feature_name, weight in ranked_features
-        ],
+        "feature_importances": feature_importances,
         "counterfactuals": [
             {
                 "changes": candidate.changes,
@@ -357,6 +534,8 @@ def generate_real_counterfactual_explanation(
                 "source": "model_validated_counterfactual_search",
                 "local_quality_score": quality_score,
             },
+            **_native_ranking_metadata(model),
+            **reason_metadata,
         },
     }
 
@@ -372,10 +551,11 @@ def _search_counterfactual_candidates(
     feature_limit: int | None,
 ) -> list[CounterfactualCandidate]:
     profiles = model.heuristic_helper.profiles
+    block_nonactionable = model_corrections(model).cf_respect_nonactionable
     allowed_profiles = {
         feature_name: profile
         for feature_name, profile in profiles.items()
-        if _feature_allowed(profile, explainer_id)
+        if _feature_allowed(profile, explainer_id, block_nonactionable=block_nonactionable)
     }
     if not allowed_profiles:
         return []
@@ -384,7 +564,7 @@ def _search_counterfactual_candidates(
         ranked_features = [
             feature_name
             for feature_name, _weight in sorted(
-                model.original_feature_contributions(row).items(),
+                _ranking_contributions(model, row).items(),
                 key=lambda item: abs(item[1]),
                 reverse=True,
             )
@@ -566,8 +746,21 @@ def _candidate_signature(candidate: CounterfactualCandidate) -> tuple[tuple[str,
     )
 
 
-def _feature_allowed(profile: FeatureProfile, explainer_id: str) -> bool:
+def _feature_allowed(
+    profile: FeatureProfile,
+    explainer_id: str,
+    *,
+    block_nonactionable: bool = False,
+) -> bool:
+    """Whether the counterfactual search may change this feature.
+
+    block_nonactionable (correction cf_respect_nonactionable, v2) also blocks
+    taxonomy mutability "N" (not actionable by the applicant), like "I". v1 blocked
+    only "I" and sensitivity "S" (plus "P" mutability/sensitivity for Wachter).
+    """
     if profile.mutability == "I":
+        return False
+    if block_nonactionable and profile.mutability == "N":
         return False
     if profile.sensitivity == "S":
         return False
@@ -737,6 +930,38 @@ def _normalized_distance(profile: FeatureProfile, from_value: Any, to_value: Any
     return 1.0
 
 
+def _ranking_contributions(
+    model: VectorizedClassifierModel,
+    row: dict[str, Any],
+) -> dict[str, float]:
+    """Per-feature contributions used for explainer-internal feature ranking.
+
+    Calls model.ranking_contributions(row) when the model provides it (native
+    log-odds contributions if model.use_native_ranking is True or correction
+    native_contributions is on, otherwise original_feature_contributions); falls back
+    to original_feature_contributions(row). With use_native_ranking False and V1
+    corrections the result is identical to the baseline input.
+    """
+    ranking = getattr(model, "ranking_contributions", None)
+    if ranking is None:
+        return model.original_feature_contributions(row)
+    return ranking(row)
+
+
+def _native_ranking_metadata(model: VectorizedClassifierModel) -> dict[str, Any]:
+    """Provenance key added only when native ranking is active (empty otherwise)."""
+    active = getattr(model, "native_ranking_active", None)
+    if active is None:
+        active = bool(getattr(model, "use_native_ranking", False))
+    if not active:
+        return {}
+    return {
+        "ranking_contribution_source": str(
+            getattr(model, "native_contribution_source", "unknown")
+        )
+    }
+
+
 def _prediction_block(prediction: RowPrediction) -> dict[str, Any]:
     return {
         "score": prediction.score,
@@ -811,7 +1036,7 @@ def _search_anchor_conditions(
     max_rule_length: int,
 ) -> tuple[list[AnchorCondition], float, float, dict[str, float]]:
     profiles = model.heuristic_helper.profiles
-    contributions = model.original_feature_contributions(row)
+    contributions = _ranking_contributions(model, row)
     ranked_features = [
         feature_name
         for feature_name, _weight in sorted(
