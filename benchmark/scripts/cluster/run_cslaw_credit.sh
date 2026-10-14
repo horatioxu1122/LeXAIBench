@@ -7,7 +7,7 @@
 #        [--force] [--noncredit-bundle DIR]
 #
 #   REPO_ROOT   repository checkout (default: $HOME/explainableAI-CS)
-#   --steps     comma list, run in this fixed order (default: all):
+#   --steps     comma list, run in this fixed order (default: all except limelocal):
 #                 selftest       benchmark/cslaw/selftest.py
 #                 regression     A/B of experiment_cslaw_regression_check.json (no cslaw block):
 #                                baseline commit fb5dadc (git worktree) vs current code, then
@@ -20,6 +20,9 @@
 #                 credit         experiment_cslaw_v2_credit.json (corrections v2, 5 explainers)
 #                 nullbaselines  experiment_cslaw_v2_credit_nullbaselines.json
 #                 shared         experiment_cslaw_v2_credit_shared.json (shared sampling)
+#                 limelocal      experiment_cslaw_v2_credit_lime_local.json (LIME only, perturbations
+#                                sampled around the instance: corrections v2 + lime_sample_around_instance;
+#                                same applicants as credit). Opt-in robustness run, not in the default list
 #                 offline        rescore/rebuild/paper tables on the published v1 bundles
 #                                (benchmark/scripts/run_cslaw_offline_analyses.sh)
 #                 analysis       paper_tables, version_diff (published v1 vs v2), regb_reference,
@@ -39,7 +42,7 @@
 # Outputs (all new directories under benchmark/outputs; published bundles are never written):
 #   cslaw_regression_baseline_<TAG>/ cslaw_regression_new_<TAG>/ cslaw_regression_compare_<TAG>/
 #   cslaw_v2_credit_<TAG>/ cslaw_v2_credit_nullbaselines_<TAG>/ cslaw_v2_credit_shared_<TAG>/
-#   cslaw_offline_<TAG>/ cslaw_analysis_<TAG>/
+#   cslaw_v2_credit_lime_local_<TAG>/ cslaw_offline_<TAG>/ cslaw_analysis_<TAG>/
 # The taxonomy and analysis steps share cslaw_analysis_<TAG>/; each refuses only the
 # entries it writes, so they can run in separate jobs.
 set -euo pipefail
@@ -50,14 +53,16 @@ if [[ $# -gt 0 && "$1" != -* ]]; then
   shift
 fi
 
-ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,offline,analysis"
-STEPS="${ALL_STEPS}"
+# Execution order of every step; limelocal (an opt-in robustness run) is not in the default list.
+ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,limelocal,offline,analysis"
+DEFAULT_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,offline,analysis"
+STEPS="${DEFAULT_STEPS}"
 TAG="r1"
 CSLAW_FORCE=0
 NONCREDIT_BUNDLE=""
 
 usage() {
-  sed -n '2,44p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,47p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [[ $# -gt 0 ]]; do
@@ -139,12 +144,14 @@ METADATA="${REPO_ROOT}/benchmark/metadata"
 CREDIT_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit.json"
 NULLB_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_nullbaselines.json"
 SHARED_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_shared.json"
+LIMELOCAL_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_lime_local.json"
 TAXONOMY_V1="${METADATA}/feature_taxonomy.json"
 TAXONOMY_V2="${METADATA}/feature_taxonomy_v2.json"
 REGISTRY_V2="${METADATA}/dataset_registry_v2.json"
 CREDIT_DIR="${OUTPUTS}/cslaw_v2_credit_${TAG}"
 NULLB_DIR="${OUTPUTS}/cslaw_v2_credit_nullbaselines_${TAG}"
 SHARED_DIR="${OUTPUTS}/cslaw_v2_credit_shared_${TAG}"
+LIMELOCAL_DIR="${OUTPUTS}/cslaw_v2_credit_lime_local_${TAG}"
 NONCREDIT_V2_DIR="${OUTPUTS}/cslaw_v2_noncredit_${TAG}"
 REG_BASE_DIR="${OUTPUTS}/cslaw_regression_baseline_${TAG}"
 REG_NEW_DIR="${OUTPUTS}/cslaw_regression_new_${TAG}"
@@ -190,7 +197,8 @@ if has_step taxonomy; then
     [[ -f "${path}" ]] || cslaw_die "taxonomy step: missing ${path}"
   done
 fi
-for step_config in credit:"${CREDIT_CONFIG}" nullbaselines:"${NULLB_CONFIG}" shared:"${SHARED_CONFIG}"; do
+for step_config in credit:"${CREDIT_CONFIG}" nullbaselines:"${NULLB_CONFIG}" shared:"${SHARED_CONFIG}" \
+  limelocal:"${LIMELOCAL_CONFIG}"; do
   if has_step "${step_config%%:*}"; then
     [[ -f "${step_config#*:}" ]] || cslaw_die "missing config ${step_config#*:}"
     for path in "${TAXONOMY_V2}" "${REGISTRY_V2}"; do
@@ -201,6 +209,7 @@ done
 if has_step credit; then cslaw_guard_target "${CREDIT_DIR}"; fi
 if has_step nullbaselines; then cslaw_guard_target "${NULLB_DIR}"; fi
 if has_step shared; then cslaw_guard_target "${SHARED_DIR}"; fi
+if has_step limelocal; then cslaw_guard_target "${LIMELOCAL_DIR}"; fi
 if has_step offline; then cslaw_guard_target "${OFFLINE_DIR}"; fi
 if has_step analysis; then
   cslaw_guard_name "${ANALYSIS_DIR}"
@@ -287,9 +296,12 @@ step_run() {
   local name="$1"
   local config="$2"
   local out_dir="$3"
+  # Expected corrections for cslaw_check_bundle: v2, or v2_lime_local (v2 plus
+  # lime_sample_around_instance, recorded as corrections_version "custom").
+  local expect="${4:-v2}"
   cslaw_log "step ${name}"
   cslaw_run_benchmark "${REPO_ROOT}/benchmark/src" "${config}" "${out_dir}"
-  cslaw_check_bundle "${out_dir}" 1 v2
+  cslaw_check_bundle "${out_dir}" 1 "${expect}"
 }
 
 step_offline() {
@@ -533,6 +545,7 @@ if has_step taxonomy; then step_taxonomy; fi
 if has_step credit; then step_run credit "${CREDIT_CONFIG}" "${CREDIT_DIR}"; fi
 if has_step nullbaselines; then step_run nullbaselines "${NULLB_CONFIG}" "${NULLB_DIR}"; fi
 if has_step shared; then step_run shared "${SHARED_CONFIG}" "${SHARED_DIR}"; fi
+if has_step limelocal; then step_run limelocal "${LIMELOCAL_CONFIG}" "${LIMELOCAL_DIR}" v2_lime_local; fi
 if has_step offline; then step_offline; fi
 if has_step analysis; then step_analysis; fi
 
@@ -547,6 +560,7 @@ if has_step taxonomy; then echo "  taxonomy:      ${ANALYSIS_DIR}/taxonomy_valid
 if has_step credit; then echo "  credit:        ${CREDIT_DIR}"; fi
 if has_step nullbaselines; then echo "  nullbaselines: ${NULLB_DIR}"; fi
 if has_step shared; then echo "  shared:        ${SHARED_DIR}"; fi
+if has_step limelocal; then echo "  limelocal:     ${LIMELOCAL_DIR}"; fi
 if has_step offline; then echo "  offline:       ${OFFLINE_DIR}"; fi
 if has_step analysis; then echo "  analysis:      ${ANALYSIS_DIR}"; fi
 if [[ ${#SKIPPED[@]} -gt 0 ]]; then

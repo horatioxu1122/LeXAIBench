@@ -181,7 +181,7 @@ cslaw_run_benchmark() {
   cslaw_log "finished in $(( $(date +%s) - start_epoch )) s: ${out_dir}"
 }
 
-# cslaw_check_bundle BUNDLE_DIR EXPECT_CSLAW(0|1) [EXPECT_CORRECTIONS(v2)]
+# cslaw_check_bundle BUNDLE_DIR EXPECT_CSLAW(0|1) [EXPECT_CORRECTIONS(v2|v2_lime_local)]
 # Fails loudly (exit 3) on any stub backend at summary or instance level, and,
 # when EXPECT_CSLAW=1, on a missing payload["cslaw"], a non-native contribution
 # source, or recorded cslaw errors. When EXPECT_CSLAW=0 (no cslaw block), it also
@@ -194,6 +194,10 @@ cslaw_run_benchmark() {
 # keys in every instance, faithfulness scored on the common native reference
 # (evidence_source "model_native_common_reference") in every instance, and a
 # cf_reason_source in every persisted DiCE/Wachter canonical explanation.
+# EXPECT_CORRECTIONS=v2_lime_local runs the same checks, except that the bundle must
+# record corrections_version "custom" with the v2 options plus
+# lime_sample_around_instance=true, and every persisted LIME canonical explanation
+# must carry metadata.lime_settings.sample_around_instance=true.
 cslaw_check_bundle() {
   local bundle="$1"
   local expect_cslaw="${2:-0}"
@@ -313,12 +317,34 @@ else:
             if leaked_v2 <= 20:
                 problems.append(f"{group}: v2-only keys {sorted(set(found))} in a run without a cslaw block")
 
-if expect_corrections == "v2":
+if expect_corrections in ("v2", "v2_lime_local"):
     block = payload.get("cslaw") if isinstance(payload.get("cslaw"), dict) else {}
-    if block.get("corrections_version") != "v2":
+    expected_version = "v2" if expect_corrections == "v2" else "custom"
+    if block.get("corrections_version") != expected_version:
         problems.append(
-            f"payload['cslaw']['corrections_version']={block.get('corrections_version')!r}, expected 'v2'"
+            f"payload['cslaw']['corrections_version']={block.get('corrections_version')!r}, "
+            f"expected {expected_version!r}"
         )
+    if expect_corrections == "v2_lime_local":
+        recorded = block.get("corrections") if isinstance(block.get("corrections"), dict) else {}
+        if recorded.get("lime_sample_around_instance") is not True:
+            problems.append("payload['cslaw']['corrections'].lime_sample_around_instance is not true")
+        lime_not_local = 0
+        for row in payload.get("summary", []):
+            if row.get("explainer_id") != "lime":
+                continue
+            for instance in row.get("instance_results", []) or []:
+                canonical = instance.get("canonical_explanation")
+                if not isinstance(canonical, dict):
+                    continue
+                settings = (canonical.get("metadata") or {}).get("lime_settings") or {}
+                if settings.get("sample_around_instance") is not True:
+                    lime_not_local += 1
+        if lime_not_local:
+            problems.append(
+                f"{lime_not_local} LIME canonical explanations without "
+                "lime_settings.sample_around_instance=true"
+            )
     provenance = block.get("provenance")
     if not isinstance(provenance, dict):
         problems.append("payload['cslaw']['provenance'] is missing (record_data_provenance)")

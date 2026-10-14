@@ -8,7 +8,7 @@ What it does, on SYNTHETIC data only (no dataset is read, no model is fitted, no
 explainer is run):
 
 1. Runs the built-in ``--selftest`` of rescore, paper_tables, compare_bundles,
-   notices and rating_analysis (skip with --skip-script-selftests).
+   denial_reasons, notices and rating_analysis (skip with --skip-script-selftests).
 2. Checks the cross-agent contract: the runner's ``cslaw`` config parsing and
    echo, the null-baseline ids in common/runner/generators, the model API names
    (native_feature_contributions_batch, ranking_contributions, use_native_ranking,
@@ -82,6 +82,7 @@ if BENCHMARK_SRC.is_dir() and str(BENCHMARK_SRC) not in sys.path:
 import common  # noqa: E402
 import common_faithfulness  # noqa: E402
 import compare_bundles  # noqa: E402
+import denial_reasons  # noqa: E402
 import merge_bundles  # noqa: E402
 import multiplicity  # noqa: E402
 import notices  # noqa: E402
@@ -2702,6 +2703,7 @@ def run_script_selftests(checks: Checklist) -> None:
         ("rescore.py --selftest", rescore.run_selftest),
         ("paper_tables.py --selftest", paper_tables.run_selftest),
         ("compare_bundles.py --selftest", compare_bundles.run_selftest),
+        ("denial_reasons.py --selftest", denial_reasons.run_selftest),
         ("notices.py --selftest", notices.selftest),
         ("rating_analysis.py --selftest", rating_analysis.selftest),
     ):

@@ -48,7 +48,7 @@ class VectorizedClassifierModel:
         self.threshold = threshold
         self._shap_explainer: Any = None
         self._shap_mode: str | None = None
-        self._lime_explainers: dict[int, Any] = {}
+        self._lime_explainers: dict[Any, Any] = {}
 
     @property
     def shap_mode(self) -> str | None:
@@ -312,12 +312,20 @@ class VectorizedClassifierModel:
         return self._shap_explainer
 
     def get_lime_explainer(self, seed: int = 0) -> Any:
-        if seed in self._lime_explainers:
-            return self._lime_explainers[seed]
+        # Correction option lime_sample_around_instance (robustness re-run only):
+        # perturbations are drawn around the explained row. Without it the call
+        # (and the cache key) is exactly the published one.
+        sample_around_instance = bool(model_corrections(self).lime_sample_around_instance)
+        cache_key: Any = (seed, "sample_around_instance") if sample_around_instance else seed
+        if cache_key in self._lime_explainers:
+            return self._lime_explainers[cache_key]
 
         from lime.lime_tabular import LimeTabularExplainer
 
         kernel_width = 0.75 * max(1, len(self.encoded_feature_names)) ** 0.5
+        extra_kwargs: dict[str, Any] = (
+            {"sample_around_instance": True} if sample_around_instance else {}
+        )
         explainer = LimeTabularExplainer(
             training_data=self.background_matrix,
             feature_names=self.encoded_feature_names,
@@ -329,8 +337,9 @@ class VectorizedClassifierModel:
             kernel_width=kernel_width,
             discretize_continuous=False,
             random_state=seed,
+            **extra_kwargs,
         )
-        self._lime_explainers[seed] = explainer
+        self._lime_explainers[cache_key] = explainer
         return explainer
 
     def _feature_dict(self, row: dict[str, Any]) -> dict[str, Any]:

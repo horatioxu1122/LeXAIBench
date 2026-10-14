@@ -41,6 +41,16 @@ persist_score_subcomponents
     decision_sensitivity_visibility) so family-neutral variants can be computed.
 record_data_provenance
     Record SHA-256 hashes of the dataset and metadata files used by the run.
+
+Robustness options outside the v2 preset (off in both presets; switch on with
+``{"preset": "v2", "<option>": true}``):
+
+lime_sample_around_instance
+    Pass ``sample_around_instance=True`` to LimeTabularExplainer, so LIME draws its
+    perturbations around the explained applicant instead of around the training
+    mean (models/real.py get_lime_explainer). Used for one LIME-only robustness
+    re-run (experiment_cslaw_v2_credit_lime_local.json). ``to_dict()`` records the
+    option only when it is on, so bundles of runs without it are unchanged.
 """
 
 from __future__ import annotations
@@ -49,6 +59,9 @@ from dataclasses import asdict, dataclass, fields, replace
 from typing import Any
 
 SAMPLING_SELECTIONS = ("boundary_nearest", "stratified_random")
+# Options that to_dict() leaves out while they are False (robustness options added
+# after the v2 bundles were specified).
+_OMIT_WHEN_DEFAULT = ("lime_sample_around_instance",)
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,6 +77,8 @@ class CorrectionOptions:
     sampling_seed: int = 42
     persist_score_subcomponents: bool = False
     record_data_provenance: bool = False
+    # Robustness option, not part of any preset (see the module docstring).
+    lime_sample_around_instance: bool = False
 
     def __post_init__(self) -> None:
         if self.sampling_selection not in SAMPLING_SELECTIONS:
@@ -79,7 +94,13 @@ class CorrectionOptions:
         return self == V1
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        data = asdict(self)
+        # Recorded only when on: the v1/v2 option dicts (and the bundles that echo
+        # them, and cslaw/common.py's mirror of the presets) stay as before.
+        for name in _OMIT_WHEN_DEFAULT:
+            if data.get(name) is False:
+                data.pop(name)
+        return data
 
 
 V1 = CorrectionOptions()

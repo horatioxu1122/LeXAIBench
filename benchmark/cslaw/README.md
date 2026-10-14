@@ -96,12 +96,76 @@ cluster scripts fail a run if it appears).
 | `common_faithfulness.py` | Scores every explainer, null baselines included, against the native contributions: mass coverage (also relative to the best achievable with as many features), direction agreement, overlap with the top adverse features, where counterfactual changes land. For v2 bundles it checks that the pipeline's coverage equals the native mass coverage (`pipeline_coverage_abs_diff`). | one or more bundles | `common_faithfulness_*.csv`, `common_faithfulness_summary.md` | v1 built-in faithfulness is self-referential; v2's common reference is wired correctly; null baselines are exposed |
 | `notices.py` | Renders about 48 blinded statements of reasons for expert rating; per-bundle taxonomy from provenance; key records `corrections_version` and `cf_reason_source`. | bundle with canonical explanations | `notices_for_rating.csv/.md`, `notices_key.csv`, `ratings_template.csv`, `notices_design.md` | input to the expert-rating study |
 | `rating_rubric.md` | Rating items R1-R5, procedure, pre-specified analysis plan. The legal citations need sign-off by the authors. | - | - | - |
+| `denial_reasons.py` | Denial-direction correction of the principal reasons (see [Denial-only reasons](#denial-only-reasons-and-the-lime-sampling-check)): keeps the referenced features that increase the denial, rebuilds the reasons with the canonicalizer, re-scores, and excludes explanations left without a reason from the quality metrics. | bundle with canonical explanations (`--config` or the bundle's `runtime_config.json` for the taxonomy) | `<out>/results.json` (then `rebuild-artifacts`), `denial_reasons_summary.md` | reasons on a notice must be reasons for the denial (12 CFR 1002.9(b)(2)) |
 | `rating_analysis.py` | Rater agreement, consensus ratings, pre-specified Spearman correlations (Holm-adjusted) between ratings and benchmark metrics. | filled ratings, `notices_key.csv`, optional bundles | `ratings_report.md` and CSVs | whether the metrics track legal judgments |
 
 `regb_reference.py` also hosts the shared helpers (bundle loading, seeded
 stratified bootstrap, by-construction flags, reason units, the bundle settings
 line) used by `multiplicity.py`, `proxy_substitution.py`,
 `common_faithfulness.py` and `paper_tables.py`.
+
+## Denial-only reasons and the LIME sampling check
+
+Two follow-ups to the v2 runs. Neither changes a v1 or v2 run.
+
+**Denial-only principal reasons (`denial_reasons.py`, offline).** Every
+explainer ranks features by |weight|, so a canonical principal reason can be a
+factor with `signed_direction = "decreases_denial"`, one that favoured approval.
+Regulation B requires the specific reasons for the adverse action
+(12 CFR 1002.9(b)(2)), and the methods in comment 9(b)(2)-5 count only factors on
+which the applicant fell short. The script keeps the referenced features with
+`signed_direction = "increases_denial"` (re-ranked), rebuilds the principal
+reasons with `ExplanationCanonicalizer._build_principal_reasons` (cap 4, temporal
+grouping per the bundle's `reason_grouping_fix`), and re-scores with
+`ExplanationScorer` under the bundle's corrections. Counterfactual changes stay
+as recourse, but the "changing X may improve the outcome" reasons are not
+rebuilt, since they favour approval. Stability and faithfulness evidence are kept;
+faithfulness is recomputed on the kept features against the same reference. Each
+instance gets `explanation_produced` and `denial_filter` (reasons before and after,
+approval-favouring reasons dropped). Instances left without a reason (all reasons
+favoured approval, or counterfactual `no_valid_change`) move to
+`denial_filter_unproduced_instances` in their summary row. The row's `mean_*`,
+`evaluated_rows` and `instance_results` then cover produced explanations only
+(`runner._aggregate_group`), with `cslaw_produced_rate` and
+`cslaw_evaluated_rows_all` added. A row without produced explanations keeps
+`mean_* = None`, which `rebuild-artifacts` skips. An explainer without any
+produced explanation is removed and listed in
+`payload["denial_reasons"]["dropped_configurations"]`.
+
+The canonicalizer is rebuilt offline from the experiment config, with its
+`registry` paths set to the taxonomy and registry recorded in the bundle's
+provenance (SHA-256 checked), via `build_dataset_loader(...).build_bundle(track)`,
+which reads no data. Before filtering, the script reproduces every persisted
+reason list and score from the unfiltered explanation and stops on any
+difference (`--allow-inconsistent` turns that into a warning). Limitation: only
+the explainer's top referenced features are persisted (6 for SHAP, LIME and the
+null baselines), so a denial-only notice can have fewer than four reasons even
+when the model has more denial-increasing factors.
+
+```bash
+PYTHONPATH=benchmark/src .venv/bin/python benchmark/cslaw/denial_reasons.py \
+  --bundle benchmark/outputs/cslaw_v2_credit_r1 \
+  --config benchmark/configs/experiment_cslaw_v2_credit.json \
+  --out-dir benchmark/outputs/cslaw_analysis_r1/denial_reasons/credit
+# then the rebuild-artifacts command the script prints
+```
+
+**LIME sampled around the applicant (`limelocal`, opt-in cluster step).** By
+default `LimeTabularExplainer` perturbs around the training mean. The correction
+option `lime_sample_around_instance` (not part of the v2 preset; recorded in
+`payload["cslaw"]["corrections"]` and in each LIME `lime_settings` only when on)
+passes `sample_around_instance=True`.
+`experiment_cslaw_v2_credit_lime_local.json` runs LIME only under
+`{"preset": "v2", "lime_sample_around_instance": true}`. v2 sampling is seeded per
+dataset-track-model and does not depend on the explainer list, so its applicants
+and `instance_id`s match `cslaw_v2_credit_<tag>`. The bundle records
+`corrections_version = "custom"`. The analysis scripts still read it as v2,
+because `common.corrections_version` compares only the v1/v2 option keys.
+
+```bash
+bash benchmark/scripts/cluster/run_cslaw_credit.sh $REPO --steps limelocal --tag r1
+# -> benchmark/outputs/cslaw_v2_credit_lime_local_r1 (checked with cslaw_check_bundle ... v2_lime_local)
+```
 
 ### Older bundles
 
@@ -237,6 +301,7 @@ git add benchmark/src/legalbench_xai benchmark/cslaw benchmark/metadata benchmar
   benchmark/configs/experiment_cslaw_v2_credit.json \
   benchmark/configs/experiment_cslaw_v2_credit_nullbaselines.json \
   benchmark/configs/experiment_cslaw_v2_credit_shared.json \
+  benchmark/configs/experiment_cslaw_v2_credit_lime_local.json \
   benchmark/configs/experiment_cslaw_regression_check.json
 git status --short   # nothing the run needs may remain untracked ("??")
 git commit -m "LeXAIBench v2: versioned corrections, v2 taxonomy, sharded non-credit run, analyses"
@@ -347,6 +412,7 @@ logs, `GIT_COMMIT`, and the bundle checks.
 | `credit` | `$PY -m legalbench_xai run-demo-benchmark --config benchmark/configs/experiment_cslaw_v2_credit.json --output-dir benchmark/outputs/cslaw_v2_credit_r1 --write --summary-only` (corrections v2, 5 explainers, 24 cases per configuration) | `cslaw_v2_credit_r1/` |
 | `nullbaselines` | same with `experiment_cslaw_v2_credit_nullbaselines.json` (`random_reasons`, `global_ranking`; same corrections and sampling, so instance ids match `credit`) | `cslaw_v2_credit_nullbaselines_r1/` |
 | `shared` | same with `experiment_cslaw_v2_credit_shared.json` (shared sampling, scope `models_and_tracks`) | `cslaw_v2_credit_shared_r1/` |
+| `limelocal` (opt-in, not in the default list) | same with `experiment_cslaw_v2_credit_lime_local.json` (LIME only, corrections v2 + `lime_sample_around_instance`; same applicants as `credit`); bundle check `v2_lime_local` (corrections_version `custom`, the option recorded, `lime_settings.sample_around_instance` in every LIME explanation) | `cslaw_v2_credit_lime_local_r1/` |
 | `offline` | on the published v1 bundles: `rescore.py --variant V` for `css_no_dsv comp_no_recourse_simplicity fid_no_quality all_neutral` + `rebuild-artifacts`; `rescore.py --sweep-dsv ...`; `paper_tables.py` | `cslaw_offline_r1/` |
 | `analysis` | `paper_tables.py --bundle credit=cslaw_v2_credit_r1 --bundle noncredit=<cslaw_v2_noncredit_r1 or published> --bundle nullbaselines=cslaw_v2_credit_nullbaselines_r1 --robustness-root benchmark/outputs --rescored-root <offline>/rescored --sweep-csv ...`; `version_diff.py --v1 <published credit> --v2 cslaw_v2_credit_r1`; `regb_reference.py` on credit and shared; `common_faithfulness.py` on credit + null baselines and on shared; `multiplicity.py` and `proxy_substitution.py` on shared; `notices.py --bundle <credit> --n 48 --seed 7`; `rescore.py --variant v2_legal_functions` on credit + `rebuild-artifacts`. For a v2 non-credit bundle also `regb_reference.py`, `common_faithfulness.py`, `notices.py` (HMDA), `version_diff.py --v1 <published non-credit>` and `v2_legal_functions` | `cslaw_analysis_r1/{paper_tables,version_diff,regb_reference_credit,regb_reference_shared,common_faithfulness,common_faithfulness_shared,multiplicity,proxy_substitution,notices,rescored_v2/credit/v2_legal_functions}/` plus the `*_noncredit` counterparts |
 
@@ -466,6 +532,7 @@ PY
 ```bash
 PYTHONPATH=benchmark/src .venv/bin/python benchmark/cslaw/selftest.py   # runs all of the below, plus more
 PYTHONPATH=benchmark/src .venv/bin/python benchmark/cslaw/rescore.py --selftest
+PYTHONPATH=benchmark/src .venv/bin/python benchmark/cslaw/denial_reasons.py --selftest
 PYTHONPATH=benchmark/src .venv/bin/python benchmark/cslaw/paper_tables.py --selftest
 .venv/bin/python benchmark/cslaw/compare_bundles.py --selftest
 .venv/bin/python benchmark/cslaw/notices.py --selftest

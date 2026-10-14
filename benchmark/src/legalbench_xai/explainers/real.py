@@ -117,6 +117,15 @@ def generate_real_lime_explanation(
         num_samples = max(100, int(configured_num_samples))
     except ValueError:
         num_samples = 5000
+    lime_settings: dict[str, Any] = {
+        "kernel_width": kernel_width,
+        "num_samples": num_samples,
+        "discretize_continuous": False,
+        "background_rows": int(len(model.background_matrix)),
+    }
+    if model_corrections(model).lime_sample_around_instance:
+        # Recorded only when on, so the published LIME metadata is unchanged.
+        lime_settings["sample_around_instance"] = True
     explanation = explainer.explain_instance(
         data_row=vector[0],
         predict_fn=model.classifier.predict_proba,
@@ -154,12 +163,7 @@ def generate_real_lime_explanation(
         "metadata": {
             "generated_from": model.backend_implementation,
             "raw_family": "attribution",
-            "lime_settings": {
-                "kernel_width": kernel_width,
-                "num_samples": num_samples,
-                "discretize_continuous": False,
-                "background_rows": int(len(model.background_matrix)),
-            },
+            "lime_settings": lime_settings,
             "faithfulness_evidence": {
                 "source": "real_lime_local_surrogate",
                 "local_quality_score": _clipped_quality_score(explanation.score),
