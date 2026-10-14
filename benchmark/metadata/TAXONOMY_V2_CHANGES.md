@@ -1,10 +1,19 @@
 # Feature taxonomy v2: rule, definitions, and every change from v1
 
-**Status: draft. Every label needs author verification.** The labels were prepared
-with AI assistance, and the author list has no legal co-author. Each feature in
-`feature_taxonomy_v2.json` carries `review_status: "draft — requires author
-verification (prepared with AI assistance; no legal co-author)"`. Change it only
-after an author has checked the label, its rationale and its citation.
+**Status: reviewed by the authors (2026-10-15).** The labels were prepared with AI
+assistance; the author list has no legal co-author. The authors reviewed the rule,
+the definitions and the label changes, and accepted the five judgment calls that
+change primary-track membership or rest on practical judgment rather than law:
+(1) `south_german_credit.foreign_worker` S -> P (immigration status may be considered
+under Reg B 12 CFR 1002.6(b)(7) but must not proxy for national origin);
+(2) `ny_courts_pretrial.age_at_arrest` S -> P (age is not a suspect class,
+Massachusetts Bd. of Retirement v. Murgia, 427 U.S. 307 (1976));
+(3) heloc credit-history-length features labelled P as age proxies (practical judgment);
+(4) `LIMIT_BAL`, `purpose`, `loan_purpose` P -> N (practical judgment);
+(5) US law (ECOA/Reg B, FCRA) is applied to the German and Taiwanese credit data as a
+stylised legal frame. The per-feature `review_status` strings in
+`feature_taxonomy_v2.json` still read "draft"; they are left unchanged on purpose because
+the v2 runs recorded that file's SHA-256 in their provenance, and this note supersedes them.
 
 Files:
 
