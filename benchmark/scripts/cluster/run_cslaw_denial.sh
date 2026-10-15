@@ -75,6 +75,9 @@ run regb_credit "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/cred
 [[ -f "${DEST}/lime_local/results.json" ]] && run regb_lime_local "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/lime_local" --out-dir "${A}/regb_lime_local"
 run multiplicity "${PY}" benchmark/cslaw/multiplicity.py --bundle "${DEST}/shared" --out-dir "${A}/multiplicity"
 run proxy "${PY}" benchmark/cslaw/proxy_substitution.py --bundle "${DEST}/shared" --out-dir "${A}/proxy_substitution"
+DISC_ARGS=(--bundle "${DEST}/credit")
+[[ -f "${DEST}/noncredit/results.json" ]] && DISC_ARGS+=(--bundle "${DEST}/noncredit")
+run track_disclosure "${PY}" benchmark/cslaw/track_disclosure.py "${DISC_ARGS[@]}" --out-dir "${A}/track_disclosure"
 run common_faithfulness "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines" --out-dir "${A}/common_faithfulness"
 run notices "${PY}" benchmark/cslaw/notices.py --bundle "${DEST}/credit" --n 48 --seed 7 --out-dir "${A}/notices" "${FORCE_ARG[@]}"
 run regb_nullbaselines "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/nullbaselines" --out-dir "${A}/regb_nullbaselines"
