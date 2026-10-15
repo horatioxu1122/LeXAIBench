@@ -77,5 +77,34 @@ run multiplicity "${PY}" benchmark/cslaw/multiplicity.py --bundle "${DEST}/share
 run proxy "${PY}" benchmark/cslaw/proxy_substitution.py --bundle "${DEST}/shared" --out-dir "${A}/proxy_substitution"
 run common_faithfulness "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines" --out-dir "${A}/common_faithfulness"
 run notices "${PY}" benchmark/cslaw/notices.py --bundle "${DEST}/credit" --n 48 --seed 7 --out-dir "${A}/notices"
+run regb_nullbaselines "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/nullbaselines" --out-dir "${A}/regb_nullbaselines"
+[[ -f "${DEST}/lime_local/results.json" ]] && run common_faithfulness_lime_local "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_local" --out-dir "${A}/common_faithfulness_lime_local"
+
+# Specificity across applicants (E3) and valid recourse (E6).
+SPEC_ARGS=(--bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines")
+for name in noncredit lime_local; do
+  [[ -f "${DEST}/${name}/results.json" ]] && SPEC_ARGS+=(--bundle "${DEST}/${name}")
+done
+run specificity "${PY}" benchmark/cslaw/notice_specificity.py "${SPEC_ARGS[@]}" --out-dir "${A}/specificity"
+
+# Additivity of the persisted native contributions (reads bundles only).
+ADD_ARGS=()
+for b in "${OUT}/cslaw_v2_credit_${TAG}" "${OUT}/cslaw_v2_credit_shared_${TAG}" "${OUT}/cslaw_v2_noncredit_${TAG}"; do
+  [[ -f "${b}/results.json" ]] && ADD_ARGS+=(--bundle "${b}")
+done
+run additivity "${PY}" benchmark/cslaw/check_additivity.py "${ADD_ARGS[@]}" --out-dir "${A}/additivity"
+
+# Number of reasons k (offline).
+for k in 2 3 5; do
+  run "regb_k${k}" "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/credit" --k "${k}" --n-boot 500 --out-dir "${A}/sweep_k/regb_k${k}"
+  run "mult_k${k}" "${PY}" benchmark/cslaw/multiplicity.py --bundle "${DEST}/shared" --k "${k}" --n-boot 500 --out-dir "${A}/sweep_k/mult_k${k}"
+done
+
+# Marginal applicant reference band (refits the credit models; a few minutes).
+run band_sweep "${PY}" benchmark/cslaw/regb_band_sweep.py \
+  --config benchmark/configs/experiment_cslaw_v2_credit.json \
+  --source-bundle "${OUT}/cslaw_v2_credit_${TAG}" \
+  --notice-bundle "${DEST}/credit" \
+  --out-dir "${A}/band_sweep"
 
 echo "[denial] done: ${DEST}"
