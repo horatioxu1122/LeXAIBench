@@ -110,4 +110,14 @@ run band_sweep "${PY}" benchmark/cslaw/regb_band_sweep.py \
   --notice-bundle "${DEST}/credit" \
   --out-dir "${A}/band_sweep"
 
+# LaTeX tables and worked notices for the paper's appendices (reads the outputs above).
+run appendix_tables "${PY}" benchmark/cslaw/appendix_tables.py --denial-dir "${DEST}" \
+  --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/appendix_generated"
+
+# Figures as vector PDFs: the Section 5 figures with their plotted values as CSV (reads the outputs above),
+# and the Section 3 schematic (reads no data).
+run paper_figures "${PY}" benchmark/cslaw/paper_figures.py --denial-dir "${DEST}" \
+  --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/figures"
+run paper_schematic "${PY}" benchmark/cslaw/paper_schematic.py --out-dir "${A}/figures"
+
 echo "[denial] done: ${DEST}"
