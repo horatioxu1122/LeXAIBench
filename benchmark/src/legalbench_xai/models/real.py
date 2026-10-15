@@ -588,6 +588,7 @@ def fit_sklearn_logistic_regression_model(
     dataset_bundle: DatasetBundle,
     table: TabularDataset,
     threshold: float = 0.5,
+    random_state: int = 0,
 ) -> SklearnLogisticRegressionModel:
     from sklearn.linear_model import LogisticRegression
     from sklearn.preprocessing import StandardScaler
@@ -600,7 +601,7 @@ def fit_sklearn_logistic_regression_model(
     background_matrix = scaler.transform(raw_background_matrix)
     classifier = LogisticRegression(
         max_iter=4000,
-        random_state=0,
+        random_state=random_state,
         solver="lbfgs",
     )
     classifier.fit(scaled_matrix, labels)
@@ -631,6 +632,7 @@ def fit_xgboost_model(
     dataset_bundle: DatasetBundle,
     table: TabularDataset,
     threshold: float = 0.5,
+    random_state: int = 0,
 ) -> XGBoostClassifierModel:
     from xgboost import XGBClassifier
 
@@ -645,7 +647,7 @@ def fit_xgboost_model(
         colsample_bytree=1.0,
         objective="binary:logistic",
         eval_metric="logloss",
-        random_state=0,
+        random_state=random_state,
         verbosity=0,
         n_jobs=1,
     )
@@ -676,6 +678,7 @@ def fit_ebm_model(
     dataset_bundle: DatasetBundle,
     table: TabularDataset,
     threshold: float = 0.5,
+    random_state: int = 0,
 ) -> EBMClassifierModel:
     from interpret.glassbox import ExplainableBoostingClassifier
 
@@ -689,7 +692,7 @@ def fit_ebm_model(
         interactions=interactions,
         max_bins=max_bins,
         max_rounds=max_rounds,
-        random_state=0,
+        random_state=random_state,
         n_jobs=1,
     )
     classifier.fit(matrix, labels)

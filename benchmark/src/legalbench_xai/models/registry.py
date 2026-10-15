@@ -51,7 +51,10 @@ def fit_model(
     dataset_bundle: DatasetBundle,
     table: TabularDataset,
     threshold: float = 0.5,
+    random_state: int = 0,
 ) -> tuple[Any, ModelBackendSelection]:
+    """Fit a model. random_state seeds the estimator (0 in every published run); XGBoost with subsample=1.0
+    and logistic regression with lbfgs give the same model for any seed, the EBM's bagging does not."""
     selection = select_model_backend(model_id)
     if selection.backend == "real" and model_id == "logistic_regression":
         try:
@@ -59,6 +62,7 @@ def fit_model(
                 dataset_bundle=dataset_bundle,
                 table=table,
                 threshold=threshold,
+                random_state=random_state,
             )
             return model, selection
         except Exception as exc:
@@ -77,6 +81,7 @@ def fit_model(
                 dataset_bundle=dataset_bundle,
                 table=table,
                 threshold=threshold,
+                random_state=random_state,
             )
             return model, selection
         except Exception as exc:
@@ -95,6 +100,7 @@ def fit_model(
                 dataset_bundle=dataset_bundle,
                 table=table,
                 threshold=threshold,
+                random_state=random_state,
             )
             return model, selection
         except Exception as exc:

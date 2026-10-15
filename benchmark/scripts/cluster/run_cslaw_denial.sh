@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Denial-direction correction (benchmark/cslaw/denial_reasons.py) of the v2 bundles,
-# then every CS&Law analysis on the corrected bundles. Offline: no model fitting.
+# then every CS&Law analysis on the corrected bundles. Offline except band_sweep and within_class,
+# which refit the credit models.
 #
 # Usage:
 #   bash benchmark/scripts/cluster/run_cslaw_denial.sh [REPO_ROOT] [--tag TAG] [--force]
@@ -119,5 +120,15 @@ run appendix_tables "${PY}" benchmark/cslaw/appendix_tables.py --denial-dir "${D
 run paper_figures "${PY}" benchmark/cslaw/paper_figures.py --denial-dir "${DEST}" \
   --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/figures"
 run paper_schematic "${PY}" benchmark/cslaw/paper_schematic.py --out-dir "${A}/figures"
+
+# First-reason variation within a model class (E4 baseline). Refits the shared-run credit models on bootstrap
+# resamples and, for the boosting machine, other seeds (about an hour). Runs last, and a failure does not stop the
+# pipeline: the tables and figures above do not read its outputs.
+echo "[denial] analysis: within_class"
+env PYTHONPATH=benchmark/src "${PY}" benchmark/cslaw/regb_within_class.py \
+  --config benchmark/configs/experiment_cslaw_v2_credit_shared.json \
+  --shared-bundle "${OUT}/cslaw_v2_credit_shared_${TAG}" \
+  --out-dir "${A}/within_class" > "${A}/log_within_class.txt" 2>&1 \
+  || echo "[denial] within_class failed (see ${A}/log_within_class.txt); continuing" >&2
 
 echo "[denial] done: ${DEST}"
