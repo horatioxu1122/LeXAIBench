@@ -465,9 +465,9 @@ def band_sweep(analysis: Path, out_dir: Path) -> None:
 def lime_sampling(analysis: Path, denial_dir: Path, sources: dict, out_dir: Path) -> None:
     """LIME's main runs against the robustness runs: sampling around the applicant (lime_local) and, when present,
     the library's default discretized mode (lime_default)."""
-    runs = [("credit", "regb_credit", "Main runs"), ("lime_local", "regb_lime_local", "Around the applicant")]
+    runs = [("credit", "regb_credit", "Main runs"), ("lime_local", "regb_lime_local", "Local sampling")]
     if (denial_dir / "lime_default" / "results.json").is_file():
-        runs.append(("lime_default", "regb_lime_default", "Discretized"))
+        runs.append(("lime_default", "regb_lime_default", "Default mode"))
     marked = {name: parse_denial_summary(denial_dir / name / "denial_reasons_summary.md").get(("__pooled__", "lime"))
               for name, _sub, _label in runs}
     before = {name: pooled_direction(model_direction(sources.get(name) or {}), "lime") for name, _sub, _label in runs}

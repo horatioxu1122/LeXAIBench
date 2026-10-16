@@ -7,7 +7,7 @@
 #   bash benchmark/scripts/cluster/run_cslaw_lime_default.sh [REPO_ROOT] [--tag TAG]
 #
 # Writes cslaw_denial_<TAG>/lime_default/ (direction rule) and, under cslaw_denial_<TAG>/analysis/,
-# regb_lime_default/ and common_faithfulness_lime_default/ (new), and reruns specificity/,
+# regb_lime_default/ and common_faithfulness_lime_default/ (new), and reruns canned_paired/, specificity/,
 # appendix_generated/ and figures/ with the new bundle included (every other table and figure is unchanged).
 set -euo pipefail
 
@@ -51,6 +51,7 @@ run denial_lime_default "${PY}" benchmark/cslaw/denial_reasons.py --bundle "${SO
 run regb_lime_default "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/lime_default" --out-dir "${A}/regb_lime_default"
 run common_faithfulness_lime_default "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_default" \
   --out-dir "${A}/common_faithfulness_lime_default"
+run canned_paired "${PY}" benchmark/cslaw/canned_paired.py --analysis-dir "${A}" --out-dir "${A}/canned_paired"
 
 # Same specificity call as run_cslaw_denial.sh, now with lime_default.
 SPEC_ARGS=(--bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines")

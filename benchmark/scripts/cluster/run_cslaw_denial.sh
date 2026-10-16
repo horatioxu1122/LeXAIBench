@@ -86,6 +86,8 @@ run track_disclosure "${PY}" benchmark/cslaw/track_disclosure.py "${DISC_ARGS[@]
 run common_faithfulness "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines" --out-dir "${A}/common_faithfulness"
 run notices "${PY}" benchmark/cslaw/notices.py --bundle "${DEST}/credit" --n 48 --seed 7 --out-dir "${A}/notices" "${FORCE_ARG[@]}"
 run regb_nullbaselines "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/nullbaselines" --out-dir "${A}/regb_nullbaselines"
+# E2 pass rule: each method against the canned notice on the same applicants (reads the regb_* outputs above).
+run canned_paired "${PY}" benchmark/cslaw/canned_paired.py --analysis-dir "${A}" --out-dir "${A}/canned_paired"
 [[ -f "${DEST}/lime_local/results.json" ]] && run common_faithfulness_lime_local "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_local" --out-dir "${A}/common_faithfulness_lime_local"
 [[ -f "${DEST}/lime_default/results.json" ]] && run common_faithfulness_lime_default "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_default" --out-dir "${A}/common_faithfulness_lime_default"
 
