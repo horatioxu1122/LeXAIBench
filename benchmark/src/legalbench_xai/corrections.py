@@ -51,6 +51,13 @@ lime_sample_around_instance
     mean (models/real.py get_lime_explainer). Used for one LIME-only robustness
     re-run (experiment_cslaw_v2_credit_lime_local.json). ``to_dict()`` records the
     option only when it is on, so bundles of runs without it are unchanged.
+lime_discretize_continuous
+    Pass ``discretize_continuous=True`` (the library default, quartile bins) to
+    LimeTabularExplainer instead of False, so each weight is the effect of the
+    applicant's own bin rather than a slope. Used for one LIME-only robustness
+    re-run (experiment_cslaw_v2_credit_lime_default.json); recorded only when on.
+    lime 0.2.0.1 ignores sample_around_instance in this mode, so the two options
+    cannot be combined.
 """
 
 from __future__ import annotations
@@ -61,7 +68,7 @@ from typing import Any
 SAMPLING_SELECTIONS = ("boundary_nearest", "stratified_random")
 # Options that to_dict() leaves out while they are False (robustness options added
 # after the v2 bundles were specified).
-_OMIT_WHEN_DEFAULT = ("lime_sample_around_instance",)
+_OMIT_WHEN_DEFAULT = ("lime_sample_around_instance", "lime_discretize_continuous")
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,8 +86,14 @@ class CorrectionOptions:
     record_data_provenance: bool = False
     # Robustness option, not part of any preset (see the module docstring).
     lime_sample_around_instance: bool = False
+    lime_discretize_continuous: bool = False
 
     def __post_init__(self) -> None:
+        if self.lime_sample_around_instance and self.lime_discretize_continuous:
+            raise ValueError(
+                "cslaw.corrections: lime_sample_around_instance has no effect with lime_discretize_continuous "
+                "in lime 0.2.0.1; switch on at most one"
+            )
         if self.sampling_selection not in SAMPLING_SELECTIONS:
             raise ValueError(
                 f"cslaw.corrections.sampling_selection must be one of {SAMPLING_SELECTIONS}, "

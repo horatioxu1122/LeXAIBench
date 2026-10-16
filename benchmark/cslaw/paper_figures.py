@@ -13,7 +13,9 @@ Each figure defends one claim of Section 5:
                             an explanation; the comparison across applicants does.
   fig_model_choice          The choice between two equally accurate models
                             changes the first reason more often than the choice
-                            between the two selection methods of comment 9(b)(2)-5.
+                            between the two selection methods of comment 9(b)(2)-5,
+                            and more often than refitting one model class on
+                            another resample of its training data.
 
 Direction (E1) is counted by the model's own sign, as in appendix_tables.py: a
 reason favors approval when the mean native contribution of the features it
@@ -21,8 +23,10 @@ names is negative. Intervals are 95% percentile intervals from 2,000 bootstrap
 resamples (seed 42). E1 and E2 resample notices within each combination of
 dataset and version. E4 uses the applicants explained under all three models;
 each appears in both versions, so it resamples applicants within dataset and
-keeps both versions of an applicant together. The E3 intervals are read from
-notice_specificity.py's output.
+keeps both versions of an applicant together. The E4 refits come from
+regb_within_class.py's comparisons (analysis/within_class/), and their
+intervals also resample the refits; without those outputs Figure 4 is drawn
+without them. The E3 intervals are read from notice_specificity.py's output.
 
 If audit_panel_alignment.py (from the figure QA tools) is importable and
 --qa-dir is given, each figure's panel geometry is audited before export.
@@ -204,6 +208,45 @@ def model_choice_units(analysis: Path) -> tuple[dict, dict]:
     return methods, models
 
 
+def model_choice_applicants(analysis: Path) -> dict:
+    """{dataset: eval_row_index values} of the applicants explained under all three models."""
+    out: dict = defaultdict(set)
+    for row in read_csv(analysis / "multiplicity" / "multiplicity_cross_model_instances.csv"):
+        if row["method"] == "regb_m1" and row["dataset_id"] in CREDIT:
+            out[row["dataset_id"]].add(str(row["eval_row_index"]))
+    return out
+
+
+def refit_rates(analysis: Path, applicants: dict) -> dict | None:
+    """First-reason disagreement between two bootstrap refits of the same class (boosting machine and boosted trees),
+    from regb_within_class.py's comparisons, for the applicants of Figure 4. Each applicant counts once per version and
+    class, averaged over its pairs of refits, as in the method comparison. The intervals resample the refits and the
+    applicants within dataset with the within-class script's bootstrap. Returns {dataset or "pooled": (mean, low,
+    high)}, or None when the within-class outputs are absent."""
+    path = analysis / "within_class" / "within_class_comparisons.csv"
+    if not path.is_file():
+        print(f"no within-class outputs at {path}; Figure 4 drawn without the refits", file=sys.stderr)
+        return None
+    import regb_within_class as within
+
+    wanted = {(d, i) for d, rows in applicants.items() for i in rows}
+    # A cell is one applicant, version and class: the class joins the track so that each class's refit pairs form
+    # their own cell, while the resample labels stay shared, as the resamples are shared by the two classes.
+    rows = [
+        {**r, "track": f"{r['track']}|{r['model']}"}
+        for r in read_csv(path)
+        if r["kind"] == "within_boot_pairs" and (r["dataset_id"], r["eval_row_index"]) in wanted
+    ]
+    rates = {}
+    for scope in [*CREDIT, "pooled"]:
+        subset = [r for r in rows if scope == "pooled" or r["dataset_id"] == scope]
+        people = sorted({(r["dataset_id"], r["eval_row_index"]) for r in subset})
+        points, replicates = within.two_way([within.Design(subset, "differs", people)], people, N_BOOT,
+                                            f"{SEED}|figure|{scope}")
+        rates[scope] = (points[0], *within.interval(replicates[:, 0]))
+    return rates
+
+
 # --------------------------------------------------------------------- output
 def write_values(path: Path, header: list[str], rows: list[list]) -> None:
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -364,21 +407,36 @@ def fig_accuracy_specificity(accuracy: dict, specificity: dict, out_dir: Path, q
     )
 
 
-def fig_model_choice(methods: dict, models: dict, out_dir: Path, qa_dir: Path | None) -> None:
+def fig_model_choice(methods: dict, models: dict, refits: dict | None, out_dir: Path, qa_dir: Path | None) -> None:
     order = ["heloc", "south_german_credit", "give_me_some_credit", "default_of_credit_card_clients"]
-    rows = [(DATASET_LABEL[d], ratio_ci({d: methods[d]}), ratio_ci({d: models[d]}), len(models[d])) for d in order]
-    rows.append(("All four datasets", ratio_ci(methods), ratio_ci(models), sum(len(v) for v in models.values())))
+    missing = (float("nan"),) * 3
+    rows = [(DATASET_LABEL[d], ratio_ci({d: methods[d]}), (refits or {}).get(d, missing), ratio_ci({d: models[d]}),
+             len(models[d])) for d in order]
+    rows.append(("All four datasets", ratio_ci(methods), (refits or {}).get("pooled", missing), ratio_ci(models),
+                 sum(len(v) for v in models.values())))
     ypos = [0, 1, 2, 3, 4.4]
+    # (index in the row, marker style, legend label); the refits sit between the two comparisons of Figure 4
+    series = [
+        (1, dict(marker="o", ms=4, mfc="white", mec=GREY_DARK, color=GREY_DARK), "Two commentary methods, same model"),
+        (2, dict(marker="^", ms=4.4, mfc=GREY, mec=GREY, color=GREY),
+         "Same model class refit on two resamples of the training data"),
+        (3, dict(marker="o", ms=4, mfc=BLUE, mec=BLUE, color=BLUE),
+         "Two equally accurate models, marginal applicant method"),
+    ]
+    if refits is None:
+        series = [s for s in series if s[0] != 2]
+    offsets = dict(zip([s[0] for s in series], np.linspace(-0.2, 0.2, len(series))))
 
-    fig, ax = plt.subplots(figsize=(112 * MM, 42 * MM))
-    offset = 0.15
-    for (label, meth, mod, n), y in zip(rows, ypos):
-        ax.plot([100 * meth[1], 100 * meth[2]], [y - offset] * 2, color=GREY_DARK, lw=0.8, solid_capstyle="butt")
-        ax.plot([100 * mod[1], 100 * mod[2]], [y + offset] * 2, color=BLUE, lw=0.8, solid_capstyle="butt")
-        ax.plot(100 * meth[0], y - offset, "o", ms=4, mfc="white", mec=GREY_DARK, mew=0.8, clip_on=False)
-        ax.plot(100 * mod[0], y + offset, "o", ms=4, mfc=BLUE, mec=BLUE, mew=0.8, clip_on=False)
+    fig, ax = plt.subplots(figsize=(104 * MM, 50 * MM))
+    for row, y in zip(rows, ypos):
+        for index, st, _label in series:
+            point, low, high = row[index]
+            yy = y + offsets[index]
+            ax.plot([100 * low, 100 * high], [yy] * 2, color=st["color"], lw=0.8, solid_capstyle="butt")
+            ax.plot(100 * point, yy, ls="none", marker=st["marker"], ms=st["ms"], mfc=st["mfc"], mec=st["mec"],
+                    mew=0.8, clip_on=False)
     ax.axhline(3.7, color=GREY_LIGHT, lw=0.6)
-    ax.set_yticks(ypos, [label for label, *_ in rows])
+    ax.set_yticks(ypos, [row[0] for row in rows])
     ax.tick_params(axis="y", length=0)
     ax.set_ylim(4.9, -0.6)
     ax.set_xlim(0, 100)
@@ -386,22 +444,22 @@ def fig_model_choice(methods: dict, models: dict, out_dir: Path, qa_dir: Path | 
     ax.set_xlabel("Applicants whose first reason differs (%)")
     ax.spines["left"].set_visible(False)
 
-    value_columns(ax, -0.6, ("Methods", "Models"),
-                  [(y, pct_label(meth[0]), pct_label(mod[0])) for (_, meth, mod, _), y in zip(rows, ypos)], (1.13, 1.25))
-    handles = [
-        Line2D([], [], marker="o", ls="none", ms=4, mfc="white", mec=GREY_DARK, mew=0.8,
-               label="Two commentary methods, same model"),
-        Line2D([], [], marker="o", ls="none", ms=4, mfc=BLUE, mec=BLUE, mew=0.8,
-               label="Two equally accurate models, marginal applicant method"),
-    ]
+    headers = {1: "Methods", 2: "Refits", 3: "Models"}
+    column = blended_transform_factory(ax.transAxes, ax.transData)
+    for (index, _st, _label), x in zip(series, (1.12, 1.24, 1.36)):
+        ax.text(x, -0.6, headers[index], transform=column, ha="right", va="bottom", color=INK)
+        for row, y in zip(rows, ypos):
+            ax.text(x, y, pct_label(row[index][0]), transform=column, ha="right", va="center", color=INK)
+    handles = [Line2D([], [], ls="none", marker=st["marker"], ms=st["ms"], mfc=st["mfc"], mec=st["mec"], mew=0.8,
+                      label=label) for _index, st, label in series]
     ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0, 1.04), ncol=1, handletextpad=0.3,
               borderaxespad=0, labelspacing=0.3)
     save(fig, out_dir, "fig_model_choice", qa_dir)
     write_values(
         out_dir / "fig_model_choice.csv",
-        ["data", "methods_differ", "methods_low", "methods_high", "models_differ", "models_low", "models_high",
-         "applicants"],
-        [[label, *meth, *mod, n] for label, meth, mod, n in rows],
+        ["data", "methods_differ", "methods_low", "methods_high", "refits_differ", "refits_low", "refits_high",
+         "models_differ", "models_low", "models_high", "applicants"],
+        [[label, *meth, *refit, *mod, n] for label, meth, refit, mod, n in rows],
     )
 
 
@@ -431,7 +489,8 @@ def main() -> None:
         after.update(direction_units(load_bundle(denial_dir / name)))
     fig_e1_direction(before, after, out_dir, qa_dir)
     fig_accuracy_specificity(accuracy_units(analysis), specificity_pooled(analysis), out_dir, qa_dir)
-    fig_model_choice(*model_choice_units(analysis), out_dir, qa_dir)
+    refits = refit_rates(analysis, model_choice_applicants(analysis))
+    fig_model_choice(*model_choice_units(analysis), refits, out_dir, qa_dir)
 
 
 if __name__ == "__main__":

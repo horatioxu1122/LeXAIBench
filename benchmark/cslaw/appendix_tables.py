@@ -151,9 +151,10 @@ def longtable(columns: str, header: str, rows: list[str], caption: str, label: s
     return "\n".join(lines)
 
 
-def simple_table(caption: str, label: str, columns: str, header: list[str], rows: list[str]) -> str:
+def simple_table(caption: str, label: str, columns: str, header: list[str], rows: list[str],
+                 size: str = r"\footnotesize") -> str:
     return "\n".join(
-        [r"\begin{table}[h]", r"\caption{" + caption + "}", r"\label{" + label + "}", r"\footnotesize",
+        [r"\begin{table}[h]", r"\caption{" + caption + "}", r"\label{" + label + "}", size,
          r"\begin{tabular}{" + columns + "}", r"\toprule", *header, r"\midrule", *rows, r"\bottomrule",
          r"\end{tabular}", r"\end{table}"]
     )
@@ -462,35 +463,48 @@ def band_sweep(analysis: Path, out_dir: Path) -> None:
 
 
 def lime_sampling(analysis: Path, denial_dir: Path, sources: dict, out_dir: Path) -> None:
-    default = parse_denial_summary(denial_dir / "credit" / "denial_reasons_summary.md").get(("__pooled__", "lime"))
-    local = parse_denial_summary(denial_dir / "lime_local" / "denial_reasons_summary.md").get(("__pooled__", "lime"))
-    before_default = pooled_direction(model_direction(sources.get("credit") or {}), "lime")
-    before_local = pooled_direction(model_direction(sources.get("lime_local") or {}), "lime")
-    after_default = pooled_direction(model_direction(load_optional(denial_dir / "credit")), "lime")
-    after_local = pooled_direction(model_direction(load_optional(denial_dir / "lime_local")), "lime")
+    """LIME's main runs against the robustness runs: sampling around the applicant (lime_local) and, when present,
+    the library's default discretized mode (lime_default)."""
+    runs = [("credit", "regb_credit", "Main runs"), ("lime_local", "regb_lime_local", "Around the applicant")]
+    if (denial_dir / "lime_default" / "results.json").is_file():
+        runs.append(("lime_default", "regb_lime_default", "Discretized"))
+    marked = {name: parse_denial_summary(denial_dir / name / "denial_reasons_summary.md").get(("__pooled__", "lime"))
+              for name, _sub, _label in runs}
+    before = {name: pooled_direction(model_direction(sources.get(name) or {}), "lime") for name, _sub, _label in runs}
+    after = {name: pooled_direction(model_direction(load_optional(denial_dir / name)), "lime") for name, _sub, _label in runs}
 
     def coverage(sub: str, model_id: str) -> float | None:
-        return mean([num(r.get("pr_overlap_m1_grouped")) for r in read_csv(analysis / sub / "regb_reference_instances.csv")
+        path = analysis / sub / "regb_reference_instances.csv"
+        if not path.is_file():
+            return None
+        return mean([num(r.get("pr_overlap_m1_grouped")) for r in read_csv(path)
                      if r["explainer_id"] == "lime" and r["model_id"] == model_id])
 
     spec = {row["bundle"]: float(row["mean"]) for row in read_csv(analysis / "specificity" / "specificity_pooled.csv")
             if row["explainer_id"] == "lime"}
+
+    def line(label: str, cells: list[str]) -> str:
+        return label + " & " + " & ".join(cells) + r" \\"
+
     rows = [
-        f"Reasons marked by LIME as favoring approval (\\%) & {pct(default[0] if default else None)} & {pct(local[0] if local else None)} \\\\",
-        f"Reasons favoring approval by the model, before the rule (\\%) & {pct(before_default[0])} & {pct(before_local[0])} \\\\",
-        f"First reasons favoring approval by the model, before the rule (\\%) & {pct(before_default[1])} & {pct(before_local[1])} \\\\",
-        f"Reasons favoring approval by the model, after the rule (\\%) & {pct(after_default[0])} & {pct(after_local[0])} \\\\",
+        line(r"Reasons marked by LIME as favoring approval (\%)",
+             [pct(marked[n][0] if marked[n] else None) for n, _s, _l in runs]),
+        line(r"Reasons favoring approval by the model, before the rule (\%)", [pct(before[n][0]) for n, _s, _l in runs]),
+        line(r"First reasons favoring approval by the model, before the rule (\%)",
+             [pct(before[n][1]) for n, _s, _l in runs]),
+        line(r"Reasons favoring approval by the model, after the rule (\%)", [pct(after[n][0]) for n, _s, _l in runs]),
     ]
-    rows += [
-        f"Share of marginal applicant reasons named, {label.lower()} & {f2(coverage('regb_credit', m))} & {f2(coverage('regb_lime_local', m))} \\\\"
-        for m, label in MODELS
-    ]
-    rows.append(f"Overlap of reasons across applicants & {f2(spec.get('credit'))} & {f2(spec.get('lime_local'))} \\\\")
+    rows += [line(f"Share of marginal applicant reasons named, {label.lower()}", [f2(coverage(sub, m)) for _n, sub, _l in runs])
+             for m, label in MODELS]
+    rows.append(line("Overlap of reasons across applicants", [f2(spec.get(n)) for n, _s, _l in runs]))
+    caption = ("LIME as configured here, without discretization, with perturbations drawn as in the main runs from the mean "
+               "and spread of 64 training applicants, and drawn around the applicant with the same spread")
+    if len(runs) == 3:
+        caption += (", and LIME in the library's default mode, which discretizes each factor into quartiles of the same 64 "
+                    "applicants, so that a weight is the effect of the applicant's own quartile")
     write(out_dir, "tab_lime_sampling.tex", simple_table(
-        "LIME as configured here, without discretization, with perturbations drawn as in the main runs from the mean and "
-        "spread of 64 training applicants, and drawn around the applicant with the same spread (consumer credit, same "
-        "applicants).",
-        "tab:app-lime", "@{}lrr@{}", [r"& Main runs & Around the applicant \\"], rows,
+        caption + " (consumer credit, same applicants).",
+        "tab:app-lime", "@{}l" + "r" * len(runs) + "@{}", ["& " + " & ".join(l for _n, _s, l in runs) + r" \\"], rows,
     ))
 
 
@@ -603,6 +617,80 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
         [r"Data & Notice names & With & Dropped & Placebo & Refit & Refit $-$ dropped & \multicolumn{2}{c@{}}{Chance} \\",
          r"\cmidrule(l){8-9} & & & & & & & with & without \\"],
         rows,
+    ))
+
+
+def within_class(analysis: Path, out_dir: Path) -> None:
+    """First-reason disagreement within and across the two model classes of E4, from regb_within_class.py."""
+    folder = analysis / "within_class"
+    if not (folder / "within_class_summary.csv").is_file():
+        print(f"no within-class outputs in {folder}; tab_within_class.tex not written")
+        return
+    summary = {
+        (r["kind"], r["model"], r["scope"]): r
+        for r in read_csv(folder / "within_class_summary.csv") if r["metric"] == "first_reason_differs"
+    }
+    contrasts = {(r["across"], r["within"], r["scope"]): r for r in read_csv(folder / "within_class_contrasts.csv")}
+    fits = read_csv(folder / "within_class_fits.csv")
+    scopes = ["heloc", "default_of_credit_card_clients", "give_me_some_credit", "south_german_credit", "pooled"]
+
+    def signed(value: float) -> str:
+        text = f"{100 * value:.0f}"
+        return "0" if text == "-0" else text.replace("-", "$-$")
+
+    def cell(row: dict | None, field: str = "mean", sign: bool = False) -> str:
+        if not row:
+            return "--"
+        fmt = signed if sign else pct
+        return f"{fmt(float(row[field]))} [{fmt(float(row['ci_low']))}, {fmt(float(row['ci_high']))}]"
+
+    def kept(model_id: str, dataset_id: str) -> str:
+        counts = []
+        for track in ("audit", "primary"):
+            boots = [f for f in fits if f["dataset_id"] == dataset_id and f["track"] == track
+                     and f["model_id"] == model_id and f["variant"].startswith("boot")]
+            counts.append(str(sum(f["kept"] == "True" for f in boots)) if boots else "--")
+        return ", ".join(counts)
+
+    rates = [
+        ("within_seed", "ebm", "Boosting machine, another seed"),
+        ("within_boot_pairs", "ebm", "Boosting machine, two resamples"),
+        ("within_boot_pairs", "xgboost", "Boosted trees, two resamples"),
+        ("within_boot_vs_original", "ebm", "Boosting machine, original and a resample"),
+        ("within_boot_vs_original", "xgboost", "Boosted trees, original and a resample"),
+        ("across_original", "ebm_vs_xgboost", "The two classes, original fits"),
+        ("across_boot", "ebm_vs_xgboost", "The two classes, same resample"),
+    ]
+    differences = [
+        ("across_original|ebm_vs_xgboost", "within_seed|ebm", "Classes, original fits $-$ machine seeds"),
+        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|ebm", "Classes, same resample $-$ machine resamples"),
+        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|xgboost", "Classes, same resample $-$ trees resamples"),
+    ]
+    width = str(len(scopes) + 1)
+    rows = [r"\multicolumn{" + width + r"}{@{}l}{\emph{Applicants whose first reason differs (\%)}} \\"]
+    for kind, model, label in rates:
+        rows.append(label + " & " + " & ".join(cell(summary.get((kind, model, s))) for s in scopes) + r" \\")
+    rows.append(r"\midrule \multicolumn{" + width + r"}{@{}l}{\emph{Difference (percentage points)}} \\")
+    for across, within_kind, label in differences:
+        rows.append(label + " & " + " & ".join(cell(contrasts.get((across, within_kind, s)), "difference", True)
+                                               for s in scopes) + r" \\")
+    rows.append(r"\midrule \multicolumn{" + width + r"}{@{}l}{\emph{Resamples kept of 20 (audit, primary)}} \\")
+    for model_id, label in (("ebm", "Boosting machine"), ("xgboost", "Boosted trees")):
+        rows.append(label + " & " + " & ".join(kept(model_id, s) for s in scopes[:-1]) + r" & -- \\")
+    write(out_dir, "tab_within_class.tex", simple_table(
+        "The marginal applicant method's first reason within and across the two model classes of "
+        "Figure~\\ref{fig:modelchoice}, for the same 96 denied applicants in both versions of the data. Another seed: the "
+        "boosting machine refit on the same training data with one of ten other random seeds (the boosted trees give the "
+        "same model for every seed). Resample: a bootstrap resample of the training data, drawn within each outcome, one "
+        "of 20 per dataset and version and shared by the two classes. A refit counts if its ROC AUC is within 0.02 of the "
+        "original fit's, and a pair of classes on the same resample counts if both fits count and their ROC AUC differ by "
+        "at most 0.02. Each applicant counts once per version, averaged over its refits. Intervals are 95\\% bootstrap "
+        "intervals that resample the refits and the applicants within dataset, with both versions of an applicant "
+        "together; the differences are paired.",
+        "tab:app-within", "@{}lrrrrr@{}",
+        [r"Comparison & HELOC & Default Credit & Give Me Some Credit & South German Credit & Pooled \\"],
+        rows,
+        size=r"\scriptsize\setlength{\tabcolsep}{3pt}",
     ))
 
 
@@ -801,6 +889,7 @@ def main() -> None:
         "nullbaselines": load_optional(source_dir / f"cslaw_v2_credit_nullbaselines_{args.tag}"),
         "noncredit": load_optional(source_dir / f"cslaw_v2_noncredit_{args.tag}"),
         "lime_local": load_optional(source_dir / f"cslaw_v2_credit_lime_local_{args.tag}"),
+        "lime_default": load_optional(source_dir / f"cslaw_v2_credit_lime_default_{args.tag}"),
     }
     if not sources["credit"]:
         sys.exit(f"original credit bundle not found under {source_dir}")
@@ -814,6 +903,7 @@ def main() -> None:
     versions_table(analysis, out_dir)
     reference_table(analysis, out_dir)
     proxy_baselines(analysis, out_dir)
+    within_class(analysis, out_dir)
     worked_notices(denial_dir, sources["credit"], out_dir)
 
 

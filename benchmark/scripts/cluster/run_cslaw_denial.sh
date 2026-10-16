@@ -7,8 +7,10 @@
 #   bash benchmark/scripts/cluster/run_cslaw_denial.sh [REPO_ROOT] [--tag TAG] [--force]
 #
 # Inputs (must exist): benchmark/outputs/cslaw_v2_credit_<TAG>, cslaw_v2_credit_nullbaselines_<TAG>,
-#   cslaw_v2_credit_shared_<TAG>, cslaw_v2_noncredit_<TAG>; optional cslaw_v2_credit_lime_local_<TAG>.
-# Output: benchmark/outputs/cslaw_denial_<TAG>/{credit,nullbaselines,shared,noncredit,lime_local,analysis}
+#   cslaw_v2_credit_shared_<TAG>, cslaw_v2_noncredit_<TAG>; optional cslaw_v2_credit_lime_local_<TAG> and
+#   cslaw_v2_credit_lime_default_<TAG>.
+# Output: benchmark/outputs/cslaw_denial_<TAG>/{credit,nullbaselines,shared,noncredit,lime_local,lime_default,analysis}
+# To add lime_default to an existing cslaw_denial_<TAG> without rerunning everything, use run_cslaw_lime_default.sh.
 set -euo pipefail
 
 REPO_ROOT="${HOME}/explainableAI-CS"
@@ -60,6 +62,7 @@ correct nullbaselines "${OUT}/cslaw_v2_credit_nullbaselines_${TAG}" benchmark/co
 correct shared "${OUT}/cslaw_v2_credit_shared_${TAG}" benchmark/configs/experiment_cslaw_v2_credit_shared.json
 correct noncredit "${OUT}/cslaw_v2_noncredit_${TAG}" ""
 correct lime_local "${OUT}/cslaw_v2_credit_lime_local_${TAG}" benchmark/configs/experiment_cslaw_v2_credit_lime_local.json
+correct lime_default "${OUT}/cslaw_v2_credit_lime_default_${TAG}" benchmark/configs/experiment_cslaw_v2_credit_lime_default.json
 
 A="${DEST}/analysis"
 run() {  # label, then command
@@ -74,6 +77,7 @@ run paper_tables "${PY}" benchmark/cslaw/paper_tables.py "${TABLE_ARGS[@]}" --ou
 run regb_credit "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/credit" --out-dir "${A}/regb_credit"
 [[ -f "${DEST}/noncredit/results.json" ]] && run regb_noncredit "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/noncredit" --out-dir "${A}/regb_noncredit"
 [[ -f "${DEST}/lime_local/results.json" ]] && run regb_lime_local "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/lime_local" --out-dir "${A}/regb_lime_local"
+[[ -f "${DEST}/lime_default/results.json" ]] && run regb_lime_default "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/lime_default" --out-dir "${A}/regb_lime_default"
 run multiplicity "${PY}" benchmark/cslaw/multiplicity.py --bundle "${DEST}/shared" --out-dir "${A}/multiplicity"
 run proxy "${PY}" benchmark/cslaw/proxy_substitution.py --bundle "${DEST}/shared" --out-dir "${A}/proxy_substitution"
 DISC_ARGS=(--bundle "${DEST}/credit")
@@ -83,11 +87,12 @@ run common_faithfulness "${PY}" benchmark/cslaw/common_faithfulness.py --bundle 
 run notices "${PY}" benchmark/cslaw/notices.py --bundle "${DEST}/credit" --n 48 --seed 7 --out-dir "${A}/notices" "${FORCE_ARG[@]}"
 run regb_nullbaselines "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/nullbaselines" --out-dir "${A}/regb_nullbaselines"
 [[ -f "${DEST}/lime_local/results.json" ]] && run common_faithfulness_lime_local "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_local" --out-dir "${A}/common_faithfulness_lime_local"
+[[ -f "${DEST}/lime_default/results.json" ]] && run common_faithfulness_lime_default "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/lime_default" --out-dir "${A}/common_faithfulness_lime_default"
 
 # Specificity across applicants (E3) and valid recourse (E6).
 SPEC_ARGS=(--bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines")
-for name in noncredit lime_local; do
-  [[ -f "${DEST}/${name}/results.json" ]] && SPEC_ARGS+=(--bundle "${DEST}/${name}")
+for name in noncredit lime_local lime_default; do
+  if [[ -f "${DEST}/${name}/results.json" ]]; then SPEC_ARGS+=(--bundle "${DEST}/${name}"); fi
 done
 run specificity "${PY}" benchmark/cslaw/notice_specificity.py "${SPEC_ARGS[@]}" --out-dir "${A}/specificity"
 
@@ -111,6 +116,16 @@ run band_sweep "${PY}" benchmark/cslaw/regb_band_sweep.py \
   --notice-bundle "${DEST}/credit" \
   --out-dir "${A}/band_sweep"
 
+# First-reason variation within a model class (E4 baseline). Refits the shared-run credit models on bootstrap
+# resamples and, for the boosting machine, other seeds (about an hour). A failure does not stop the pipeline; the
+# tables and figures below then leave out the refits (Table tab:app-within and the triangles of Figure 4).
+echo "[denial] analysis: within_class"
+env PYTHONPATH=benchmark/src "${PY}" benchmark/cslaw/regb_within_class.py \
+  --config benchmark/configs/experiment_cslaw_v2_credit_shared.json \
+  --shared-bundle "${OUT}/cslaw_v2_credit_shared_${TAG}" \
+  --out-dir "${A}/within_class" > "${A}/log_within_class.txt" 2>&1 \
+  || echo "[denial] within_class failed (see ${A}/log_within_class.txt); continuing" >&2
+
 # LaTeX tables and worked notices for the paper's appendices (reads the outputs above).
 run appendix_tables "${PY}" benchmark/cslaw/appendix_tables.py --denial-dir "${DEST}" \
   --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/appendix_generated"
@@ -120,15 +135,5 @@ run appendix_tables "${PY}" benchmark/cslaw/appendix_tables.py --denial-dir "${D
 run paper_figures "${PY}" benchmark/cslaw/paper_figures.py --denial-dir "${DEST}" \
   --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/figures"
 run paper_schematic "${PY}" benchmark/cslaw/paper_schematic.py --out-dir "${A}/figures"
-
-# First-reason variation within a model class (E4 baseline). Refits the shared-run credit models on bootstrap
-# resamples and, for the boosting machine, other seeds (about an hour). Runs last, and a failure does not stop the
-# pipeline: the tables and figures above do not read its outputs.
-echo "[denial] analysis: within_class"
-env PYTHONPATH=benchmark/src "${PY}" benchmark/cslaw/regb_within_class.py \
-  --config benchmark/configs/experiment_cslaw_v2_credit_shared.json \
-  --shared-bundle "${OUT}/cslaw_v2_credit_shared_${TAG}" \
-  --out-dir "${A}/within_class" > "${A}/log_within_class.txt" 2>&1 \
-  || echo "[denial] within_class failed (see ${A}/log_within_class.txt); continuing" >&2
 
 echo "[denial] done: ${DEST}"

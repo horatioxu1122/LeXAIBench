@@ -315,8 +315,15 @@ class VectorizedClassifierModel:
         # Correction option lime_sample_around_instance (robustness re-run only):
         # perturbations are drawn around the explained row. Without it the call
         # (and the cache key) is exactly the published one.
+        # Correction option lime_discretize_continuous (robustness re-run only): the
+        # library's default quartile discretization.
         sample_around_instance = bool(model_corrections(self).lime_sample_around_instance)
-        cache_key: Any = (seed, "sample_around_instance") if sample_around_instance else seed
+        discretize = bool(model_corrections(self).lime_discretize_continuous)
+        cache_key: Any = seed
+        if sample_around_instance:
+            cache_key = (seed, "sample_around_instance")
+        elif discretize:
+            cache_key = (seed, "discretize_continuous")
         if cache_key in self._lime_explainers:
             return self._lime_explainers[cache_key]
 
@@ -335,7 +342,7 @@ class VectorizedClassifierModel:
             ],
             mode="classification",
             kernel_width=kernel_width,
-            discretize_continuous=False,
+            discretize_continuous=discretize,
             random_state=seed,
             **extra_kwargs,
         )

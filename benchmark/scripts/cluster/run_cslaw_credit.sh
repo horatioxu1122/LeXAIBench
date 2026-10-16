@@ -7,7 +7,7 @@
 #        [--force] [--noncredit-bundle DIR]
 #
 #   REPO_ROOT   repository checkout (default: $HOME/explainableAI-CS)
-#   --steps     comma list, run in this fixed order (default: all except limelocal):
+#   --steps     comma list, run in this fixed order (default: all except the LIME robustness runs):
 #                 selftest       benchmark/cslaw/selftest.py
 #                 regression     A/B of experiment_cslaw_regression_check.json (no cslaw block):
 #                                baseline commit fb5dadc (git worktree) vs current code, then
@@ -22,6 +22,11 @@
 #                 shared         experiment_cslaw_v2_credit_shared.json (shared sampling)
 #                 limelocal      experiment_cslaw_v2_credit_lime_local.json (LIME only, perturbations
 #                                sampled around the instance: corrections v2 + lime_sample_around_instance;
+#                                same applicants as credit). Opt-in robustness run, not in the default list
+#                 limedefaultpilot  experiment_cslaw_v2_credit_lime_default_pilot.json (the limedefault
+#                                settings on South German Credit only; a few minutes, to time the full run)
+#                 limedefault    experiment_cslaw_v2_credit_lime_default.json (LIME only, the library's
+#                                default discretize_continuous=True: corrections v2 + lime_discretize_continuous;
 #                                same applicants as credit). Opt-in robustness run, not in the default list
 #                 offline        rescore/rebuild/paper tables on the published v1 bundles
 #                                (benchmark/scripts/run_cslaw_offline_analyses.sh)
@@ -42,7 +47,8 @@
 # Outputs (all new directories under benchmark/outputs; published bundles are never written):
 #   cslaw_regression_baseline_<TAG>/ cslaw_regression_new_<TAG>/ cslaw_regression_compare_<TAG>/
 #   cslaw_v2_credit_<TAG>/ cslaw_v2_credit_nullbaselines_<TAG>/ cslaw_v2_credit_shared_<TAG>/
-#   cslaw_v2_credit_lime_local_<TAG>/ cslaw_offline_<TAG>/ cslaw_analysis_<TAG>/
+#   cslaw_v2_credit_lime_local_<TAG>/ cslaw_v2_credit_lime_default_pilot_<TAG>/
+#   cslaw_v2_credit_lime_default_<TAG>/ cslaw_offline_<TAG>/ cslaw_analysis_<TAG>/
 # The taxonomy and analysis steps share cslaw_analysis_<TAG>/; each refuses only the
 # entries it writes, so they can run in separate jobs.
 set -euo pipefail
@@ -53,8 +59,8 @@ if [[ $# -gt 0 && "$1" != -* ]]; then
   shift
 fi
 
-# Execution order of every step; limelocal (an opt-in robustness run) is not in the default list.
-ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,limelocal,offline,analysis"
+# Execution order of every step; the LIME robustness runs (opt-in) are not in the default list.
+ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,limelocal,limedefaultpilot,limedefault,offline,analysis"
 DEFAULT_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,offline,analysis"
 STEPS="${DEFAULT_STEPS}"
 TAG="r1"
@@ -145,6 +151,8 @@ CREDIT_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit.json"
 NULLB_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_nullbaselines.json"
 SHARED_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_shared.json"
 LIMELOCAL_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_lime_local.json"
+LIMEDEFAULT_PILOT_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_lime_default_pilot.json"
+LIMEDEFAULT_CONFIG="${CONFIGS}/experiment_cslaw_v2_credit_lime_default.json"
 TAXONOMY_V1="${METADATA}/feature_taxonomy.json"
 TAXONOMY_V2="${METADATA}/feature_taxonomy_v2.json"
 REGISTRY_V2="${METADATA}/dataset_registry_v2.json"
@@ -152,6 +160,8 @@ CREDIT_DIR="${OUTPUTS}/cslaw_v2_credit_${TAG}"
 NULLB_DIR="${OUTPUTS}/cslaw_v2_credit_nullbaselines_${TAG}"
 SHARED_DIR="${OUTPUTS}/cslaw_v2_credit_shared_${TAG}"
 LIMELOCAL_DIR="${OUTPUTS}/cslaw_v2_credit_lime_local_${TAG}"
+LIMEDEFAULT_PILOT_DIR="${OUTPUTS}/cslaw_v2_credit_lime_default_pilot_${TAG}"
+LIMEDEFAULT_DIR="${OUTPUTS}/cslaw_v2_credit_lime_default_${TAG}"
 NONCREDIT_V2_DIR="${OUTPUTS}/cslaw_v2_noncredit_${TAG}"
 REG_BASE_DIR="${OUTPUTS}/cslaw_regression_baseline_${TAG}"
 REG_NEW_DIR="${OUTPUTS}/cslaw_regression_new_${TAG}"
@@ -198,7 +208,8 @@ if has_step taxonomy; then
   done
 fi
 for step_config in credit:"${CREDIT_CONFIG}" nullbaselines:"${NULLB_CONFIG}" shared:"${SHARED_CONFIG}" \
-  limelocal:"${LIMELOCAL_CONFIG}"; do
+  limelocal:"${LIMELOCAL_CONFIG}" limedefaultpilot:"${LIMEDEFAULT_PILOT_CONFIG}" \
+  limedefault:"${LIMEDEFAULT_CONFIG}"; do
   if has_step "${step_config%%:*}"; then
     [[ -f "${step_config#*:}" ]] || cslaw_die "missing config ${step_config#*:}"
     for path in "${TAXONOMY_V2}" "${REGISTRY_V2}"; do
@@ -210,6 +221,8 @@ if has_step credit; then cslaw_guard_target "${CREDIT_DIR}"; fi
 if has_step nullbaselines; then cslaw_guard_target "${NULLB_DIR}"; fi
 if has_step shared; then cslaw_guard_target "${SHARED_DIR}"; fi
 if has_step limelocal; then cslaw_guard_target "${LIMELOCAL_DIR}"; fi
+if has_step limedefaultpilot; then cslaw_guard_target "${LIMEDEFAULT_PILOT_DIR}"; fi
+if has_step limedefault; then cslaw_guard_target "${LIMEDEFAULT_DIR}"; fi
 if has_step offline; then cslaw_guard_target "${OFFLINE_DIR}"; fi
 if has_step analysis; then
   cslaw_guard_name "${ANALYSIS_DIR}"
@@ -296,8 +309,9 @@ step_run() {
   local name="$1"
   local config="$2"
   local out_dir="$3"
-  # Expected corrections for cslaw_check_bundle: v2, or v2_lime_local (v2 plus
-  # lime_sample_around_instance, recorded as corrections_version "custom").
+  # Expected corrections for cslaw_check_bundle: v2, v2_lime_local (v2 plus
+  # lime_sample_around_instance) or v2_lime_default (v2 plus lime_discretize_continuous),
+  # the last two recorded as corrections_version "custom".
   local expect="${4:-v2}"
   cslaw_log "step ${name}"
   cslaw_run_benchmark "${REPO_ROOT}/benchmark/src" "${config}" "${out_dir}"
@@ -546,6 +560,10 @@ if has_step credit; then step_run credit "${CREDIT_CONFIG}" "${CREDIT_DIR}"; fi
 if has_step nullbaselines; then step_run nullbaselines "${NULLB_CONFIG}" "${NULLB_DIR}"; fi
 if has_step shared; then step_run shared "${SHARED_CONFIG}" "${SHARED_DIR}"; fi
 if has_step limelocal; then step_run limelocal "${LIMELOCAL_CONFIG}" "${LIMELOCAL_DIR}" v2_lime_local; fi
+if has_step limedefaultpilot; then
+  step_run limedefaultpilot "${LIMEDEFAULT_PILOT_CONFIG}" "${LIMEDEFAULT_PILOT_DIR}" v2_lime_default
+fi
+if has_step limedefault; then step_run limedefault "${LIMEDEFAULT_CONFIG}" "${LIMEDEFAULT_DIR}" v2_lime_default; fi
 if has_step offline; then step_offline; fi
 if has_step analysis; then step_analysis; fi
 
@@ -561,6 +579,8 @@ if has_step credit; then echo "  credit:        ${CREDIT_DIR}"; fi
 if has_step nullbaselines; then echo "  nullbaselines: ${NULLB_DIR}"; fi
 if has_step shared; then echo "  shared:        ${SHARED_DIR}"; fi
 if has_step limelocal; then echo "  limelocal:     ${LIMELOCAL_DIR}"; fi
+if has_step limedefaultpilot; then echo "  limedefaultpilot: ${LIMEDEFAULT_PILOT_DIR}"; fi
+if has_step limedefault; then echo "  limedefault:   ${LIMEDEFAULT_DIR}"; fi
 if has_step offline; then echo "  offline:       ${OFFLINE_DIR}"; fi
 if has_step analysis; then echo "  analysis:      ${ANALYSIS_DIR}"; fi
 if [[ ${#SKIPPED[@]} -gt 0 ]]; then

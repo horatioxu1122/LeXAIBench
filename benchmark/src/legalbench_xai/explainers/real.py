@@ -126,6 +126,8 @@ def generate_real_lime_explanation(
     if model_corrections(model).lime_sample_around_instance:
         # Recorded only when on, so the published LIME metadata is unchanged.
         lime_settings["sample_around_instance"] = True
+    if model_corrections(model).lime_discretize_continuous:
+        lime_settings["discretize_continuous"] = True
     explanation = explainer.explain_instance(
         data_row=vector[0],
         predict_fn=model.classifier.predict_proba,
