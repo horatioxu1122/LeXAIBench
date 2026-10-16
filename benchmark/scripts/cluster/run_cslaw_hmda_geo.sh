@@ -9,7 +9,8 @@
 #
 # Outputs: benchmark/outputs/cslaw_v2_hmda_geo_{primary,audit}_<TAG>/ (shards), cslaw_v2_hmda_geo_<TAG>/ (merged),
 #   cslaw_denial_<TAG>/hmda_geo/ (direction rule) and cslaw_denial_<TAG>/analysis/hmda_geo/{regb_reference,
-#   track_disclosure,specificity}/. Nothing that already exists is overwritten.
+#   track_disclosure,specificity}/. Resumable: a step whose output already exists (results.json, or the analysis
+#   step's main file) is reused, so after a failure the same command continues from the failed step.
 set -euo pipefail
 
 REPO_ROOT="${HOME}/explainableAI-CS"
@@ -52,11 +53,6 @@ A="${DEST}/analysis/hmda_geo"
 [[ -d "${DEST}/analysis" ]] || cslaw_die "missing ${DEST}/analysis; run run_cslaw_denial.sh first"
 for track in primary audit; do
   [[ -f "${CONFIGS}/experiment_cslaw_v2_hmda_geo_${track}.json" ]] || cslaw_die "missing config for ${track}"
-  cslaw_guard_target "${OUTPUTS}/cslaw_v2_hmda_geo_${track}_${TAG}"
-done
-cslaw_guard_target "${MERGED}"
-for path in "${DEST}/hmda_geo" "${A}"; do
-  if [[ -e "${path}" ]]; then cslaw_die "${path} exists; remove it to redo this step"; fi
 done
 
 # Pilot (a few minutes): the audit settings on benchmark/data/real/hmda_pilot_fast.csv, to catch a failure before the
@@ -102,13 +98,19 @@ print(f"[cslaw] pilot ok: notices from {sorted(explainers)}; geographic raw valu
 PY
 fi
 
-# Both shards at once; each is one process with pinned threads.
+# Both shards at once; each is one process with pinned threads. A shard with a results.json is reused. Each shard
+# folder gets its config as runtime_config.json, so that a new merge also writes the merged runtime_config.json.
 pids=()
 for track in primary audit; do
   out="${OUTPUTS}/cslaw_v2_hmda_geo_${track}_${TAG}"
+  if cslaw_bundle_ready "${out}"; then
+    cslaw_log "shard hmda:${track}: reusing ${out}"
+    continue
+  fi
+  mkdir -p "${out}"
+  cp "${CONFIGS}/experiment_cslaw_v2_hmda_geo_${track}.json" "${out}/runtime_config.json"
   cslaw_log "shard hmda:${track} -> ${out} (log: ${out}.log)"
-  cslaw_run_benchmark "${REPO_ROOT}/benchmark/src" "${CONFIGS}/experiment_cslaw_v2_hmda_geo_${track}.json" "${out}" \
-    > "${out}.log" 2>&1 &
+  cslaw_run_benchmark "${REPO_ROOT}/benchmark/src" "${out}/runtime_config.json" "${out}" > "${out}.log" 2>&1 &
   pids+=("$!")
 done
 status=0
@@ -120,20 +122,35 @@ for track in primary audit; do
   cslaw_check_bundle "${OUTPUTS}/cslaw_v2_hmda_geo_${track}_${TAG}" 1
 done
 
-cslaw_log "merge -> ${MERGED}"
-run_py benchmark/cslaw/merge_bundles.py \
-  --inputs "${OUTPUTS}/cslaw_v2_hmda_geo_primary_${TAG}" "${OUTPUTS}/cslaw_v2_hmda_geo_audit_${TAG}" \
-  --out-dir "${MERGED}" --experiment-name legalbench_xai_cslaw_v2_hmda_geo
-[[ -f "${MERGED}/results.json" ]] || cslaw_die "merge_bundles.py did not write ${MERGED}/results.json"
+if cslaw_bundle_ready "${MERGED}"; then
+  cslaw_log "merge: reusing ${MERGED}"
+else
+  cslaw_guard_target "${MERGED}"
+  cslaw_log "merge -> ${MERGED}"
+  run_py benchmark/cslaw/merge_bundles.py \
+    --inputs "${OUTPUTS}/cslaw_v2_hmda_geo_primary_${TAG}" "${OUTPUTS}/cslaw_v2_hmda_geo_audit_${TAG}" \
+    --out-dir "${MERGED}" --experiment-name legalbench_xai_cslaw_v2_hmda_geo
+  [[ -f "${MERGED}/results.json" ]] || cslaw_die "merge_bundles.py did not write ${MERGED}/results.json"
+fi
 
 mkdir -p "${A}"
-step() {  # label, then command
-  local label="$1"; shift
+step() {  # label, done-file, then command; skipped when the done-file exists
+  local label="$1" done_file="$2"; shift 2
+  if [[ -f "${done_file}" ]]; then
+    cslaw_log "hmda_geo: ${label}: reusing $(dirname "${done_file}")"
+    return 0
+  fi
   cslaw_log "hmda_geo: ${label}"
   "$@" > "${A}/log_${label}.txt" 2>&1 || cslaw_die "${label} failed (see ${A}/log_${label}.txt)"
 }
-step denial run_py benchmark/cslaw/denial_reasons.py --bundle "${MERGED}" --out-dir "${DEST}/hmda_geo"
-step regb_reference run_py benchmark/cslaw/regb_reference.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/regb_reference"
-step track_disclosure run_py benchmark/cslaw/track_disclosure.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/track_disclosure"
-step specificity run_py benchmark/cslaw/notice_specificity.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/specificity"
+# The direction rule rebuilds the HMDA dataset definitions from a config; both geo configs name the same taxonomy,
+# registry and data, so the audit config serves for both versions. --force writes into a folder a failed attempt left.
+step denial "${DEST}/hmda_geo/results.json" run_py benchmark/cslaw/denial_reasons.py --bundle "${MERGED}" \
+  --config "${CONFIGS}/experiment_cslaw_v2_hmda_geo_audit.json" --out-dir "${DEST}/hmda_geo" --force
+step regb_reference "${A}/regb_reference/regb_reference_instances.csv" \
+  run_py benchmark/cslaw/regb_reference.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/regb_reference"
+step track_disclosure "${A}/track_disclosure/track_disclosure.csv" \
+  run_py benchmark/cslaw/track_disclosure.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/track_disclosure"
+step specificity "${A}/specificity/specificity_pooled.csv" \
+  run_py benchmark/cslaw/notice_specificity.py --bundle "${DEST}/hmda_geo" --out-dir "${A}/specificity"
 cslaw_log "done: ${DEST}/hmda_geo and ${A}"
