@@ -230,7 +230,7 @@ def models_table(bundles: dict, out_dir: Path) -> None:
         "@{}lllrrrr@{}",
         r"Dataset & Version & Model & Training rows & Evaluation rows & ROC AUC & Denied (\%)",
         rows,
-        "Accuracy and denial rate of every model on its evaluation set. A model denies when its predicted probability of the "
+        "Accuracy and denial rate of every model of the main runs on its evaluation set; the HMDA models of the E5 run with location encoded as denial rates are described in Appendix~\\ref{app:settings}. A model denies when its predicted probability of the "
         "adverse outcome is at least 0.5.",
         "tab:app-models",
     ))
@@ -248,6 +248,13 @@ LEGAL_BASIS_EDITS = (
     ),
     ("(credit-score disclosure)", "(disclosure of the credit score)"),
     ("(inputs to the FFIEC-derived category)", "(inputs to the category the FFIEC derives)"),
+    # N.Y. Crim. Proc. Law 510.30 no longer lists factors (revision of 2023-06-09); the securing-order factors are in
+    # 510.10(1), including (b) the charges and (c) the criminal conviction record, and age is not among them.
+    ("(age is not a suspect class); N.Y. Crim. Proc. Law 510.30", "(age is not a suspect class)"),
+    ("N.Y. Crim. Proc. Law 510.30 (criminal record as a factor)",
+     "N.Y. Crim. Proc. Law 510.10(1)(c) (criminal conviction record as a factor)"),
+    ("N.Y. Crim. Proc. Law 510.10, 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
+    ("N.Y. Crim. Proc. Law 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
 )
 MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
           "december")
@@ -572,14 +579,23 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
     if not any(key[3] == "audit_refill" for key in cells):
         print("no removal baselines in track_disclosure.csv; tab_proxy_baselines.tex not written")
         return
-    targets = [
-        ("noncredit", "hmda", "names_P", "Any possible proxy"),
-        ("noncredit", "hmda", "names_census_tract", "Census tract"),
-        ("noncredit", "hmda", "names_income", "Income"),
-        ("noncredit", "hmda", "names_county_code", "County"),
-        ("noncredit", "hmda", "names_state_code", "State"),
-        ("credit", "default_of_credit_card_clients", "names_P", "Any possible proxy"),
-        ("credit", "give_me_some_credit", "names_P", "Any possible proxy"),
+    # The HMDA re-run with county and census tract as neighborhood denial rates (run_cslaw_hmda_geo.sh), when present.
+    geo_path = analysis / "hmda_geo" / "track_disclosure" / "track_disclosure.csv"
+    if geo_path.is_file():
+        cells.update({
+            ("hmda_geo", r["dataset_id"], r["metric"], r["track"]): r
+            for r in read_csv(geo_path) if r["method"] == "regb_m1"
+        })
+    hmda_rows = [("names_P", "Any possible proxy"), ("names_census_tract", "Census tract"), ("names_income", "Income"),
+                 ("names_county_code", "County"), ("names_state_code", "State")]
+    targets = []
+    if geo_path.is_file():
+        targets += [("hmda_geo", "hmda", metric, label, "HMDA, neighborhoods") for metric, label in hmda_rows]
+    targets += [("noncredit", "hmda", metric, label, "HMDA, numeric codes" if geo_path.is_file() else "HMDA")
+                for metric, label in hmda_rows]
+    targets += [
+        ("credit", "default_of_credit_card_clients", "names_P", "Any possible proxy", DATASET_LABEL["default_of_credit_card_clients"]),
+        ("credit", "give_me_some_credit", "names_P", "Any possible proxy", DATASET_LABEL["give_me_some_credit"]),
     ]
 
     def share(key: tuple, track: str) -> str:
@@ -597,12 +613,12 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
         return f"{signed(float(row['mean']))} [{signed(float(row['ci_low']))}, {signed(float(row['ci_high']))}]"
 
     rows = []
-    for bundle, dataset_id, metric, label in targets:
+    for bundle, dataset_id, metric, label, data_label in targets:
         key = (bundle, dataset_id, metric)
         if (*key, "audit") not in cells:
             continue
         rows.append(
-            f"{DATASET_LABEL[dataset_id]} & {label} & {share(key, 'audit')} & {share(key, 'audit_refill')} "
+            f"{data_label} & {label} & {share(key, 'audit')} & {share(key, 'audit_refill')} "
             f"& {share(key, 'audit_placebo')} & {share(key, 'primary')} & {change(key, 'primary_minus_refill')} "
             f"& {share(key, 'chance_audit')} & {share(key, 'chance_primary')} \\\\"
         )
@@ -612,11 +628,14 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
         "of the ranking, so the next-ranked factors fill the freed places. Placebo: as many factors labeled neither protected "
         "nor possible proxy left out instead. Refit: the version fit without the characteristics, which explains other "
         "applicants. Refit $-$ dropped: difference in percentage points with a 95\\% bootstrap interval. Chance: four "
-        "reasons drawn at random from the version's factors, with and without the characteristics.",
+        "reasons drawn at random from the version's factors, with and without the characteristics. HMDA, neighborhoods: "
+        "county and census tract enter as the smoothed denial rate of each code among training applicants; HMDA, numeric "
+        "codes: they enter as numbers, which sort tracts by state and county.",
         "tab:app-proxy", "@{}llrrrrrrr@{}",
         [r"Data & Notice names & With & Dropped & Placebo & Refit & Refit $-$ dropped & \multicolumn{2}{c@{}}{Chance} \\",
          r"\cmidrule(l){8-9} & & & & & & & with & without \\"],
         rows,
+        size=r"\footnotesize\setlength{\tabcolsep}{4pt}",
     ))
 
 
