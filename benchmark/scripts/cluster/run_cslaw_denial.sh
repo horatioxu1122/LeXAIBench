@@ -128,6 +128,12 @@ env PYTHONPATH=benchmark/src "${PY}" benchmark/cslaw/regb_within_class.py \
   --out-dir "${A}/within_class" > "${A}/log_within_class.txt" 2>&1 \
   || echo "[denial] within_class failed (see ${A}/log_within_class.txt); continuing" >&2
 
+# E4 with correlated factors grouped into reason families (reads within_class/, multiplicity/ and the credit data).
+if [[ -f "${A}/within_class/within_class_reasons.csv" ]]; then
+  run reason_families "${PY}" benchmark/cslaw/reason_families.py --analysis-dir "${A}" --data-dir benchmark/data/real \
+    --shared-bundle "${DEST}/shared" --out-dir "${A}/reason_families"
+fi
+
 # LaTeX tables and worked notices for the paper's appendices (reads the outputs above).
 run appendix_tables "${PY}" benchmark/cslaw/appendix_tables.py --denial-dir "${DEST}" \
   --source-dir "${OUT}" --tag "${TAG}" --out-dir "${A}/appendix_generated"

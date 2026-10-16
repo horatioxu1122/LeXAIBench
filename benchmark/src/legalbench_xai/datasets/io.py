@@ -35,18 +35,31 @@ def _coerce_scalar(value: str, *, parse_exponent_notation: bool = False) -> Any:
         return text
 
 
-def load_csv_rows(path: Path, *, numeric_parsing_fix: bool = False) -> list[dict[str, Any]]:
+def load_csv_rows(
+    path: Path,
+    *,
+    numeric_parsing_fix: bool = False,
+    text_columns: tuple[str, ...] = (),
+) -> list[dict[str, Any]]:
+    """Rows of a CSV file. Columns in text_columns keep their text (missing cells become None), so codes such
+    as "09190" stay categories; every other cell converts with _coerce_scalar."""
     with path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         rows: list[dict[str, Any]] = []
         for row in reader:
             rows.append(
                 {
-                    key: _coerce_scalar(value, parse_exponent_notation=numeric_parsing_fix)
+                    key: (_text_or_none(value) if key in text_columns
+                          else _coerce_scalar(value, parse_exponent_notation=numeric_parsing_fix))
                     for key, value in row.items()
                 }
             )
     return rows
+
+
+def _text_or_none(value: str | None) -> str | None:
+    text = (value or "").strip()
+    return None if text == "" or text.lower() in {"na", "n/a", "nan", "null", "none", "?"} else text
 
 
 def read_csv_header(path: Path) -> list[str]:

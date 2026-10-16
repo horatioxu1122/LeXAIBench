@@ -3,7 +3,7 @@ import os
 import statistics
 from typing import Any
 
-from ..corrections import V1, CorrectionOptions, model_corrections
+from ..corrections import GEO_CODE_COLUMNS, V1, CorrectionOptions, model_corrections
 from ..types import DatasetBundle, TabularDataset
 from .stubs import HeuristicModel, RowPrediction, fit_stub_model
 
@@ -350,10 +350,12 @@ class VectorizedClassifierModel:
         return explainer
 
     def _feature_dict(self, row: dict[str, Any]) -> dict[str, Any]:
-        return {
+        values = {
             feature_name: self._normalize_feature_value(feature_name, row.get(feature_name))
             for feature_name in self.dataset_bundle.included_feature_names
         }
+        encoder = getattr(self.vectorizer, "code_encoder_", None)
+        return encoder.transform(values) if encoder is not None else values
 
     def _normalize_feature_value(self, feature_name: str, value: Any) -> Any:
         if _is_missing(value):
@@ -749,9 +751,18 @@ def _prepare_vectorized_training_inputs(
     if len(set(labels)) < 2:
         raise ValueError("real backend requires at least two target classes")
 
+    # Correction option geo_target_encoding: geographic codes arrive as text only when it is on (the loader keeps
+    # them as text); they are replaced by their smoothed training denial rate. Off, no encoder is fitted.
+    encoded_columns = [
+        name for name in GEO_CODE_COLUMNS
+        if name in table.feature_names and any(isinstance(row.get(name), str) for row in feature_rows[:1000])
+    ]
+    code_encoder = _CodeTargetEncoder.fit(feature_rows, labels, encoded_columns) if encoded_columns else None
+
     vectorizer = DictVectorizer(sparse=False, sort=False)
     matrix = vectorizer.fit_transform(feature_rows)
     vectorizer.feature_fill_values_ = feature_fill_values
+    vectorizer.code_encoder_ = code_encoder
     encoded_feature_names = list(vectorizer.get_feature_names_out())
     background_rows = min(len(feature_rows), 64)
     background_matrix = matrix[:background_rows]
@@ -779,6 +790,70 @@ def _is_missing(value: Any) -> bool:
     if isinstance(value, float):
         return math.isnan(value)
     return False
+
+
+class _CodeTargetEncoder:
+    """Smoothed target encoding of categorical codes (correction option geo_target_encoding).
+
+    Each code becomes (denials + m * prior) / (rows + m) over the training rows with that code, with m = 20 and the
+    prior the training denial rate. The training rows themselves get out-of-fold values from 5 folds (seeded), so no
+    row's own label enters its value; every other row (evaluation rows, perturbed rows) gets the full-training value,
+    and a code unseen in training gets the prior."""
+
+    SMOOTHING = 20.0
+    FOLDS = 5
+    SEED = 42
+
+    def __init__(self, columns: list[str], prior: float, mapping: dict[str, dict[Any, float]]) -> None:
+        self.columns = list(columns)
+        self.prior = prior
+        self.mapping = mapping
+
+    @staticmethod
+    def _rate(denials: float, rows: float, prior: float) -> float:
+        return (denials + _CodeTargetEncoder.SMOOTHING * prior) / (rows + _CodeTargetEncoder.SMOOTHING)
+
+    @classmethod
+    def fit(cls, feature_rows: list[dict[str, Any]], labels: list[int], columns: list[str]) -> "_CodeTargetEncoder":
+        """Fit on the training rows and replace their codes in place with out-of-fold values."""
+        import numpy as np
+
+        n = len(feature_rows)
+        total_denials = float(sum(labels))
+        prior = total_denials / n if n else 0.0
+        folds = np.random.default_rng(cls.SEED).integers(0, cls.FOLDS, n).tolist()
+        mapping: dict[str, dict[Any, float]] = {}
+        for column in columns:
+            totals: dict[Any, list[float]] = {}
+            by_fold: dict[tuple[int, Any], list[float]] = {}
+            fold_totals = [[0.0, 0.0] for _ in range(cls.FOLDS)]
+            for row, label, fold in zip(feature_rows, labels, folds):
+                code = row.get(column)
+                total = totals.setdefault(code, [0.0, 0.0])
+                total[0] += label
+                total[1] += 1.0
+                part = by_fold.setdefault((fold, code), [0.0, 0.0])
+                part[0] += label
+                part[1] += 1.0
+                fold_totals[fold][0] += label
+                fold_totals[fold][1] += 1.0
+            mapping[column] = {code: cls._rate(d, r, prior) for code, (d, r) in totals.items()}
+            # Prior of the rows outside each fold, so a training row's value uses no label from its own fold.
+            out_priors = [
+                (total_denials - d) / (n - r) if n > r else prior for d, r in fold_totals
+            ]
+            for row, fold in zip(feature_rows, folds):
+                code = row.get(column)
+                own = by_fold[(fold, code)]
+                row[column] = cls._rate(totals[code][0] - own[0], totals[code][1] - own[1], out_priors[fold])
+        return cls(columns, prior, mapping)
+
+    def transform(self, values: dict[str, Any]) -> dict[str, Any]:
+        out = dict(values)
+        for column in self.columns:
+            if column in out and not isinstance(out[column], float):
+                out[column] = self.mapping[column].get(out[column], self.prior)
+        return out
 
 
 def _infer_feature_fill_values(

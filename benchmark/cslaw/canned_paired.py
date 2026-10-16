@@ -4,7 +4,9 @@ For every applicant explained by both a method and the canned notice (same datas
 row), the difference of the two shares of the marginal applicant method's four reasons (pr_overlap_m1_grouped in
 regb_reference.py's instances). A method meets E2 when the 95% bootstrap interval of the mean difference lies above
 zero. Each resample draws the applicants once within each combination of dataset and version and uses both notices
-of every drawn applicant (2,000 resamples, seed 42). Offline; reads regb_reference.py outputs only.
+of every drawn applicant (2,000 resamples, seed 42). The same comparison against the average applicant method's
+reasons (pr_overlap_m2_grouped) is written with reference "average"; the marginal rows are unchanged by it.
+Offline; reads regb_reference.py outputs only.
 
 Usage:
     python benchmark/cslaw/canned_paired.py --analysis-dir benchmark/outputs/cslaw_denial_<tag>/analysis \
@@ -26,12 +28,15 @@ SOURCES = (("credit", "regb_credit"), ("lime_local", "regb_lime_local"), ("lime_
 CANNED = ("regb_nullbaselines", "global_ranking")
 
 
-def shares(path: Path, explainer: str | None = None) -> dict:
+REFERENCES = (("marginal", "pr_overlap_m1_grouped"), ("average", "pr_overlap_m2_grouped"))
+
+
+def shares(path: Path, explainer: str | None = None, field: str = "pr_overlap_m1_grouped") -> dict:
     """{explainer: {(dataset, version, model, row): share}} for the consumer credit notices of one output folder."""
     out: dict = defaultdict(dict)
     with (path / "regb_reference_instances.csv").open(encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
-            value = row.get("pr_overlap_m1_grouped")
+            value = row.get(field)
             if row["dataset_id"] not in CREDIT or value in (None, "", "None", "nan"):
                 continue
             if explainer is not None and row["explainer_id"] != explainer:
@@ -67,30 +72,31 @@ def main() -> None:
     args = parser.parse_args()
 
     analysis = Path(args.analysis_dir)
-    canned = shares(analysis / CANNED[0], CANNED[1])[CANNED[1]]
     rows = []
-    for bundle, folder in SOURCES:
-        if not (analysis / folder / "regb_reference_instances.csv").is_file():
-            continue
-        for explainer, values in sorted(shares(analysis / folder).items()):
-            if explainer == "regb_reference":
+    for reference, field in REFERENCES:
+        canned = shares(analysis / CANNED[0], CANNED[1], field)[CANNED[1]]
+        for bundle, folder in SOURCES:
+            if not (analysis / folder / "regb_reference_instances.csv").is_file():
                 continue
-            result = paired(values, canned, args.n_boot, args.seed)
-            if result:
-                rows.append({"bundle": bundle, "explainer": explainer, **result})
+            for explainer, values in sorted(shares(analysis / folder, None, field).items()):
+                if explainer == "regb_reference":
+                    continue
+                result = paired(values, canned, args.n_boot, args.seed)
+                if result:
+                    rows.append({"reference": reference, "bundle": bundle, "explainer": explainer, **result})
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    fields = ["bundle", "explainer", "n", "method", "canned", "difference", "ci_low", "ci_high"]
+    fields = ["reference", "bundle", "explainer", "n", "method", "canned", "difference", "ci_low", "ci_high"]
     with (out_dir / "canned_paired.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fields)
         writer.writeheader()
         writer.writerows(rows)
     lines = ["# E2: share of the marginal applicant method's reasons, method minus canned notice (paired)", "",
-             "| bundle | method | n | method share | canned share | difference (points) | 95% interval | meets E2 |",
-             "|---|---|---:|---:|---:|---:|---|---|"]
+             "| reasons of | bundle | method | n | method share | canned share | difference (points) | 95% interval | meets E2 |",
+             "|---|---|---|---:|---:|---:|---:|---|---|"]
     for r in rows:
-        lines.append(f"| {r['bundle']} | {r['explainer']} | {r['n']} | {r['method']:.3f} | {r['canned']:.3f} | "
+        lines.append(f"| {r['reference']} | {r['bundle']} | {r['explainer']} | {r['n']} | {r['method']:.3f} | {r['canned']:.3f} | "
                      f"{100 * r['difference']:+.1f} | [{100 * r['ci_low']:.1f}, {100 * r['ci_high']:.1f}] | "
                      f"{'yes' if r['ci_low'] > 0 else 'no'} |")
     (out_dir / "canned_paired.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

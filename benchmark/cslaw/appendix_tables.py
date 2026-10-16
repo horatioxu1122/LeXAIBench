@@ -694,6 +694,70 @@ def within_class(analysis: Path, out_dir: Path) -> None:
     ))
 
 
+def reason_families_table(analysis: Path, out_dir: Path) -> None:
+    """E4 with correlated factors grouped into reason families, from reason_families.py."""
+    folder = analysis / "reason_families"
+    if not (folder / "family_within_summary.csv").is_file():
+        print(f"no reason family outputs in {folder}; tab_reason_families.tex not written")
+        return
+    summary = [r for r in read_csv(folder / "family_within_summary.csv") if r["metric"] == "first_reason_differs"]
+    contrasts = read_csv(folder / "family_within_contrasts.csv")
+    first = read_csv(folder / "family_first_reason.csv")
+    summed_path = folder / "family_first_reason_summed.csv"
+    summed = read_csv(summed_path) if summed_path.is_file() else []
+
+    def signed(value: float) -> str:
+        text = f"{100 * value:.0f}"
+        return "0" if text == "-0" else text.replace("-", "$-$")
+
+    def cell(rows: list[dict], value: str, sign: bool = False, **match) -> str:
+        for r in rows:
+            if all(str(r.get(k)) == str(v) for k, v in match.items()):
+                fmt = signed if sign else pct
+                return f"{fmt(float(r[value]))} [{fmt(float(r['ci_low']))}, {fmt(float(r['ci_high']))}]"
+        return "--"
+
+    labels = {"none": "None", "0.8": "0.8", "0.7": "0.7", "0.6": "0.6"}
+    rows = [r"\multicolumn{9}{@{}l}{\emph{Each family takes the place of its highest ranked member}} \\"]
+    for t in ("none", "0.8", "0.7", "0.6"):
+        s = [r for r in summary if r["threshold"] == t]
+        c = [r for r in contrasts if r["threshold"] == t]
+        f = [r for r in first if r["threshold"] == t]
+        rows.append(" & ".join([
+            labels[t], cell(f, "mean", comparison="methods", scope="pooled"),
+            cell(s, "mean", kind="within_boot_pairs", model="ebm", scope="pooled"),
+            cell(s, "mean", kind="within_boot_pairs", model="xgboost", scope="pooled"),
+            cell(f, "mean", comparison="models", scope="pooled"),
+            cell(s, "mean", kind="across_boot", scope="pooled"),
+            cell(c, "difference", True, within="within_boot_pairs|ebm", scope="pooled"),
+            cell(c, "difference", True, within="within_boot_pairs|xgboost", scope="pooled"),
+            cell(f, "mean", comparison="models", scope="heloc")]) + r" \\")
+    if summed:
+        rows.append(r"\midrule \multicolumn{9}{@{}l}{\emph{Contributions summed within each family before ranking (original fits)}} \\")
+        for t in ("none", "0.8", "0.7", "0.6"):
+            f = [r for r in summed if r["threshold"] == t]
+            rows.append(" & ".join([
+                labels[t], cell(f, "mean", comparison="methods", scope="pooled"), "--", "--",
+                cell(f, "mean", comparison="models", scope="pooled"), "--", "--", "--",
+                cell(f, "mean", comparison="models", scope="heloc")]) + r" \\")
+    write(out_dir, "tab_reason_families.tex", simple_table(
+        "Applicants whose first reason differs (\\%) when factors whose absolute rank correlation in the data reaches "
+        "the threshold count as one reason (single linkage; categorical factors and monthly histories as on the notices). "
+        "In the upper block None merges nothing and reproduces Figure~\\ref{fig:modelchoice} and Table~\\ref{tab:app-within}; "
+        "in the lower block None differs from them because summing also merges the months of each Default Credit history. Pooled over "
+        "the four consumer credit datasets except the last column. Methods: the two commentary methods on the same model. "
+        "Refits: two bootstrap refits of the boosting machine or the boosted trees. Classes: the two classes, original fits "
+        "and on the same resample. Differences are paired, in percentage points. Intervals as in Table~\\ref{tab:app-within}.",
+        "tab:app-families", "@{}lrrrrrrrr@{}",
+        [r"Threshold & Methods & \multicolumn{2}{c}{Refits} & \multicolumn{2}{c}{Classes} & "
+         r"\multicolumn{2}{c}{Classes $-$ refits} & HELOC \\",
+         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & machine & trees & original & same resample & "
+         r"machine & trees & classes \\"],
+        rows,
+        size=r"\scriptsize\setlength{\tabcolsep}{2.5pt}",
+    ))
+
+
 # --------------------------------------------------------------------- worked notices
 def feature_labels(*payloads: dict) -> dict:
     labels: dict = {}
@@ -904,6 +968,7 @@ def main() -> None:
     reference_table(analysis, out_dir)
     proxy_baselines(analysis, out_dir)
     within_class(analysis, out_dir)
+    reason_families_table(analysis, out_dir)
     worked_notices(denial_dir, sources["credit"], out_dir)
 
 

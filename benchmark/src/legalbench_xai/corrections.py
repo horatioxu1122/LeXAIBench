@@ -58,6 +58,13 @@ lime_discretize_continuous
     re-run (experiment_cslaw_v2_credit_lime_default.json); recorded only when on.
     lime 0.2.0.1 ignores sample_around_instance in this mode, so the two options
     cannot be combined.
+geo_target_encoding
+    Load the geographic codes in GEO_CODE_COLUMNS (HMDA county and census tract) as
+    text and give the models, in their place, the smoothed denial rate of each code
+    in the training data (out of fold for the training rows themselves), so a model
+    sees a neighborhood's outcome history instead of the order of its numeric code
+    (models/real.py _CodeTargetEncoder). Used for one HMDA re-run
+    (experiment_cslaw_v2_hmda_geo_*.json); recorded only when on.
 """
 
 from __future__ import annotations
@@ -68,7 +75,9 @@ from typing import Any
 SAMPLING_SELECTIONS = ("boundary_nearest", "stratified_random")
 # Options that to_dict() leaves out while they are False (robustness options added
 # after the v2 bundles were specified).
-_OMIT_WHEN_DEFAULT = ("lime_sample_around_instance", "lime_discretize_continuous")
+_OMIT_WHEN_DEFAULT = ("lime_sample_around_instance", "lime_discretize_continuous", "geo_target_encoding")
+# Columns that geo_target_encoding loads as text and target-encodes.
+GEO_CODE_COLUMNS = ("county_code", "census_tract")
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,6 +96,7 @@ class CorrectionOptions:
     # Robustness option, not part of any preset (see the module docstring).
     lime_sample_around_instance: bool = False
     lime_discretize_continuous: bool = False
+    geo_target_encoding: bool = False
 
     def __post_init__(self) -> None:
         if self.lime_sample_around_instance and self.lime_discretize_continuous:

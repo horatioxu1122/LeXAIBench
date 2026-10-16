@@ -15,6 +15,7 @@ class DatasetLoader(ABC):
         source_override: str | None = None,
         *,
         numeric_parsing_fix: bool = False,
+        text_columns: tuple[str, ...] = (),
     ) -> None:
         self.dataset_spec = dataset_spec
         self.feature_specs = feature_specs
@@ -22,6 +23,8 @@ class DatasetLoader(ABC):
         # cslaw corrections numeric_parsing_fix (v2): parse exponent-notation numbers.
         # False reproduces the v1 CSV parsing of the published bundles.
         self.numeric_parsing_fix = numeric_parsing_fix
+        # cslaw corrections geo_target_encoding: columns kept as text (empty by default).
+        self.text_columns = tuple(text_columns)
 
     def build_bundle(self, track: str) -> DatasetBundle:
         if track not in {"primary", "audit"}:
@@ -68,6 +71,7 @@ class DatasetLoader(ABC):
         rows = load_csv_rows(
             Path(resolved_path),
             numeric_parsing_fix=self.numeric_parsing_fix,
+            text_columns=self.text_columns,
         )
 
         filtered_rows: list[dict[str, object]] = []

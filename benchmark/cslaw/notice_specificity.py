@@ -37,6 +37,8 @@ import common  # noqa: E402
 K = 4
 COUNTERFACTUAL = ("dice", "wachter")
 REFERENCE_ID = "regb_reference"
+# The average applicant method of comment 9(b)(2)-5 (reference: all applicants), the second commentary method.
+AVERAGE_ID = "regb_average"
 
 
 def mean_pairwise_jaccard(sets: list[frozenset]) -> float | None:
@@ -48,24 +50,29 @@ def specificity_rows(payload: dict) -> list[dict]:
     groups = common.cslaw_section(payload).get("groups") or {}
     notices: dict = defaultdict(list)
     reference: dict = defaultdict(dict)
+    average: dict = defaultdict(dict)
     for row, instance in common.iter_instances(payload):
         key = (row["dataset_id"], row["track"], row["model_id"])
         features = common.principal_reason_features(instance.get("canonical_explanation"), limit=K)[:K]
         if features:
             notices[key + (row["explainer_id"],)].append(frozenset(features))
         values = (instance.get("native_contributions") or {}).get("values")
-        means = (
-            ((groups.get(common.cslaw_group_key(*key)) or {}).get("regb_reference") or {})
-            .get("near_cutoff", {})
-            .get("means")
-        )
+        regb = (groups.get(common.cslaw_group_key(*key)) or {}).get("regb_reference") or {}
+        means = regb.get("near_cutoff", {}).get("means")
         index = common.eval_row_index(instance)
         if values and means and index is not None:
             reasons = common.top_adverse_features(values, K, means)
             if reasons:
                 reference[key][index] = frozenset(reasons)
+        average_means = regb.get("all_applicants", {}).get("means")
+        if values and average_means and index is not None:
+            reasons = common.top_adverse_features(values, K, average_means)
+            if reasons:
+                average[key][index] = frozenset(reasons)
     for key, by_row in reference.items():
         notices[key + (REFERENCE_ID,)] = list(by_row.values())
+    for key, by_row in average.items():
+        notices[key + (AVERAGE_ID,)] = list(by_row.values())
     rows = []
     for (dataset_id, track, model_id, explainer_id), sets in sorted(notices.items()):
         value = mean_pairwise_jaccard(sets)
@@ -181,7 +188,8 @@ def main() -> None:
         f"## E3: mean pairwise Jaccard overlap of the first {K} reason features across applicants",
         "",
         "1.0 means every applicant in the configuration receives the same reasons. "
-        f"`{REFERENCE_ID}` is the comment 9(b)(2)-5 marginal applicant method on the same applicants.",
+        f"`{REFERENCE_ID}` is the comment 9(b)(2)-5 marginal applicant method on the same applicants, and "
+        f"`{AVERAGE_ID}` its average applicant method.",
         "",
         "| bundle | method | overlap | configurations |",
         "|---|---|---:|---:|",
