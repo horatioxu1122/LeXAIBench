@@ -162,7 +162,10 @@ def direction_units(payload: dict) -> dict:
 def accuracy_units(analysis: Path) -> dict:
     """{(bundle, explainer): {(dataset, version): [(share of the marginal method's reasons named, 1) per notice]}}."""
     out: dict = defaultdict(lambda: defaultdict(list))
-    for sub, bundle in (("regb_credit", "credit"), ("regb_nullbaselines", "nullbaselines"), ("regb_lime_local", "lime_local")):
+    for sub, bundle in (("regb_credit", "credit"), ("regb_nullbaselines", "nullbaselines"), ("regb_lime_local", "lime_local"),
+                        ("regb_lime_default", "lime_default")):
+        if sub == "regb_lime_default" and not (analysis / sub / "regb_reference_instances.csv").is_file():
+            continue  # optional robustness run (run_cslaw_lime_default.sh)
         for row in read_csv(analysis / sub / "regb_reference_instances.csv"):
             value = row.get("pr_overlap_m1_grouped")
             if row["dataset_id"] in CREDIT and value not in (None, "", "None", "nan"):
@@ -351,16 +354,20 @@ def fig_accuracy_specificity(accuracy: dict, specificity: dict, out_dir: Path, q
         ("credit", "wachter", "Wachter", "method", (14, 0), "left", "center"),
         ("credit", "lime", "LIME", "method", (0, -5), "center", "top"),
         ("lime_local", "lime", "LIME, local sampling", "local", (0, 4), "center", "bottom"),
+        ("lime_default", "lime", "LIME, default mode", "default", (4, -9), "left", "top"),
         ("nullbaselines", "global_ranking", "Canned notice", "canned", (-4, 5), "right", "bottom"),
         ("nullbaselines", "random_reasons", "Random\nnotice", "random", (6, 0), "left", "center"),
     ]
     styles = {
         "method": dict(marker="o", ms=4.5, mfc=BLUE, mec=BLUE, color=BLUE),
         "local": dict(marker="o", ms=4.5, mfc="white", mec=BLUE, color=BLUE),
+        "default": dict(marker="s", ms=4.2, mfc="white", mec=BLUE, color=BLUE),
         "canned": dict(marker="D", ms=4.2, mfc=RED, mec=RED, color=RED),
         "random": dict(marker="s", ms=4.2, mfc=GREY, mec=GREY, color=GREY),
         "reference": dict(marker="*", ms=7, mfc=INK, mec=INK, color=INK),
     }
+    # The default-mode LIME run is optional; leave its point out when its outputs are absent.
+    points = [p for p in points if p[0] != "lime_default" or ((p[0], p[1]) in accuracy and (p[0], p[1]) in specificity)]
     values = []
     for bundle, method, label, style, offset, ha, va in points:
         acc = ratio_ci(accuracy[(bundle, method)])
@@ -396,7 +403,7 @@ def fig_accuracy_specificity(accuracy: dict, specificity: dict, out_dir: Path, q
     ax.set_xticks(ticks, ["0", "0.25", "0.50", "0.75", "1"])
     ax.set_yticks(ticks, ["0", "0.25", "0.50", "0.75", "1"])
     ax.set_xlabel("Overlap of two applicants’ reason sets (E3)")
-    ax.set_ylabel("Share of the marginal applicant method’s reasons named (E2)")
+    ax.set_ylabel("Marginal applicant method’s reasons named (E2)")
     save(fig, out_dir, "fig_accuracy_specificity", qa_dir)
     rows = [[label.replace("\n", " "), *spec, *acc] for _, _, label, _, _, _, _, spec, acc in values]
     rows.append(["Marginal applicant method", *marginal_spec, 1.0, 1.0, 1.0])
