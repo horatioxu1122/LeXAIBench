@@ -625,7 +625,7 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
     write(out_dir, "tab_proxy_baselines.tex", simple_table(
         "Possible proxies on the marginal applicant method's notices, in percent of denied applicants. With: the version "
         "that keeps the protected characteristics. Dropped: the same models and applicants with the characteristics left out "
-        "of the ranking, so the next-ranked factors fill the freed places. Placebo: as many factors labeled neither protected "
+        "of the ranking, so the next ranked factors fill the freed places. Placebo: as many factors labeled neither protected "
         "nor possible proxy left out instead. Refit: the version fit without the characteristics, which explains other "
         "applicants. Refit $-$ dropped: difference in percentage points with a 95\\% bootstrap interval. Chance: four "
         "reasons drawn at random from the version's factors, with and without the characteristics. HMDA, neighborhoods: "
