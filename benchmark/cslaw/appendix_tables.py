@@ -255,6 +255,11 @@ LEGAL_BASIS_EDITS = (
      "N.Y. Crim. Proc. Law 510.10(1)(c) (criminal conviction record as a factor)"),
     ("N.Y. Crim. Proc. Law 510.10, 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
     ("N.Y. Crim. Proc. Law 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
+    # Labels that no legal provision fixes are shown as set in the authors' review.
+    ("none (practical judgment)", "set in the authors' review"),
+    ("is practical judgment", "is set in the authors' review"),
+    ("labels otherwise practical judgment", "other labels set in the authors' review"),
+    ("practical judgment", "set in the authors' review"),
 )
 MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
           "december")
@@ -504,7 +509,7 @@ def lime_sampling(analysis: Path, denial_dir: Path, sources: dict, out_dir: Path
     rows += [line(f"Share of marginal applicant reasons named, {label.lower()}", [f2(coverage(sub, m)) for _n, sub, _l in runs])
              for m, label in MODELS]
     rows.append(line("Overlap of reasons across applicants", [f2(spec.get(n)) for n, _s, _l in runs]))
-    caption = ("LIME as configured here, without discretization, with perturbations drawn as in the main runs from the mean "
+    caption = ("LIME without discretization, with perturbations drawn as in the main runs from the mean "
                "and spread of 64 training applicants, and drawn around the applicant with the same spread")
     if len(runs) == 3:
         caption += (", and LIME in the library's default mode, which discretizes each factor into quartiles of the same 64 "
