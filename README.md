@@ -1,9 +1,5 @@
 # LeXAIBench
 
-This repository holds the code and the analysis outputs for the paper
-"What Counts as a Principal Reason? Testing Explainable AI Under Regulation B"
-by Jingyan Xu and Tianyi Yang.
-
 The Equal Credit Opportunity Act and Regulation B require a creditor that denies
 a credit application to disclose the principal reasons for the denial. The paper
 separates this requirement into six elements and tests each element against the
