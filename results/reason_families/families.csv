@@ -1,0 +1,265 @@
+threshold,dataset_id,unit,family,merged
+none,heloc,AverageMInFile,AverageMInFile,False
+none,heloc,ExternalRiskEstimate,ExternalRiskEstimate,False
+none,heloc,MSinceMostRecentDelq,MSinceMostRecentDelq,False
+none,heloc,MSinceMostRecentInqexcl7days,MSinceMostRecentInqexcl7days,False
+none,heloc,MSinceMostRecentTradeOpen,MSinceMostRecentTradeOpen,False
+none,heloc,MSinceOldestTradeOpen,MSinceOldestTradeOpen,False
+none,heloc,MaxDelq2PublicRecLast12M,MaxDelq2PublicRecLast12M,False
+none,heloc,MaxDelqEver,MaxDelqEver,False
+none,heloc,NetFractionInstallBurden,NetFractionInstallBurden,False
+none,heloc,NetFractionRevolvingBurden,NetFractionRevolvingBurden,False
+none,heloc,NumBank2NatlTradesWHighUtilization,NumBank2NatlTradesWHighUtilization,False
+none,heloc,NumInqLast6M,NumInqLast6M,False
+none,heloc,NumInqLast6Mexcl7days,NumInqLast6Mexcl7days,False
+none,heloc,NumInstallTradesWBalance,NumInstallTradesWBalance,False
+none,heloc,NumRevolvingTradesWBalance,NumRevolvingTradesWBalance,False
+none,heloc,NumSatisfactoryTrades,NumSatisfactoryTrades,False
+none,heloc,NumTotalTrades,NumTotalTrades,False
+none,heloc,NumTrades60Ever2DerogPubRec,NumTrades60Ever2DerogPubRec,False
+none,heloc,NumTrades90Ever2DerogPubRec,NumTrades90Ever2DerogPubRec,False
+none,heloc,NumTradesOpeninLast12M,NumTradesOpeninLast12M,False
+none,heloc,PercentInstallTrades,PercentInstallTrades,False
+none,heloc,PercentTradesNeverDelq,PercentTradesNeverDelq,False
+none,heloc,PercentTradesWBalance,PercentTradesWBalance,False
+none,heloc,RiskPerformance,RiskPerformance,False
+none,default_of_credit_card_clients,AGE,AGE,False
+none,default_of_credit_card_clients,EDUCATION,EDUCATION,False
+none,default_of_credit_card_clients,ID,ID,False
+none,default_of_credit_card_clients,LIMIT_BAL,LIMIT_BAL,False
+none,default_of_credit_card_clients,MARRIAGE,MARRIAGE,False
+none,default_of_credit_card_clients,SEX,SEX,False
+none,default_of_credit_card_clients,default_payment_next_month,default_payment_next_month,False
+none,default_of_credit_card_clients,recent bill balances,recent bill balances,False
+none,default_of_credit_card_clients,recent late payment history,recent late payment history,False
+none,default_of_credit_card_clients,recent payment amounts,recent payment amounts,False
+none,give_me_some_credit,DebtRatio,DebtRatio,False
+none,give_me_some_credit,FinancialDistressNextTwoYears,FinancialDistressNextTwoYears,False
+none,give_me_some_credit,MonthlyIncome,MonthlyIncome,False
+none,give_me_some_credit,NumberOfDependents,NumberOfDependents,False
+none,give_me_some_credit,NumberOfOpenCreditLinesAndLoans,NumberOfOpenCreditLinesAndLoans,False
+none,give_me_some_credit,NumberOfTime30-59DaysPastDueNotWorse,NumberOfTime30-59DaysPastDueNotWorse,False
+none,give_me_some_credit,NumberOfTime60-89DaysPastDueNotWorse,NumberOfTime60-89DaysPastDueNotWorse,False
+none,give_me_some_credit,NumberOfTimes90DaysLate,NumberOfTimes90DaysLate,False
+none,give_me_some_credit,NumberRealEstateLoansOrLines,NumberRealEstateLoansOrLines,False
+none,give_me_some_credit,RevolvingUtilizationOfUnsecuredLines,RevolvingUtilizationOfUnsecuredLines,False
+none,give_me_some_credit,age,age,False
+none,south_german_credit,age,age,False
+none,south_german_credit,amount,amount,False
+none,south_german_credit,credit_history,credit_history,False
+none,south_german_credit,credit_risk,credit_risk,False
+none,south_german_credit,duration,duration,False
+none,south_german_credit,employment_duration,employment_duration,False
+none,south_german_credit,foreign_worker,foreign_worker,False
+none,south_german_credit,housing,housing,False
+none,south_german_credit,installment_rate,installment_rate,False
+none,south_german_credit,job,job,False
+none,south_german_credit,number_credits,number_credits,False
+none,south_german_credit,other_debtors,other_debtors,False
+none,south_german_credit,other_installment_plans,other_installment_plans,False
+none,south_german_credit,people_liable,people_liable,False
+none,south_german_credit,personal_status_sex,personal_status_sex,False
+none,south_german_credit,present_residence,present_residence,False
+none,south_german_credit,property,property,False
+none,south_german_credit,purpose,purpose,False
+none,south_german_credit,savings,savings,False
+none,south_german_credit,status,status,False
+none,south_german_credit,telephone,telephone,False
+0.8,heloc,AverageMInFile,AverageMInFile,False
+0.8,heloc,ExternalRiskEstimate,ExternalRiskEstimate,False
+0.8,heloc,MSinceMostRecentDelq,MSinceMostRecentDelq,False
+0.8,heloc,MSinceMostRecentInqexcl7days,MSinceMostRecentInqexcl7days,False
+0.8,heloc,MSinceMostRecentTradeOpen,MSinceMostRecentTradeOpen,False
+0.8,heloc,MSinceOldestTradeOpen,MSinceOldestTradeOpen,False
+0.8,heloc,MaxDelq2PublicRecLast12M,MaxDelq2PublicRecLast12M,False
+0.8,heloc,MaxDelqEver,MaxDelqEver,False
+0.8,heloc,NetFractionInstallBurden,NetFractionInstallBurden,False
+0.8,heloc,NetFractionRevolvingBurden,NetFractionRevolvingBurden,False
+0.8,heloc,NumBank2NatlTradesWHighUtilization,NumBank2NatlTradesWHighUtilization,False
+0.8,heloc,NumInqLast6M,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.8,heloc,NumInqLast6Mexcl7days,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.8,heloc,NumInstallTradesWBalance,NumInstallTradesWBalance,False
+0.8,heloc,NumRevolvingTradesWBalance,NumRevolvingTradesWBalance,False
+0.8,heloc,NumSatisfactoryTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.8,heloc,NumTotalTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.8,heloc,NumTrades60Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.8,heloc,NumTrades90Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.8,heloc,NumTradesOpeninLast12M,NumTradesOpeninLast12M,False
+0.8,heloc,PercentInstallTrades,PercentInstallTrades,False
+0.8,heloc,PercentTradesNeverDelq,PercentTradesNeverDelq,False
+0.8,heloc,PercentTradesWBalance,PercentTradesWBalance,False
+0.8,heloc,RiskPerformance,RiskPerformance,False
+0.8,default_of_credit_card_clients,AGE,AGE,False
+0.8,default_of_credit_card_clients,EDUCATION,EDUCATION,False
+0.8,default_of_credit_card_clients,ID,ID,False
+0.8,default_of_credit_card_clients,LIMIT_BAL,LIMIT_BAL,False
+0.8,default_of_credit_card_clients,MARRIAGE,MARRIAGE,False
+0.8,default_of_credit_card_clients,SEX,SEX,False
+0.8,default_of_credit_card_clients,default_payment_next_month,default_payment_next_month,False
+0.8,default_of_credit_card_clients,recent bill balances,recent bill balances,False
+0.8,default_of_credit_card_clients,recent late payment history,recent late payment history,False
+0.8,default_of_credit_card_clients,recent payment amounts,recent payment amounts,False
+0.8,give_me_some_credit,DebtRatio,DebtRatio,False
+0.8,give_me_some_credit,FinancialDistressNextTwoYears,FinancialDistressNextTwoYears,False
+0.8,give_me_some_credit,MonthlyIncome,MonthlyIncome,False
+0.8,give_me_some_credit,NumberOfDependents,NumberOfDependents,False
+0.8,give_me_some_credit,NumberOfOpenCreditLinesAndLoans,NumberOfOpenCreditLinesAndLoans,False
+0.8,give_me_some_credit,NumberOfTime30-59DaysPastDueNotWorse,NumberOfTime30-59DaysPastDueNotWorse,False
+0.8,give_me_some_credit,NumberOfTime60-89DaysPastDueNotWorse,NumberOfTime60-89DaysPastDueNotWorse,False
+0.8,give_me_some_credit,NumberOfTimes90DaysLate,NumberOfTimes90DaysLate,False
+0.8,give_me_some_credit,NumberRealEstateLoansOrLines,NumberRealEstateLoansOrLines,False
+0.8,give_me_some_credit,RevolvingUtilizationOfUnsecuredLines,RevolvingUtilizationOfUnsecuredLines,False
+0.8,give_me_some_credit,age,age,False
+0.8,south_german_credit,age,age,False
+0.8,south_german_credit,amount,amount,False
+0.8,south_german_credit,credit_history,credit_history,False
+0.8,south_german_credit,credit_risk,credit_risk,False
+0.8,south_german_credit,duration,duration,False
+0.8,south_german_credit,employment_duration,employment_duration,False
+0.8,south_german_credit,foreign_worker,foreign_worker,False
+0.8,south_german_credit,housing,housing,False
+0.8,south_german_credit,installment_rate,installment_rate,False
+0.8,south_german_credit,job,job,False
+0.8,south_german_credit,number_credits,number_credits,False
+0.8,south_german_credit,other_debtors,other_debtors,False
+0.8,south_german_credit,other_installment_plans,other_installment_plans,False
+0.8,south_german_credit,people_liable,people_liable,False
+0.8,south_german_credit,personal_status_sex,personal_status_sex,False
+0.8,south_german_credit,present_residence,present_residence,False
+0.8,south_german_credit,property,property,False
+0.8,south_german_credit,purpose,purpose,False
+0.8,south_german_credit,savings,savings,False
+0.8,south_german_credit,status,status,False
+0.8,south_german_credit,telephone,telephone,False
+0.7,heloc,AverageMInFile,AverageMInFile + MSinceOldestTradeOpen,True
+0.7,heloc,ExternalRiskEstimate,ExternalRiskEstimate,False
+0.7,heloc,MSinceMostRecentDelq,MSinceMostRecentDelq,False
+0.7,heloc,MSinceMostRecentInqexcl7days,MSinceMostRecentInqexcl7days,False
+0.7,heloc,MSinceMostRecentTradeOpen,MSinceMostRecentTradeOpen + NumTradesOpeninLast12M,True
+0.7,heloc,MSinceOldestTradeOpen,AverageMInFile + MSinceOldestTradeOpen,True
+0.7,heloc,MaxDelq2PublicRecLast12M,MaxDelq2PublicRecLast12M,False
+0.7,heloc,MaxDelqEver,MaxDelqEver,False
+0.7,heloc,NetFractionInstallBurden,NetFractionInstallBurden,False
+0.7,heloc,NetFractionRevolvingBurden,NetFractionRevolvingBurden,False
+0.7,heloc,NumBank2NatlTradesWHighUtilization,NumBank2NatlTradesWHighUtilization,False
+0.7,heloc,NumInqLast6M,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.7,heloc,NumInqLast6Mexcl7days,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.7,heloc,NumInstallTradesWBalance,NumInstallTradesWBalance,False
+0.7,heloc,NumRevolvingTradesWBalance,NumRevolvingTradesWBalance,False
+0.7,heloc,NumSatisfactoryTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.7,heloc,NumTotalTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.7,heloc,NumTrades60Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.7,heloc,NumTrades90Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.7,heloc,NumTradesOpeninLast12M,MSinceMostRecentTradeOpen + NumTradesOpeninLast12M,True
+0.7,heloc,PercentInstallTrades,PercentInstallTrades,False
+0.7,heloc,PercentTradesNeverDelq,PercentTradesNeverDelq,False
+0.7,heloc,PercentTradesWBalance,PercentTradesWBalance,False
+0.7,heloc,RiskPerformance,RiskPerformance,False
+0.7,default_of_credit_card_clients,AGE,AGE,False
+0.7,default_of_credit_card_clients,EDUCATION,EDUCATION,False
+0.7,default_of_credit_card_clients,ID,ID,False
+0.7,default_of_credit_card_clients,LIMIT_BAL,LIMIT_BAL,False
+0.7,default_of_credit_card_clients,MARRIAGE,MARRIAGE,False
+0.7,default_of_credit_card_clients,SEX,SEX,False
+0.7,default_of_credit_card_clients,default_payment_next_month,default_payment_next_month,False
+0.7,default_of_credit_card_clients,recent bill balances,recent bill balances,False
+0.7,default_of_credit_card_clients,recent late payment history,recent late payment history,False
+0.7,default_of_credit_card_clients,recent payment amounts,recent payment amounts,False
+0.7,give_me_some_credit,DebtRatio,DebtRatio,False
+0.7,give_me_some_credit,FinancialDistressNextTwoYears,FinancialDistressNextTwoYears,False
+0.7,give_me_some_credit,MonthlyIncome,MonthlyIncome,False
+0.7,give_me_some_credit,NumberOfDependents,NumberOfDependents,False
+0.7,give_me_some_credit,NumberOfOpenCreditLinesAndLoans,NumberOfOpenCreditLinesAndLoans,False
+0.7,give_me_some_credit,NumberOfTime30-59DaysPastDueNotWorse,NumberOfTime30-59DaysPastDueNotWorse,False
+0.7,give_me_some_credit,NumberOfTime60-89DaysPastDueNotWorse,NumberOfTime60-89DaysPastDueNotWorse,False
+0.7,give_me_some_credit,NumberOfTimes90DaysLate,NumberOfTimes90DaysLate,False
+0.7,give_me_some_credit,NumberRealEstateLoansOrLines,NumberRealEstateLoansOrLines,False
+0.7,give_me_some_credit,RevolvingUtilizationOfUnsecuredLines,RevolvingUtilizationOfUnsecuredLines,False
+0.7,give_me_some_credit,age,age,False
+0.7,south_german_credit,age,age,False
+0.7,south_german_credit,amount,amount,False
+0.7,south_german_credit,credit_history,credit_history,False
+0.7,south_german_credit,credit_risk,credit_risk,False
+0.7,south_german_credit,duration,duration,False
+0.7,south_german_credit,employment_duration,employment_duration,False
+0.7,south_german_credit,foreign_worker,foreign_worker,False
+0.7,south_german_credit,housing,housing,False
+0.7,south_german_credit,installment_rate,installment_rate,False
+0.7,south_german_credit,job,job,False
+0.7,south_german_credit,number_credits,number_credits,False
+0.7,south_german_credit,other_debtors,other_debtors,False
+0.7,south_german_credit,other_installment_plans,other_installment_plans,False
+0.7,south_german_credit,people_liable,people_liable,False
+0.7,south_german_credit,personal_status_sex,personal_status_sex,False
+0.7,south_german_credit,present_residence,present_residence,False
+0.7,south_german_credit,property,property,False
+0.7,south_german_credit,purpose,purpose,False
+0.7,south_german_credit,savings,savings,False
+0.7,south_german_credit,status,status,False
+0.7,south_german_credit,telephone,telephone,False
+0.6,heloc,AverageMInFile,AverageMInFile + MSinceOldestTradeOpen,True
+0.6,heloc,ExternalRiskEstimate,ExternalRiskEstimate + NetFractionRevolvingBurden + NumBank2NatlTradesWHighUtilization + PercentTradesWBalance,True
+0.6,heloc,MSinceMostRecentDelq,MSinceMostRecentDelq,False
+0.6,heloc,MSinceMostRecentInqexcl7days,MSinceMostRecentInqexcl7days,False
+0.6,heloc,MSinceMostRecentTradeOpen,MSinceMostRecentTradeOpen + NumTradesOpeninLast12M,True
+0.6,heloc,MSinceOldestTradeOpen,AverageMInFile + MSinceOldestTradeOpen,True
+0.6,heloc,MaxDelq2PublicRecLast12M,MaxDelq2PublicRecLast12M,False
+0.6,heloc,MaxDelqEver,MaxDelqEver,False
+0.6,heloc,NetFractionInstallBurden,NetFractionInstallBurden,False
+0.6,heloc,NetFractionRevolvingBurden,ExternalRiskEstimate + NetFractionRevolvingBurden + NumBank2NatlTradesWHighUtilization + PercentTradesWBalance,True
+0.6,heloc,NumBank2NatlTradesWHighUtilization,ExternalRiskEstimate + NetFractionRevolvingBurden + NumBank2NatlTradesWHighUtilization + PercentTradesWBalance,True
+0.6,heloc,NumInqLast6M,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.6,heloc,NumInqLast6Mexcl7days,NumInqLast6M + NumInqLast6Mexcl7days,True
+0.6,heloc,NumInstallTradesWBalance,NumInstallTradesWBalance,False
+0.6,heloc,NumRevolvingTradesWBalance,NumRevolvingTradesWBalance,False
+0.6,heloc,NumSatisfactoryTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.6,heloc,NumTotalTrades,NumSatisfactoryTrades + NumTotalTrades,True
+0.6,heloc,NumTrades60Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.6,heloc,NumTrades90Ever2DerogPubRec,NumTrades60Ever2DerogPubRec + NumTrades90Ever2DerogPubRec,True
+0.6,heloc,NumTradesOpeninLast12M,MSinceMostRecentTradeOpen + NumTradesOpeninLast12M,True
+0.6,heloc,PercentInstallTrades,PercentInstallTrades,False
+0.6,heloc,PercentTradesNeverDelq,PercentTradesNeverDelq,False
+0.6,heloc,PercentTradesWBalance,ExternalRiskEstimate + NetFractionRevolvingBurden + NumBank2NatlTradesWHighUtilization + PercentTradesWBalance,True
+0.6,heloc,RiskPerformance,RiskPerformance,False
+0.6,default_of_credit_card_clients,AGE,AGE,False
+0.6,default_of_credit_card_clients,EDUCATION,EDUCATION,False
+0.6,default_of_credit_card_clients,ID,ID,False
+0.6,default_of_credit_card_clients,LIMIT_BAL,LIMIT_BAL,False
+0.6,default_of_credit_card_clients,MARRIAGE,MARRIAGE,False
+0.6,default_of_credit_card_clients,SEX,SEX,False
+0.6,default_of_credit_card_clients,default_payment_next_month,default_payment_next_month,False
+0.6,default_of_credit_card_clients,recent bill balances,recent bill balances + recent late payment history + recent payment amounts,True
+0.6,default_of_credit_card_clients,recent late payment history,recent bill balances + recent late payment history + recent payment amounts,True
+0.6,default_of_credit_card_clients,recent payment amounts,recent bill balances + recent late payment history + recent payment amounts,True
+0.6,give_me_some_credit,DebtRatio,DebtRatio,False
+0.6,give_me_some_credit,FinancialDistressNextTwoYears,FinancialDistressNextTwoYears,False
+0.6,give_me_some_credit,MonthlyIncome,MonthlyIncome,False
+0.6,give_me_some_credit,NumberOfDependents,NumberOfDependents,False
+0.6,give_me_some_credit,NumberOfOpenCreditLinesAndLoans,NumberOfOpenCreditLinesAndLoans,False
+0.6,give_me_some_credit,NumberOfTime30-59DaysPastDueNotWorse,NumberOfTime30-59DaysPastDueNotWorse,False
+0.6,give_me_some_credit,NumberOfTime60-89DaysPastDueNotWorse,NumberOfTime60-89DaysPastDueNotWorse,False
+0.6,give_me_some_credit,NumberOfTimes90DaysLate,NumberOfTimes90DaysLate,False
+0.6,give_me_some_credit,NumberRealEstateLoansOrLines,NumberRealEstateLoansOrLines,False
+0.6,give_me_some_credit,RevolvingUtilizationOfUnsecuredLines,RevolvingUtilizationOfUnsecuredLines,False
+0.6,give_me_some_credit,age,age,False
+0.6,south_german_credit,age,age,False
+0.6,south_german_credit,amount,amount + duration,True
+0.6,south_german_credit,credit_history,credit_history,False
+0.6,south_german_credit,credit_risk,credit_risk,False
+0.6,south_german_credit,duration,amount + duration,True
+0.6,south_german_credit,employment_duration,employment_duration,False
+0.6,south_german_credit,foreign_worker,foreign_worker,False
+0.6,south_german_credit,housing,housing,False
+0.6,south_german_credit,installment_rate,installment_rate,False
+0.6,south_german_credit,job,job,False
+0.6,south_german_credit,number_credits,number_credits,False
+0.6,south_german_credit,other_debtors,other_debtors,False
+0.6,south_german_credit,other_installment_plans,other_installment_plans,False
+0.6,south_german_credit,people_liable,people_liable,False
+0.6,south_german_credit,personal_status_sex,personal_status_sex,False
+0.6,south_german_credit,present_residence,present_residence,False
+0.6,south_german_credit,property,property,False
+0.6,south_german_credit,purpose,purpose,False
+0.6,south_german_credit,savings,savings,False
+0.6,south_german_credit,status,status,False
+0.6,south_german_credit,telephone,telephone,False

@@ -47,33 +47,14 @@ htmlcov/
 .claude/
 .codex_tmp/
 
-# Local-only working directories (not for distribution)
-benchmark/data/raw/
+# Local files that are not part of the repository
+manuscript/
+COLLABORATOR_CHECKLIST.md
 tmp_pdfshots/
 
-# Manuscript source — PDF goes to OpenReview directly, not the public repo
-manuscript/
+# Datasets: see benchmark/DATA_ACQUISITION.md
+benchmark/data/raw/
+benchmark/data/real/
 
-# Internal team artifact — not for public release
-COLLABORATOR_CHECKLIST.md
-
-# Internal page-reduction planning notes — not for public release
-PAGE_REDUCTION_PLAN.md
-
-# LaTeX build output (manuscript source is tracked; build artifacts are not)
-*.aux
-*.log
-*.out
-*.toc
-*.lof
-*.lot
-*.bbl
-*.blg
-*.brf
-*.fls
-*.fdb_latexmk
-*.synctex.gz
-*.synctex(busy)
-
-# Note: do NOT ignore benchmark/outputs/ — those are released artifact bundles.
-# Do NOT ignore benchmark/data/real/ — those are the prepared benchmark CSVs.
+# Run outputs. The analysis outputs of the paper's runs are in results/.
+benchmark/outputs/

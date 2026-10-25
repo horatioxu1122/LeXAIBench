@@ -1,6 +1,0 @@
-explainer_id,champion_frequency,mean_rank,num_draws
-shap,0.371,2.459,1000
-wachter,0.272,2.453,1000
-anchors,0.173,3.457,1000
-dice,0.167,2.717,1000
-lime,0.017,3.914,1000

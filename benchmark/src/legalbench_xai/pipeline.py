@@ -486,7 +486,7 @@ class BenchmarkPipeline:
         data_sources = self.show_data_sources()
 
         messages = [
-            "LegalBench-XAI runtime doctor",
+            "LeXAIBench runtime doctor",
             "",
             "Capability status:",
         ]
@@ -529,7 +529,7 @@ class BenchmarkPipeline:
                 _recommended_next_step(readiness, data_sources["summary"]),
                 "",
                 "Setup guide:",
-                "- See benchmark/EMPIRICAL_SETUP.md",
+                "- See benchmark/DATA_ACQUISITION.md",
             ]
         )
         return messages

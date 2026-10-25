@@ -351,7 +351,7 @@ def run_demo_benchmark(config) -> dict[str, Any]:
             "groups": cslaw_groups,
         }
         # Non-v1 corrections imply a cslaw block (corrections_from_config), so the
-        # default path never gains these keys. Round-1 configs that only set the
+        # default path never gains these keys. Pre-v2 configs that only set the
         # legacy native-ranking flag are not marked (see _records_corrections).
         if _records_corrections(corrections):
             cslaw_block["corrections_version"] = _corrections_version(corrections)
@@ -1262,12 +1262,12 @@ def _apply_model_corrections(model: Any, corrections: CorrectionOptions) -> None
 def _records_corrections(corrections: CorrectionOptions) -> bool:
     """True when the run records a corrections marker (version, options, progress event).
 
-    The legacy round-1 flag cslaw.use_native_contributions_for_ranking maps to
+    The pre-v2 flag cslaw.use_native_contributions_for_ranking maps to
     native_contributions=True in corrections_from_payload (the model option must
     still be switched), but with every other option at its v1 value the run is
-    plain round-1 instrumentation: v1 scoring and sampling, already echoed as
+    plain pre-v2 instrumentation: v1 scoring and sampling, already echoed as
     cslaw.config.use_native_contributions_for_ranking. Such a run is not labelled
-    as corrected, so round-1 bundles keep their exact payload shape.
+    as corrected, so pre-v2 bundles keep their exact payload shape.
     """
     if corrections.is_v1:
         return False
@@ -1372,7 +1372,7 @@ class CslawSettings:
     null_baselines: dict[str, Any]
     null_baselines_in_use: bool
     # Versioned corrections from cslaw.corrections (V1 when absent). Recorded in
-    # payload["cslaw"]["corrections"], not in to_dict(), so the round-1 echo is unchanged.
+    # payload["cslaw"]["corrections"], not in to_dict(), so the pre-v2 echo is unchanged.
     corrections: CorrectionOptions = V1
 
     @property

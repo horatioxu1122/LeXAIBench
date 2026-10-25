@@ -2,7 +2,7 @@
 
 Every correction defaults to the v1 behavior, so configs without a
 ``cslaw.corrections`` entry reproduce the published (v1) bundles exactly. The
-v2 preset turns on all corrections used for the CS&Law revision:
+v2 preset turns on all corrections used for the CS&Law paper:
 
 native_contributions
     Rank candidate features (Anchors candidates, counterfactual search order,

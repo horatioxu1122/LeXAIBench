@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "legalbench-xai"
 version = "0.1.0"
-description = "A cross-domain benchmark for legally meaningful explanation quality in high-stakes algorithmic decisions."
+description = "Tests of explanation methods against the adverse action notice requirement of ECOA and Regulation B."
 requires-python = ">=3.12"
 license = {file = "LICENSE"}
 

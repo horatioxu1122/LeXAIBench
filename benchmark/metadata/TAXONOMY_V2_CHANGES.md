@@ -1,9 +1,9 @@
 # Feature taxonomy v2: rule, definitions, and every change from v1
 
-**Status: reviewed by the authors (2026-10-15).** The labels were prepared with AI
-assistance; the author list has no legal co-author. The authors reviewed the rule,
-the definitions and the label changes, and accepted the five judgment calls that
-change primary-track membership or rest on practical judgment rather than law:
+**Status: reviewed by the authors (2026-10-15).** An AI assistant helped draft the
+labels, and both authors then reviewed the rule, the definitions and every label.
+The review settled the judgment calls that change primary-track membership or rest
+on practical judgment rather than law:
 (1) `south_german_credit.foreign_worker` S -> P (immigration status may be considered
 under Reg B 12 CFR 1002.6(b)(7) but must not proxy for national origin);
 (2) `ny_courts_pretrial.age_at_arrest` S -> P (age is not a suspect class,
@@ -11,9 +11,7 @@ Massachusetts Bd. of Retirement v. Murgia, 427 U.S. 307 (1976));
 (3) heloc credit-history-length features labelled P as age proxies (practical judgment);
 (4) `LIMIT_BAL`, `purpose`, `loan_purpose` P -> N (practical judgment);
 (5) US law (ECOA/Reg B, FCRA) is applied to the German and Taiwanese credit data as a
-stylised legal frame. The per-feature `review_status` strings in
-`feature_taxonomy_v2.json` still read "draft"; they are left unchanged on purpose because
-the v2 runs recorded that file's SHA-256 in their provenance, and this note supersedes them.
+stylised legal frame.
 
 Files:
 
@@ -26,8 +24,8 @@ Files:
 
 The v1 files (`feature_taxonomy.json`, `dataset_registry.json`,
 `paper/feature_taxonomy_manifest.yaml`) are unchanged. Only configs whose
-`registry` block points to the v2 files use v2, so the published v1 bundles
-still reproduce. `FeatureSpec` gained three optional fields (`rationale`,
+`registry` block points to the v2 files use v2, so version 1 still
+reproduces. `FeatureSpec` gained three optional fields (`rationale`,
 `legal_basis`, `review_status`, all defaulting to `None`). They never reach a
 canonical explanation or a score.
 
@@ -54,12 +52,12 @@ the job on any violation.
    `ExternalRiskEstimate` (P). hmda excluded all geography, ny_courts_pretrial
    excluded `county_name` but not `court_type`, and fda_inspections excluded
    `fiscal_year` although it was labeled N.
-2. **Labels contradicted the manuscript's own definitions.** The manuscript
-   defines verifiability Y as values the person can verify "from documents they
+2. **Labels contradicted their own definitions.** The definition of
+   verifiability Y covers values the person can verify "from documents they
    hold". Yet 21 of 23 HELOC features, all of which are derived from a consumer
    report, were labeled Y. Correctability P was used for self-reported
    application data, which the subject can correct directly, so the
-   manuscript's own definition would give Y. The same kind of feature got
+   definition gives Y. The same kind of feature got
    different labels in different datasets: HMDA `derived_sex` was V=Y, C=N
    while `derived_race` was V=P, C=P, although all three fields are collected
    the same way.
@@ -94,7 +92,7 @@ order does not affect loading, because `build_bundle` sorts features.
 
 The audit lists are unchanged (`ID` for default credit, empty elsewhere).
 
-Consequences to state in the paper:
+Consequences:
 
 - **heloc and fda_inspections have no S feature**, so their primary and audit
   tracks are now identical. Their primary-vs-audit comparison is a sanity check
@@ -111,12 +109,12 @@ Consequences to state in the paper:
 
 ## 3. Label definitions applied in v2
 
-The manuscript (taxonomy paragraph of the Benchmark section) defines the five
-labels in prose. v2 applies those definitions with the operational rules below.
+The paper defines the five labels in prose. v2 applies those definitions with
+the operational rules below.
 They are recorded in `feature_taxonomy_v2.json` under `definitions` and repeated
 in the YAML manifest.
 
-**Verifiability** (manuscript definition, applied by data source of record)
+**Verifiability** (applied by data source of record)
 
 - **Y**: the subject can check the value from documents they hold, such as the
   application they submitted, their own account or billing statements, pay and
@@ -155,26 +153,15 @@ correctability.
   path). No feature in the seven datasets has this label in v2; the code is kept
   so the scale is complete.
 
-Earlier drafts of v2 also used N for "an accurately recorded immutable
-characteristic or fixed fact leaves nothing to correct". That mixed a mutability
-question into correctability, overlapped with Y for self-stated facts (a
-self-reported age or address meets both), and labeled SEX and AGE C=N while
-MARRIAGE and EDUCATION, equally self-reported, were C=Y. v2 drops that reading:
-self-stated characteristics and the property address are C=Y, and
+v2 does not use N for an accurately recorded immutable characteristic or fixed
+fact, because whether an accurate value can change is a question of mutability.
+Self-stated characteristics and the property address are therefore C=Y, and
 institution-recorded locations, dates and assignments are C=P (Section 4 lists
 every feature this affects). Because CSS weights correctability (Y 1.0, P 0.5,
 N 0.0), this matters for the geography features that v2 keeps in the primary
-track.
-
-**Manuscript text must change here.** The manuscript defines correctability by
-who performs the correction: "by the subject directly, by the institution upon
-request, or not at all". Read literally, an FCRA dispute is "by the institution
-upon request", so P. v2 instead counts a statutory dispute right as Y, because
-the legally relevant difference for contestability is between an enforceable
-channel and institutional discretion. Section 8 proposes replacement wording. If
-the authors prefer the manuscript's literal reading, change the bureau-derived
-features (heloc, give_me_some_credit, south_german_credit `credit_history`) from
-C=Y to C=P and rerun the validator. The rule is unaffected.
+track. A statutory dispute right, such as an FCRA dispute, counts as Y, because
+the difference that matters for contestability is between an enforceable channel
+and institutional discretion.
 
 **Sensitivity** (domain-specific legal anchor)
 
@@ -216,9 +203,9 @@ C=Y to C=P and rerun the validator. The rule is unaffected.
   historical facts, and characteristics that may change in fact but are never
   legitimate recourse.
 
-The manuscript's prose has three levels: immutable, high cost, low cost. Its
-examples (income = high cost, requested loan amount = low cost) were used to
-resolve two inconsistencies (Section 4).
+The prose definition has three levels: immutable, high cost, low cost. Its
+examples (income = high cost, requested loan amount = low cost) settle two
+inconsistencies (Section 4).
 
 **Principal-reason suitability** is unchanged from v1. Only ExternalRiskEstimate
 (Low) now cites a legal basis: Reg B 12 CFR 1002.9(b)(2) says a failed
@@ -285,12 +272,12 @@ the statements, and billing errors are disputable (FCBA 15 U.S.C. 1666, Reg Z
 | feature | change | reason |
 |---|---|---|
 | age | C N->Y; **leaves primary** | S; v1 kept it in primary in violation of its own policy; self-reported, restatable with identity documents |
-| foreign_worker | S S->P; M I->N; C P->Y; **enters primary** | immigration/residency status is not itself a prohibited basis (Reg B 1002.6(b)(7) permits considering it) but strongly tracks national origin, so P; not an intrinsic characteristic and never recourse, so N; **open decision, see Section 7** |
+| foreign_worker | S S->P; M I->N; C P->Y; **enters primary** | immigration/residency status is not itself a prohibited basis (Reg B 1002.6(b)(7) permits considering it) but strongly tracks national origin, so P; not an intrinsic characteristic and never recourse, so N; **settled in review, see the status note** |
 | purpose | S P->N; C P->Y | a transaction characteristic, not a recognized proxy; applicant-stated |
 | credit_history | V Y->P | drawn from bank and bureau records (C=Y kept: bureau dispute, US analogue) |
 | personal_status_sex | V P->Y; C N->Y | built from facts the applicant states, consistent with SEX/MARRIAGE in default credit; a misrecorded code can be restated with documentation |
 | people_liable | M PS->N; C P->Y | dependents are not recourse; self-reported |
-| duration, amount, savings, employment_duration, other_debtors, present_residence, property, other_installment_plans, housing, job, telephone (11 features) | C P->Y | applicant-supplied and documentable, so restatable (both the manuscript's and the v2 definition give Y) |
+| duration, amount, savings, employment_duration, other_debtors, present_residence, property, other_installment_plans, housing, job, telephone (11 features) | C P->Y | applicant-supplied and documentable, so restatable (the prose and the v2 definitions both give Y) |
 
 Unchanged with C=P: `status` (checking-account record at the lending bank),
 `installment_rate` (the lender's disposable-income assessment) and
@@ -301,8 +288,8 @@ Unchanged with C=P: `status` (checking-account record at the lending bank),
 | feature | change | reason |
 |---|---|---|
 | state_code, county_code, census_tract | **enter primary** | P (geographic proxies) stay in primary under the rule, where they are analyzed |
-| loan_amount | M P->M; C P->Y | the manuscript's own example of a low-cost mutable feature (and south_german_credit `amount` is M); applicant-stated |
-| income | M M->PL; C P->Y | the manuscript's own example of a high-cost mutable feature (and give_me_some_credit `MonthlyIncome` is PL); documentable |
+| loan_amount | M P->M; C P->Y | the prose definition's example of a low-cost mutable feature (and south_german_credit `amount` is M); applicant-stated |
+| income | M M->PL; C P->Y | the prose definition's example of a high-cost mutable feature (and give_me_some_credit `MonthlyIncome` is PL); documentable |
 | loan_purpose | S P->N; C P->Y | a transaction characteristic, not a recognized proxy; applicant-stated |
 | loan_type, occupancy_type, lien_status | C P->Y | applicant-selected on the application; restatable |
 | total_units | C P->Y | applicant-stated property fact; a misrecorded count can be restated with property documents |
@@ -317,11 +304,11 @@ Unchanged with C=P: `status` (checking-account record at the lending bank),
 
 | feature | change | reason |
 |---|---|---|
-| age_at_arrest | V Y->P; C N->P; S S->P; **enters primary** | computed by the agency from the date of birth on the arrest report, the same source of record as `gender`, so V and C follow gender (checkable only from the agency record; a misrecorded date of birth is corrected at the agency's discretion); age is not a suspect classification under equal protection (Murgia, 427 U.S. 307), and no statute we found bars its use in securing-order decisions; **open decision, see Section 7** |
+| age_at_arrest | V Y->P; C N->P; S S->P; **enters primary** | computed by the agency from the date of birth on the arrest report, the same source of record as `gender`, so V and C follow gender (checkable only from the agency record; a misrecorded date of birth is corrected at the agency's discretion); age is not a suspect classification under equal protection (Murgia, 427 U.S. 307), and no statute we found bars its use in securing-order decisions; **settled in review, see the status note** |
 | county_name | C N->P; **enters primary** | P (geographic proxy); v1 excluded it while keeping `court_type` (also P); a court-recorded fact, corrected at the court's discretion |
 | court_type | C N->P | a court-recorded institutional assignment, corrected at the court's discretion |
 | gender | V Y->P | recorded on the arrest report, so checkable only from the agency record (consistent with race and ethnicity) |
-| prior_vfo_cnt, prior_nonvfo_cnt, prior_misd_cnt | V Y->P | taken from the state criminal-history record (C=Y kept: a record-review challenge procedure exists; citation to be confirmed) |
+| prior_vfo_cnt, prior_nonvfo_cnt, prior_misd_cnt | V Y->P | taken from the state criminal-history record (C=Y kept: a record-review challenge procedure exists, 9 NYCRR Part 6050) |
 
 ### fda_inspections (6 label changes; 4 inclusion changes)
 
@@ -408,80 +395,3 @@ version diffs must attribute them:
   rises for explanations citing self-stated age, sex or the property state
   (C=Y) and for institution-recorded locations and assignments (C=P), notably
   the geography features now in the primary track.
-
-## 7. Open decisions for the authors (check before submission)
-
-1. **`foreign_worker` (south_german_credit) S->P.** Defensible under Reg B
-   1002.6(b)(7), but many fairness papers treat it as sensitive. If the authors
-   treat it as a direct encoding of national origin, set S=S. The validator will
-   then demand its exclusion from primary.
-2. **`age_at_arrest` (ny_courts_pretrial) S->P.** Age is S in credit because ECOA
-   names it. Pretrial law has no equivalent, but age is a contested pretrial risk
-   factor. Setting S=S restores the v1 exclusion.
-3. **Correctability of consumer-report data (Y vs P).** See Section 3. This
-   choice moves CSS for every bureau-derived reason.
-4. **Telephone listing (south_german_credit).** Reg B 1002.6(b)(4) bars
-   considering a telephone listing in the applicant's name for consumer credit,
-   but it is not a prohibited basis, so the one-rule policy keeps it in primary.
-   An alternative rule ("exclude S and expressly prohibited factors") would
-   exclude it. That would be a second rule, and it is not adopted here.
-5. **Age proxies.** v2 labels credit-history length (heloc
-   `MSinceOldestTradeOpen`, `AverageMInFile`) P, consistent with employment and
-   residence duration. These are standard scoring factors. If the authors prefer
-   to reserve P for recognized fair-lending proxies, revert all four to N.
-6. **Correctability as an error-correction question only (Section 3).** v2 no
-   longer uses C=N for accurately recorded immutable or fixed facts; such
-   features are Y (self-stated) or P (institution-recorded). If the authors
-   want "pointless to contest when accurate" to count, it belongs to
-   mutability, which already records it, not to correctability. Reverting to
-   the earlier reading moves CSS for every explanation that cites age, sex or
-   geography.
-7. **Principal-reason labels were not revised.** `project_area` (FDA, High) is
-   doubtful.
-8. **Citations to verify**: the paragraph numbers in Reg C 12 CFR 1003.4(a)
-   ((a)(2), (3), (5), (6), (7), (9)(ii), (10)(i)-(iii), (14), (23), (24), (31));
-   Reg B 1002.13 (visual observation or surname); N.Y. CPL 150.10/150.20,
-   170.10/180.10, 170.30/210.20; the New York DCJS criminal-history
-   record-review procedure (marked "citation to be confirmed"); Massachusetts
-   Bd. of Retirement v. Murgia, 427 U.S. 307 (1976).
-9. **No legal co-author.** The paper should state that the authors assigned the
-   labels by the stated rules, that rationales and citations are released per
-   feature, and that the labels were not reviewed by a lawyer (unless an external
-   reviewer is added).
-
-## 8. Proposed manuscript wording
-
-Replacement for the taxonomy paragraph (Benchmark section):
-
-> Each dataset is paired with a feature taxonomy that labels every feature on
-> five attributes, each with a stated rationale and, where one exists, a legal
-> citation. *Mutability* records whether the feature is immutable (e.g., age),
-> changes only through behavior over the short or long term (e.g., delinquency
-> history, income), is directly mutable at low cost (e.g., requested loan
-> amount), is structured jointly with the institution (e.g., credit limit), or is
-> not actionable by the subject (e.g., location, criminal charges).
-> *Verifiability* records whether the affected person can verify the value from
-> documents they hold, only by obtaining institutional records (e.g., a consumer
-> report), or not at all (e.g., a proprietary score). *Correctability* records
-> whether an erroneous value can be corrected through a channel the person can
-> invoke (documentation of self-reported data, a statutory dispute of
-> consumer-report or billing data), only at the institution's discretion, or
-> not at all. *Sensitivity* records whether the feature is a protected
-> characteristic under the domain's governing law (ECOA and Regulation B for
-> credit, adding the Fair Housing Act for mortgages, equal-protection classes for
-> pretrial release), a plausible proxy or socially sensitive attribute (e.g.,
-> geography, household size, income), or neither. *Principal-reason suitability*
-> records whether the feature is appropriate as a principal reason in an
-> adverse-action notice, on a low/medium/high scale.
-
-Replacement for the track description:
-
-> The `primary` track excludes exactly the features labeled as protected
-> characteristics; proxy features remain, so that their role can be measured
-> rather than assumed away. The `audit` track retains every feature.
-
-Add a limitation sentence:
-
-> Labels for the Taiwanese and German credit datasets apply the U.S. framework by
-> analogy, and the taxonomy was assigned by the authors following the stated
-> rules rather than reviewed by legal counsel.

@@ -1,4 +1,4 @@
-"""LegalBench-XAI benchmark scaffold."""
+"""LeXAIBench benchmark scaffold."""
 
 __all__ = [
     "__version__",

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# LeXAIBench v2 (CS&Law revision) non-credit runs (HMDA, NY Courts pretrial, FDA
+# LeXAIBench v2 non-credit runs (HMDA, NY Courts pretrial, FDA
 # inspections), sharded by dataset:track so that each shard can run as its own
 # cluster job, plus the merge of the shard bundles into one non-credit bundle.
 #
@@ -21,8 +21,7 @@
 #                          listed in a loud warning and in shard_manifest.json.
 #   --tag TAG              output suffix (default: r1). Use one tag for all shards and the merge.
 #   --light-ebm            fewer EBM interactions/bins/rounds. Faster, but it CHANGES THE EBM
-#                          MODEL: its rows are then not comparable with the published non-credit
-#                          bundle or with full-EBM shards. --merge refuses shards that mix it.
+#                          MODEL, so --merge refuses shards that mix it.
 #   --force                allow writing into existing output directories.
 #
 # Every shard gets the same checks as the credit runs (cslaw_check_bundle ... 1 v2):
@@ -44,7 +43,7 @@ LIGHT_EBM=0
 CSLAW_FORCE=0
 
 usage() {
-  sed -n '2,29p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,28p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 set_mode() {
@@ -190,7 +189,7 @@ dataset_path() {
 }
 
 if [[ ${LIGHT_EBM} -eq 1 ]]; then
-  # Same light settings as run-cross-domain-strongest-real.sh --light-ebm.
+  # Light EBM settings.
   export LEGALBENCH_EBM_INTERACTIONS="${LEGALBENCH_EBM_INTERACTIONS:-0}"
   export LEGALBENCH_EBM_MAX_BINS="${LEGALBENCH_EBM_MAX_BINS:-32}"
   export LEGALBENCH_EBM_MAX_ROUNDS="${LEGALBENCH_EBM_MAX_ROUNDS:-80}"
@@ -448,7 +447,6 @@ case "${MODE}" in
 esac
 
 if [[ "${MODE}" != "shard" ]]; then
-  echo "The credit analysis step uses it automatically for the same tag"
-  echo "(add --force if cslaw_analysis_${TAG} already has analysis outputs):"
-  echo "  bash benchmark/scripts/cluster/run_cslaw_credit.sh ${REPO_ROOT} --steps analysis --tag ${TAG}"
+  echo "Next, apply the direction rule and run the analyses:"
+  echo "  bash benchmark/scripts/cluster/run_cslaw_denial.sh ${REPO_ROOT} --tag ${TAG}"
 fi

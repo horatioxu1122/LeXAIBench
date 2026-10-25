@@ -167,7 +167,7 @@ read as evidence that an explainer "finds" the legally relevant reasons.
 def native_ranking_enabled(payload: dict[str, Any]) -> bool:
     """True when explainers ranked candidates by native contributions.
 
-    Either the round-1 flag ``cslaw.use_native_contributions_for_ranking`` or the
+    Either the pre-v2 flag ``cslaw.use_native_contributions_for_ranking`` or the
     correction ``native_contributions`` (part of the v2 preset) turns it on.
     """
     return bool(cslaw_config(payload).get("use_native_contributions_for_ranking")) or bool(

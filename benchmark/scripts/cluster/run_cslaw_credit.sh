@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# LeXAIBench v2 (CS&Law revision) credit runs and analyses, modeled on
-# run_cross_domain_full_node001.sh.
+# LeXAIBench v2 consumer credit runs: the main run, the reference notices, the shared
+# applicant run, and the two LIME robustness runs. run_cslaw_denial.sh then applies the
+# direction rule to these bundles and runs every analysis.
 #
 # Usage:
-#   bash benchmark/scripts/cluster/run_cslaw_credit.sh [REPO_ROOT] [--steps LIST] [--tag TAG]
-#        [--force] [--noncredit-bundle DIR]
+#   bash benchmark/scripts/cluster/run_cslaw_credit.sh [REPO_ROOT] [--steps LIST] [--tag TAG] [--force]
 #
 #   REPO_ROOT   repository checkout (default: $HOME/explainableAI-CS)
 #   --steps     comma list, run in this fixed order (default: all except the LIME robustness runs):
@@ -18,7 +18,8 @@
 #                                with the v1 taxonomy; writes taxonomy_validation.md and the
 #                                regenerated manifest into cslaw_analysis_<TAG>/
 #                 credit         experiment_cslaw_v2_credit.json (corrections v2, 5 explainers)
-#                 nullbaselines  experiment_cslaw_v2_credit_nullbaselines.json
+#                 nullbaselines  experiment_cslaw_v2_credit_nullbaselines.json (canned and random
+#                                reference notices)
 #                 shared         experiment_cslaw_v2_credit_shared.json (shared sampling)
 #                 limelocal      experiment_cslaw_v2_credit_lime_local.json (LIME only, perturbations
 #                                sampled around the instance: corrections v2 + lime_sample_around_instance;
@@ -28,29 +29,14 @@
 #                 limedefault    experiment_cslaw_v2_credit_lime_default.json (LIME only, the library's
 #                                default discretize_continuous=True: corrections v2 + lime_discretize_continuous;
 #                                same applicants as credit). Opt-in robustness run, not in the default list
-#                 offline        rescore/rebuild/paper tables on the published v1 bundles
-#                                (benchmark/scripts/run_cslaw_offline_analyses.sh)
-#                 analysis       paper_tables, version_diff (published v1 vs v2), regb_reference,
-#                                common_faithfulness, multiplicity, proxy_substitution, notices,
-#                                v2_legal_functions rescoring of the v2 bundles
 #   --tag       suffix for every output directory (default: r1)
 #   --force     allow writing into existing cslaw_* output directories
-#   --noncredit-bundle  non-credit bundle for the analysis step. Default: the merged v2 bundle
-#                       benchmark/outputs/cslaw_v2_noncredit_<TAG> (run_cslaw_noncredit_v2.sh)
-#                       when it exists, else the published cross_domain_strongest_real_full_cluster.
-#                       If it carries payload["cslaw"], the analysis step also runs
-#                       regb_reference, common_faithfulness and notices (HMDA only, by
-#                       notices.py's credit default) on it; if it is a v2 bundle, also
-#                       version_diff against the published non-credit bundle and the
-#                       v2_legal_functions rescoring.
 #
-# Outputs (all new directories under benchmark/outputs; published bundles are never written):
+# Outputs (all new directories under benchmark/outputs):
 #   cslaw_regression_baseline_<TAG>/ cslaw_regression_new_<TAG>/ cslaw_regression_compare_<TAG>/
 #   cslaw_v2_credit_<TAG>/ cslaw_v2_credit_nullbaselines_<TAG>/ cslaw_v2_credit_shared_<TAG>/
 #   cslaw_v2_credit_lime_local_<TAG>/ cslaw_v2_credit_lime_default_pilot_<TAG>/
-#   cslaw_v2_credit_lime_default_<TAG>/ cslaw_offline_<TAG>/ cslaw_analysis_<TAG>/
-# The taxonomy and analysis steps share cslaw_analysis_<TAG>/; each refuses only the
-# entries it writes, so they can run in separate jobs.
+#   cslaw_v2_credit_lime_default_<TAG>/ cslaw_analysis_<TAG>/ (taxonomy step)
 set -euo pipefail
 
 REPO_ROOT="${HOME}/explainableAI-CS"
@@ -60,15 +46,14 @@ if [[ $# -gt 0 && "$1" != -* ]]; then
 fi
 
 # Execution order of every step; the LIME robustness runs (opt-in) are not in the default list.
-ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,limelocal,limedefaultpilot,limedefault,offline,analysis"
-DEFAULT_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,offline,analysis"
+ALL_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared,limelocal,limedefaultpilot,limedefault"
+DEFAULT_STEPS="selftest,regression,taxonomy,credit,nullbaselines,shared"
 STEPS="${DEFAULT_STEPS}"
 TAG="r1"
 CSLAW_FORCE=0
-NONCREDIT_BUNDLE=""
 
 usage() {
-  sed -n '2,47p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  sed -n '2,39p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [[ $# -gt 0 ]]; do
@@ -84,10 +69,6 @@ while [[ $# -gt 0 ]]; do
     --force)
       CSLAW_FORCE=1
       shift
-      ;;
-    --noncredit-bundle)
-      NONCREDIT_BUNDLE="$2"
-      shift 2
       ;;
     -h | --help)
       usage
@@ -162,35 +143,15 @@ SHARED_DIR="${OUTPUTS}/cslaw_v2_credit_shared_${TAG}"
 LIMELOCAL_DIR="${OUTPUTS}/cslaw_v2_credit_lime_local_${TAG}"
 LIMEDEFAULT_PILOT_DIR="${OUTPUTS}/cslaw_v2_credit_lime_default_pilot_${TAG}"
 LIMEDEFAULT_DIR="${OUTPUTS}/cslaw_v2_credit_lime_default_${TAG}"
-NONCREDIT_V2_DIR="${OUTPUTS}/cslaw_v2_noncredit_${TAG}"
 REG_BASE_DIR="${OUTPUTS}/cslaw_regression_baseline_${TAG}"
 REG_NEW_DIR="${OUTPUTS}/cslaw_regression_new_${TAG}"
 REG_CMP_DIR="${OUTPUTS}/cslaw_regression_compare_${TAG}"
-OFFLINE_DIR="${OUTPUTS}/cslaw_offline_${TAG}"
 ANALYSIS_DIR="${OUTPUTS}/cslaw_analysis_${TAG}"
-PUBLISHED_CREDIT_DIR="${OUTPUTS}/${CSLAW_PUBLISHED_CREDIT_BUNDLE_NAME}"
-PUBLISHED_NONCREDIT_DIR="${OUTPUTS}/${CSLAW_PUBLISHED_NONCREDIT_BUNDLE_NAME}"
 
-# Entries each step owns inside the shared analysis directory.
+# Entries the taxonomy step owns inside the analysis directory.
 TAXONOMY_OUTPUTS=(
   "${ANALYSIS_DIR}/taxonomy_validation.md"
   "${ANALYSIS_DIR}/feature_taxonomy_manifest_v2.yaml"
-)
-ANALYSIS_OUTPUTS=(
-  "${ANALYSIS_DIR}/paper_tables"
-  "${ANALYSIS_DIR}/version_diff"
-  "${ANALYSIS_DIR}/version_diff_noncredit"
-  "${ANALYSIS_DIR}/regb_reference_credit"
-  "${ANALYSIS_DIR}/regb_reference_shared"
-  "${ANALYSIS_DIR}/common_faithfulness"
-  "${ANALYSIS_DIR}/common_faithfulness_shared"
-  "${ANALYSIS_DIR}/multiplicity"
-  "${ANALYSIS_DIR}/proxy_substitution"
-  "${ANALYSIS_DIR}/notices"
-  "${ANALYSIS_DIR}/rescored_v2"
-  "${ANALYSIS_DIR}/regb_reference_noncredit"
-  "${ANALYSIS_DIR}/common_faithfulness_noncredit"
-  "${ANALYSIS_DIR}/notices_noncredit"
 )
 
 # Preflight: refuse existing targets before any long-running step starts.
@@ -223,11 +184,6 @@ if has_step shared; then cslaw_guard_target "${SHARED_DIR}"; fi
 if has_step limelocal; then cslaw_guard_target "${LIMELOCAL_DIR}"; fi
 if has_step limedefaultpilot; then cslaw_guard_target "${LIMEDEFAULT_PILOT_DIR}"; fi
 if has_step limedefault; then cslaw_guard_target "${LIMEDEFAULT_DIR}"; fi
-if has_step offline; then cslaw_guard_target "${OFFLINE_DIR}"; fi
-if has_step analysis; then
-  cslaw_guard_name "${ANALYSIS_DIR}"
-  cslaw_guard_paths_absent "${ANALYSIS_OUTPUTS[@]}"
-fi
 
 run_cslaw_py() {
   PYTHONPATH="${REPO_ROOT}/benchmark/src${PYTHONPATH:+:${PYTHONPATH}}" "${CSLAW_PY[@]}" "$@"
@@ -288,7 +244,7 @@ step_regression() {
     --out "${REG_CMP_DIR}/comparison.md" | tee "${REG_CMP_DIR}/compare_stdout.txt"; then
     cslaw_die "regression check reported differences between ${REG_BASE_DIR} and ${REG_NEW_DIR}.
 See ${REG_CMP_DIR}. If the only differences are the known cross-process EBM SHAP
-nondeterminism, continue with: --steps taxonomy,credit,nullbaselines,shared,offline,analysis --tag ${TAG}"
+nondeterminism, continue with: --steps taxonomy,credit,nullbaselines,shared --tag ${TAG}"
   fi
 }
 
@@ -318,241 +274,6 @@ step_run() {
   cslaw_check_bundle "${out_dir}" 1 "${expect}"
 }
 
-step_offline() {
-  cslaw_log "step offline"
-  local args=("${REPO_ROOT}" --tag "${TAG}")
-  if [[ "${CSLAW_FORCE}" -eq 1 ]]; then
-    args+=(--force)
-  fi
-  bash "${REPO_ROOT}/benchmark/scripts/run_cslaw_offline_analyses.sh" "${args[@]}"
-}
-
-SKIPPED=()
-FAILED=()
-
-# True when results.json carries payload["cslaw"], i.e. the bundle was produced
-# with a cslaw block and has the persisted fields the analyses need.
-bundle_has_cslaw() {
-  "${CSLAW_PY[@]}" - "$1/results.json" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1], encoding="utf-8") as handle:
-    payload = json.load(handle)
-sys.exit(0 if isinstance(payload.get("cslaw"), dict) else 1)
-PY
-}
-
-# True when results.json is a LeXAIBench v2 bundle (payload["cslaw"]["corrections_version"]).
-bundle_is_v2() {
-  "${CSLAW_PY[@]}" - "$1/results.json" <<'PY'
-import json
-import sys
-
-with open(sys.argv[1], encoding="utf-8") as handle:
-    payload = json.load(handle)
-block = payload.get("cslaw")
-sys.exit(0 if isinstance(block, dict) and block.get("corrections_version") == "v2" else 1)
-PY
-}
-
-# Runs one optional analysis. A failure is reported at the end (exit 1) instead of
-# aborting after the other analyses were written.
-run_soft() {
-  local label="$1"
-  shift
-  cslaw_log "${label}"
-  if ! run_cslaw_py "$@"; then
-    cslaw_log "WARNING: ${label} failed"
-    FAILED+=("${label}")
-    return 1
-  fi
-}
-
-require_bundle() {
-  local label="$1"
-  local bundle="$2"
-  local analysis="$3"
-  if cslaw_bundle_ready "${bundle}"; then
-    return 0
-  fi
-  cslaw_log "WARNING: skipping ${analysis}: ${label} bundle ${bundle} has no results.json"
-  SKIPPED+=("${analysis} (missing ${label} bundle ${bundle})")
-  return 1
-}
-
-# rescore_v2_legal_functions LABEL BUNDLE CONFIG: rescoring of a v2 bundle with the
-# v2_legal_functions variant of rescore.py, then rebuild-artifacts with the config
-# the bundle was produced with.
-rescore_v2_legal_functions() {
-  local label="$1"
-  local bundle="$2"
-  local config="$3"
-  local out="${ANALYSIS_DIR}/rescored_v2/${label}/v2_legal_functions"
-  if [[ ! -f "${config}" ]]; then
-    cslaw_log "WARNING: skipping v2_legal_functions (${label}): config ${config} not found"
-    SKIPPED+=("v2_legal_functions ${label} (missing config ${config})")
-    return 0
-  fi
-  if ! run_soft "rescore v2_legal_functions (${label})" benchmark/cslaw/rescore.py \
-    --results "${bundle}/results.json" \
-    --variant v2_legal_functions \
-    --out-dir "${out}"; then
-    return 0
-  fi
-  if [[ ! -f "${out}/results.json" ]]; then
-    cslaw_log "WARNING: rescore.py did not write ${out}/results.json"
-    FAILED+=("rescore v2_legal_functions (${label}): no results.json")
-    return 0
-  fi
-  if ! run_cslaw_py -m legalbench_xai rebuild-artifacts \
-    --config "${config}" \
-    --results-json "${out}/results.json" \
-    --output-dir "${out}" >"${out}/rebuild_artifacts.json"; then
-    cslaw_log "WARNING: rebuild-artifacts for v2_legal_functions (${label}) failed"
-    FAILED+=("rebuild-artifacts v2_legal_functions (${label})")
-  fi
-}
-
-step_analysis() {
-  cslaw_log "step analysis -> ${ANALYSIS_DIR}"
-  mkdir -p "${ANALYSIS_DIR}"
-
-  local noncredit="${NONCREDIT_BUNDLE}"
-  if [[ -z "${noncredit}" ]]; then
-    if cslaw_bundle_ready "${NONCREDIT_V2_DIR}"; then
-      noncredit="${NONCREDIT_V2_DIR}"
-    else
-      noncredit="${PUBLISHED_NONCREDIT_DIR}"
-      cslaw_log "WARNING: ${NONCREDIT_V2_DIR} not found; the non-credit tables use the published v1 bundle"
-      SKIPPED+=("v2 non-credit analyses (missing ${NONCREDIT_V2_DIR}; run run_cslaw_noncredit_v2.sh --merge first)")
-    fi
-  fi
-  cslaw_log "credit bundle: ${CREDIT_DIR}; non-credit bundle: ${noncredit}"
-
-  if require_bundle credit "${CREDIT_DIR}" paper_tables \
-    && require_bundle noncredit "${noncredit}" paper_tables; then
-    local tables_args=(
-      --bundle "credit=${CREDIT_DIR}"
-      --bundle "noncredit=${noncredit}"
-      --robustness-root "${OUTPUTS}"
-    )
-    if cslaw_bundle_ready "${NULLB_DIR}"; then
-      tables_args+=(--bundle "nullbaselines=${NULLB_DIR}")
-    fi
-    if [[ -d "${OFFLINE_DIR}/rescored" ]]; then
-      tables_args+=(--rescored-root "${OFFLINE_DIR}/rescored")
-    fi
-    # The offline step writes the S-weight sweeps outside the rescored root.
-    local sweep_csv
-    for sweep_csv in "${OFFLINE_DIR}"/dsv_sweep/*/css_dsv_sweep.csv; do
-      if [[ -f "${sweep_csv}" ]]; then
-        tables_args+=(--sweep-csv "${sweep_csv}")
-      fi
-    done
-    run_cslaw_py benchmark/cslaw/paper_tables.py "${tables_args[@]}" \
-      --out-dir "${ANALYSIS_DIR}/paper_tables"
-  fi
-
-  # What changed between the published v1 credit results and v2.
-  if require_bundle "published credit" "${PUBLISHED_CREDIT_DIR}" version_diff \
-    && require_bundle credit "${CREDIT_DIR}" version_diff; then
-    run_soft "version_diff (credit, published v1 vs v2)" benchmark/cslaw/version_diff.py \
-      --v1 "${PUBLISHED_CREDIT_DIR}" \
-      --v2 "${CREDIT_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/version_diff" || true
-  fi
-
-  if require_bundle credit "${CREDIT_DIR}" "regb_reference (credit)"; then
-    run_cslaw_py benchmark/cslaw/regb_reference.py \
-      --bundle "${CREDIT_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/regb_reference_credit"
-  fi
-  if require_bundle shared "${SHARED_DIR}" "regb_reference (shared)"; then
-    run_cslaw_py benchmark/cslaw/regb_reference.py \
-      --bundle "${SHARED_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/regb_reference_shared"
-  fi
-
-  if require_bundle credit "${CREDIT_DIR}" "common_faithfulness (credit + null baselines)"; then
-    local faith_args=(--bundle "${CREDIT_DIR}")
-    if cslaw_bundle_ready "${NULLB_DIR}"; then
-      faith_args+=(--bundle "${NULLB_DIR}")
-    else
-      cslaw_log "WARNING: common_faithfulness runs without null baselines (${NULLB_DIR} missing)"
-      SKIPPED+=("common_faithfulness null-baseline comparison (missing ${NULLB_DIR})")
-    fi
-    run_cslaw_py benchmark/cslaw/common_faithfulness.py "${faith_args[@]}" \
-      --out-dir "${ANALYSIS_DIR}/common_faithfulness"
-  fi
-  if require_bundle shared "${SHARED_DIR}" "common_faithfulness (shared)"; then
-    run_cslaw_py benchmark/cslaw/common_faithfulness.py \
-      --bundle "${SHARED_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/common_faithfulness_shared"
-  fi
-
-  if require_bundle shared "${SHARED_DIR}" multiplicity; then
-    run_cslaw_py benchmark/cslaw/multiplicity.py \
-      --bundle "${SHARED_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/multiplicity"
-  fi
-  if require_bundle shared "${SHARED_DIR}" proxy_substitution; then
-    run_cslaw_py benchmark/cslaw/proxy_substitution.py \
-      --bundle "${SHARED_DIR}" \
-      --out-dir "${ANALYSIS_DIR}/proxy_substitution"
-  fi
-
-  if require_bundle credit "${CREDIT_DIR}" notices; then
-    local notices_args=(--bundle "${CREDIT_DIR}" --n 48 --seed 7 --out-dir "${ANALYSIS_DIR}/notices")
-    if [[ "${CSLAW_FORCE}" -eq 1 ]]; then
-      # notices.py refuses to replace an existing notices_key.csv on its own;
-      # the packet is deterministic for the same bundle and seed.
-      notices_args+=(--force)
-    fi
-    run_cslaw_py benchmark/cslaw/notices.py "${notices_args[@]}"
-  fi
-
-  if cslaw_bundle_ready "${CREDIT_DIR}"; then
-    rescore_v2_legal_functions credit "${CREDIT_DIR}" "${CREDIT_CONFIG}"
-  fi
-
-  # Persisted-field analyses on a cslaw-instrumented non-credit bundle
-  # (run_cslaw_noncredit_v2.sh --merge). The published non-credit bundle stores
-  # scores only, so it is used by paper_tables alone.
-  if cslaw_bundle_ready "${noncredit}"; then
-    if bundle_has_cslaw "${noncredit}"; then
-      run_soft "regb_reference (noncredit)" benchmark/cslaw/regb_reference.py \
-        --bundle "${noncredit}" \
-        --out-dir "${ANALYSIS_DIR}/regb_reference_noncredit" || true
-      run_soft "common_faithfulness (noncredit)" benchmark/cslaw/common_faithfulness.py \
-        --bundle "${noncredit}" \
-        --out-dir "${ANALYSIS_DIR}/common_faithfulness_noncredit" || true
-      # notices.py renders only the credit datasets by default, i.e. HMDA here. This
-      # packet is separate from the credit rating packet in notices/.
-      local noncredit_notices_args=(
-        --bundle "${noncredit}" --n 48 --seed 7 --out-dir "${ANALYSIS_DIR}/notices_noncredit"
-      )
-      if [[ "${CSLAW_FORCE}" -eq 1 ]]; then
-        noncredit_notices_args+=(--force)
-      fi
-      run_soft "notices (noncredit, HMDA)" benchmark/cslaw/notices.py \
-        "${noncredit_notices_args[@]}" || true
-      if bundle_is_v2 "${noncredit}"; then
-        if require_bundle "published noncredit" "${PUBLISHED_NONCREDIT_DIR}" "version_diff (noncredit)"; then
-          run_soft "version_diff (noncredit, published v1 vs v2)" benchmark/cslaw/version_diff.py \
-            --v1 "${PUBLISHED_NONCREDIT_DIR}" \
-            --v2 "${noncredit}" \
-            --out-dir "${ANALYSIS_DIR}/version_diff_noncredit" || true
-        fi
-        rescore_v2_legal_functions noncredit "${noncredit}" "${noncredit}/runtime_config.json"
-      fi
-    else
-      cslaw_log "non-credit bundle ${noncredit} has no payload[\"cslaw\"]" \
-        "(published bundle); regb_reference, common_faithfulness and notices use the credit bundles only"
-    fi
-  fi
-}
-
 if has_step selftest; then step_selftest; fi
 if has_step regression; then step_regression; fi
 if has_step taxonomy; then step_taxonomy; fi
@@ -564,8 +285,6 @@ if has_step limedefaultpilot; then
   step_run limedefaultpilot "${LIMEDEFAULT_PILOT_CONFIG}" "${LIMEDEFAULT_PILOT_DIR}" v2_lime_default
 fi
 if has_step limedefault; then step_run limedefault "${LIMEDEFAULT_CONFIG}" "${LIMEDEFAULT_DIR}" v2_lime_default; fi
-if has_step offline; then step_offline; fi
-if has_step analysis; then step_analysis; fi
 
 echo
 echo "CS&Law v2 credit steps finished (${STEPS}); tag=${TAG}"
@@ -581,21 +300,4 @@ if has_step shared; then echo "  shared:        ${SHARED_DIR}"; fi
 if has_step limelocal; then echo "  limelocal:     ${LIMELOCAL_DIR}"; fi
 if has_step limedefaultpilot; then echo "  limedefaultpilot: ${LIMEDEFAULT_PILOT_DIR}"; fi
 if has_step limedefault; then echo "  limedefault:   ${LIMEDEFAULT_DIR}"; fi
-if has_step offline; then echo "  offline:       ${OFFLINE_DIR}"; fi
-if has_step analysis; then echo "  analysis:      ${ANALYSIS_DIR}"; fi
-if [[ ${#SKIPPED[@]} -gt 0 ]]; then
-  echo
-  echo "WARNING: skipped analyses:"
-  for item in "${SKIPPED[@]}"; do
-    echo "  - ${item}"
-  done
-fi
-if [[ ${#FAILED[@]} -gt 0 ]]; then
-  echo
-  echo "ERROR: failed analyses (see the messages above):"
-  for item in "${FAILED[@]}"; do
-    echo "  - ${item}"
-  done
-  exit 1
-fi
 exit 0

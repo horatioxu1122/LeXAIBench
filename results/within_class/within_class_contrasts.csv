@@ -1,0 +1,16 @@
+across,within,scope,difference,ci_low,ci_high
+across_original|ebm_vs_xgboost,within_seed|ebm,heloc,0.8041666666666667,0.65,0.9333333333333333
+across_boot|ebm_vs_xgboost,within_boot_pairs|ebm,heloc,0.4230263157894737,0.2651703499079189,0.5843632297551791
+across_boot|ebm_vs_xgboost,within_boot_pairs|xgboost,heloc,0.7360745614035088,0.5604632216014898,0.8826730418943534
+across_original|ebm_vs_xgboost,within_seed|ebm,default_of_credit_card_clients,0.029166666666666667,0.0,0.09999999999999999
+across_boot|ebm_vs_xgboost,within_boot_pairs|ebm,default_of_credit_card_clients,-0.003399122807017544,-0.022486033519553066,0.01099537037037037
+across_boot|ebm_vs_xgboost,within_boot_pairs|xgboost,default_of_credit_card_clients,0.017214912280701752,0.0,0.05426912568306011
+across_original|ebm_vs_xgboost,within_seed|ebm,give_me_some_credit,0.25,0.125,0.3958333333333333
+across_boot|ebm_vs_xgboost,within_boot_pairs|ebm,give_me_some_credit,0.234155701754386,0.1435461956521739,0.3254504504504504
+across_boot|ebm_vs_xgboost,within_boot_pairs|xgboost,give_me_some_credit,-0.03327850877192984,-0.09230547882136281,0.023220973782771492
+across_original|ebm_vs_xgboost,within_seed|ebm,south_german_credit,0.08333333333333334,-0.08958333333333333,0.25416666666666665
+across_boot|ebm_vs_xgboost,within_boot_pairs|ebm,south_german_credit,-0.15500992063492064,-0.3001893939393939,-0.022321428571428548
+across_boot|ebm_vs_xgboost,within_boot_pairs|xgboost,south_german_credit,-0.06635101010101008,-0.19449120838009734,0.07132066735725273
+across_original|ebm_vs_xgboost,within_seed|ebm,pooled,0.2916666666666667,0.22812499999999997,0.36093749999999997
+across_boot|ebm_vs_xgboost,within_boot_pairs|ebm,pooled,0.12469324352548042,0.06542879234795002,0.18826828643542579
+across_boot|ebm_vs_xgboost,within_boot_pairs|xgboost,pooled,0.1634149887028177,0.10457488282684294,0.21525679181929183

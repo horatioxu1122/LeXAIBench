@@ -365,7 +365,7 @@ def corrections_version(payload: dict[str, Any]) -> str:
     known = {key: options.get(key) for key in CORRECTIONS_V1}
     if known == CORRECTIONS_V1:
         return "v1"
-    # Only native_contributions on: the round-1 native-ranking instrumentation
+    # Only native_contributions on: the pre-v2 native-ranking instrumentation
     # (legacy flag), v1 scoring and sampling. The runner does not mark such runs;
     # an options dict of this form is still read as v1.
     if {**known, "native_contributions": CORRECTIONS_V1.get("native_contributions")} == CORRECTIONS_V1:

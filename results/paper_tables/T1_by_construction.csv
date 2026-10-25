@@ -1,0 +1,895 @@
+bundle,fact,group_1,group_2,statistic,value,n,note
+credit,corrections_status,bundle,,corrections_version,v2,,v1 = no corrections recorded
+credit,corrections_status,option,native_contributions,value,True,,v1 default False
+credit,corrections_status,option,common_faithfulness_reference,value,True,,v1 default False
+credit,corrections_status,option,faithfulness_quality_weight,value,0.0,,v1 default 0.2
+credit,corrections_status,option,counterfactual_reasons_from_changes,value,True,,v1 default False
+credit,corrections_status,option,cf_respect_nonactionable,value,True,,v1 default False
+credit,corrections_status,option,reason_grouping_fix,value,True,,v1 default False
+credit,corrections_status,option,numeric_parsing_fix,value,True,,v1 default False
+credit,corrections_status,option,sampling_selection,value,stratified_random,,v1 default boundary_nearest
+credit,corrections_status,option,sampling_seed,value,42,,v1 default 42
+credit,corrections_status,option,persist_score_subcomponents,value,True,,v1 default False
+credit,corrections_status,option,record_data_provenance,value,True,,v1 default False
+credit,corrections_status,anchors,rule,share_common_reference_evidence,1.0,576,model_native_common_reference:576
+credit,corrections_status,dice,counterfactual,share_common_reference_evidence,1.0,562,model_native_common_reference:562
+credit,corrections_status,lime,attribution,share_common_reference_evidence,1.0,575,model_native_common_reference:575
+credit,corrections_status,shap,attribution,share_common_reference_evidence,1.0,576,model_native_common_reference:576
+credit,corrections_status,wachter,counterfactual,share_common_reference_evidence,1.0,481,model_native_common_reference:481
+credit,corrections_status,faithfulness_quality_weight,persisted,values,0,,quality signal still recorded; weight 0 drops it from the score (renormalized)
+credit,cf_reason_source,dice,counterfactual_changes,count,562,562,
+credit,cf_reason_source,wachter,counterfactual_changes,count,481,481,
+credit,cf_nondenial_reason_share,dice,mean,mean,0.1947508896797153,562,share of cited changed features whose native contribution is <= 0
+credit,cf_nondenial_reason_share,wachter,mean,mean,0.011434511434511435,481,share of cited changed features whose native contribution is <= 0
+credit,non_recourse_actionability_ceiling,anchors,rule,ceiling,0.35,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,anchors,rule,max_unified_actionability,0.35,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,anchors,rule,n_above_ceiling,0,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,anchors,rule,max_alf_component,0.0,576,
+credit,non_recourse_actionability_ceiling,lime,attribution,ceiling,0.35,575,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,lime,attribution,max_unified_actionability,0.35,575,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,lime,attribution,n_above_ceiling,0,575,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,lime,attribution,max_alf_component,0.0,575,
+credit,non_recourse_actionability_ceiling,shap,attribution,ceiling,0.35,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,shap,attribution,max_unified_actionability,0.35000000000000003,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,shap,attribution,n_above_ceiling,0,576,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,shap,attribution,max_alf_component,0.0,576,
+credit,non_recourse_actionability_ceiling,ALL,ALL,ceiling,0.35,1727,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,ALL,ALL,max_unified_actionability,0.35000000000000003,1727,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,ALL,ALL,n_above_ceiling,0,1727,explanations without counterfactual changes; ceiling=0.35
+credit,non_recourse_actionability_ceiling,ALL,ALL,max_alf_component,0.0,1727,
+credit,recourse_actionability_range,dice,counterfactual,min,0.5095939913277403,562,
+credit,recourse_actionability_range,dice,counterfactual,median,0.6987590979156996,562,
+credit,recourse_actionability_range,dice,counterfactual,max,0.8833478023213281,562,
+credit,recourse_actionability_range,wachter,counterfactual,min,0.5652013569886903,481,
+credit,recourse_actionability_range,wachter,counterfactual,median,0.7050373960829572,481,
+credit,recourse_actionability_range,wachter,counterfactual,max,0.8436912276782564,481,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,mean,0.57251954821894,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,min,0.55,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,p25,0.55,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,median,0.55,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,p75,0.595,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,max,0.64,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,n_unique,2,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,share_eq_1,0.0,1151,
+credit,decision_sensitivity_visibility_by_family,attribution,ALL,top_values,0.55:0.750;0.64:0.250,1151,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,mean,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,min,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,p25,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,median,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,p75,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,max,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,n_unique,1,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,share_eq_1,1.0,1043,
+credit,decision_sensitivity_visibility_by_family,counterfactual,ALL,top_values,1:1.000,1043,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,mean,0.5721874999999998,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,min,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,p25,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,median,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,p75,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,max,0.64,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,n_unique,2,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,share_eq_1,0.0,576,
+credit,decision_sensitivity_visibility_by_family,rule,ALL,top_values,0.55:0.753;0.64:0.247,576,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,mean,0.5725391304347824,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,min,0.55,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,p25,0.55,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,median,0.55,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,p75,0.595,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,max,0.64,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,n_unique,2,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,share_eq_1,0.0,575,
+credit,decision_sensitivity_visibility_by_family,attribution,lime,top_values,0.55:0.750;0.64:0.250,575,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,mean,0.5725,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,min,0.55,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,p25,0.55,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,median,0.55,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,p75,0.5725,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,max,0.64,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,n_unique,2,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,share_eq_1,0.0,576,
+credit,decision_sensitivity_visibility_by_family,attribution,shap,top_values,0.55:0.750;0.64:0.250,576,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,mean,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,min,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,p25,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,median,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,p75,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,max,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,n_unique,1,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,share_eq_1,1.0,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,dice,top_values,1:1.000,562,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,mean,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,min,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,p25,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,median,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,p75,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,max,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,n_unique,1,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,share_eq_1,1.0,481,
+credit,decision_sensitivity_visibility_by_family,counterfactual,wachter,top_values,1:1.000,481,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,mean,0.5721874999999998,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,min,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,p25,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,median,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,p75,0.55,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,max,0.64,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,n_unique,2,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,share_eq_1,0.0,576,
+credit,decision_sensitivity_visibility_by_family,rule,anchors,top_values,0.55:0.753;0.64:0.247,576,
+credit,recourse_simplicity_by_family,attribution,ALL,mean,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,min,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,p25,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,median,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,p75,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,max,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,n_unique,1,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,share_eq_1,1.0,1151,
+credit,recourse_simplicity_by_family,attribution,ALL,top_values,1:1.000,1151,
+credit,recourse_simplicity_by_family,counterfactual,ALL,mean,0.9423457973793545,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,min,0.26666666666666666,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,p25,1.0,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,median,1.0,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,p75,1.0,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,max,1.0,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,n_unique,3,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,share_eq_1,0.7603068072866731,1043,
+credit,recourse_simplicity_by_family,counterfactual,ALL,top_values,1:0.760;0.8:0.221;0.266667:0.018,1043,
+credit,recourse_simplicity_by_family,rule,ALL,mean,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,min,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,p25,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,median,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,p75,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,max,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,n_unique,1,576,
+credit,recourse_simplicity_by_family,rule,ALL,share_eq_1,1.0,576,
+credit,recourse_simplicity_by_family,rule,ALL,top_values,1:1.000,576,
+credit,recourse_simplicity_by_family,attribution,lime,mean,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,min,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,p25,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,median,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,p75,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,max,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,n_unique,1,575,
+credit,recourse_simplicity_by_family,attribution,lime,share_eq_1,1.0,575,
+credit,recourse_simplicity_by_family,attribution,lime,top_values,1:1.000,575,
+credit,recourse_simplicity_by_family,attribution,shap,mean,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,min,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,p25,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,median,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,p75,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,max,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,n_unique,1,576,
+credit,recourse_simplicity_by_family,attribution,shap,share_eq_1,1.0,576,
+credit,recourse_simplicity_by_family,attribution,shap,top_values,1:1.000,576,
+credit,recourse_simplicity_by_family,counterfactual,dice,mean,0.9260972716488731,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,min,0.26666666666666666,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,p25,0.8,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,median,1.0,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,p75,1.0,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,max,1.0,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,n_unique,3,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,share_eq_1,0.7206405693950177,562,
+credit,recourse_simplicity_by_family,counterfactual,dice,top_values,1:0.721;0.8:0.246;0.266667:0.034,562,
+credit,recourse_simplicity_by_family,counterfactual,wachter,mean,0.9613305613305614,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,min,0.8,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,p25,1.0,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,median,1.0,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,p75,1.0,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,max,1.0,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,n_unique,2,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,share_eq_1,0.8066528066528067,481,
+credit,recourse_simplicity_by_family,counterfactual,wachter,top_values,1:0.807;0.8:0.193,481,
+credit,recourse_simplicity_by_family,rule,anchors,mean,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,min,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,p25,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,median,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,p75,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,max,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,n_unique,1,576,
+credit,recourse_simplicity_by_family,rule,anchors,share_eq_1,1.0,576,
+credit,recourse_simplicity_by_family,rule,anchors,top_values,1:1.000,576,
+credit,alf_applicability_by_explainer,anchors,rule,n_applicable,0,576,
+credit,alf_applicability_by_explainer,anchors,rule,share_applicable,0.0,576,
+credit,alf_applicability_by_explainer,dice,counterfactual,n_applicable,562,562,
+credit,alf_applicability_by_explainer,dice,counterfactual,share_applicable,1.0,562,
+credit,alf_applicability_by_explainer,lime,attribution,n_applicable,0,575,
+credit,alf_applicability_by_explainer,lime,attribution,share_applicable,0.0,575,
+credit,alf_applicability_by_explainer,shap,attribution,n_applicable,0,576,
+credit,alf_applicability_by_explainer,shap,attribution,share_applicable,0.0,576,
+credit,alf_applicability_by_explainer,wachter,counterfactual,n_applicable,481,481,
+credit,alf_applicability_by_explainer,wachter,counterfactual,share_applicable,1.0,481,
+credit,explanation_quality_signal_by_explainer_model,anchors,ebm,n_unique,58,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,ebm,values,0.333333;0.363636;0.380952;0.384615;0.545455;0.571429;0.592593;0.6;0.611111;0.615385;...,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,ebm,min,0.3333333333333333,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,ebm,max,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,ebm,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,n_unique,62,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,values,0.081633;0.368421;0.4;0.428571;0.444444;0.481481;0.541667;0.555556;0.571429;0.578947;...,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,min,0.08163265306122448,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,max,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,xgboost,n_unique,43,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,xgboost,values,0.033333;0.333333;0.6;0.642857;0.65;0.666667;0.733333;0.73913;0.75;0.789474;...,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,xgboost,min,0.03333333333333333,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,xgboost,max,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,anchors,xgboost,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,dice,ebm,n_unique,1,191,
+credit,explanation_quality_signal_by_explainer_model,dice,ebm,values,1,191,
+credit,explanation_quality_signal_by_explainer_model,dice,ebm,min,1.0,191,
+credit,explanation_quality_signal_by_explainer_model,dice,ebm,max,1.0,191,
+credit,explanation_quality_signal_by_explainer_model,dice,ebm,faithfulness_evidence_sources,model_native_common_reference:191,191,
+credit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,n_unique,1,192,
+credit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,values,1,192,
+credit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,min,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,max,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,dice,xgboost,n_unique,1,179,
+credit,explanation_quality_signal_by_explainer_model,dice,xgboost,values,1,179,
+credit,explanation_quality_signal_by_explainer_model,dice,xgboost,min,1.0,179,
+credit,explanation_quality_signal_by_explainer_model,dice,xgboost,max,1.0,179,
+credit,explanation_quality_signal_by_explainer_model,dice,xgboost,faithfulness_evidence_sources,model_native_common_reference:179,179,
+credit,explanation_quality_signal_by_explainer_model,lime,ebm,n_unique,192,192,
+credit,explanation_quality_signal_by_explainer_model,lime,ebm,values,0.08476;0.463485;0.464035;0.465738;0.46674;0.471368;0.474502;0.474995;0.475928;0.476301;...,192,
+credit,explanation_quality_signal_by_explainer_model,lime,ebm,min,0.08475953901847577,192,
+credit,explanation_quality_signal_by_explainer_model,lime,ebm,max,0.7754384314735414,192,
+credit,explanation_quality_signal_by_explainer_model,lime,ebm,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,n_unique,192,192,
+credit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,values,0.005953;0.007604;0.008978;0.011286;0.012426;0.012933;0.013015;0.013017;0.015336;0.020861;...,192,
+credit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,min,0.005952917087659659,192,
+credit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,max,0.9720297446730843,192,
+credit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,lime,xgboost,n_unique,191,191,
+credit,explanation_quality_signal_by_explainer_model,lime,xgboost,values,0;0.001916;0.003586;0.00691;0.01984;0.025365;0.471245;0.480649;0.481964;0.482312;...,191,
+credit,explanation_quality_signal_by_explainer_model,lime,xgboost,min,0.0,191,
+credit,explanation_quality_signal_by_explainer_model,lime,xgboost,max,0.9307260986703639,191,
+credit,explanation_quality_signal_by_explainer_model,lime,xgboost,faithfulness_evidence_sources,model_native_common_reference:191,191,
+credit,explanation_quality_signal_by_explainer_model,shap,ebm,n_unique,1,192,
+credit,explanation_quality_signal_by_explainer_model,shap,ebm,values,0.88,192,
+credit,explanation_quality_signal_by_explainer_model,shap,ebm,min,0.88,192,
+credit,explanation_quality_signal_by_explainer_model,shap,ebm,max,0.88,192,
+credit,explanation_quality_signal_by_explainer_model,shap,ebm,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,n_unique,1,192,
+credit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,values,1,192,
+credit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,min,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,max,1.0,192,
+credit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,shap,xgboost,n_unique,1,192,
+credit,explanation_quality_signal_by_explainer_model,shap,xgboost,values,0.97,192,
+credit,explanation_quality_signal_by_explainer_model,shap,xgboost,min,0.97,192,
+credit,explanation_quality_signal_by_explainer_model,shap,xgboost,max,0.97,192,
+credit,explanation_quality_signal_by_explainer_model,shap,xgboost,faithfulness_evidence_sources,model_native_common_reference:192,192,
+credit,explanation_quality_signal_by_explainer_model,wachter,ebm,n_unique,1,157,
+credit,explanation_quality_signal_by_explainer_model,wachter,ebm,values,1,157,
+credit,explanation_quality_signal_by_explainer_model,wachter,ebm,min,1.0,157,
+credit,explanation_quality_signal_by_explainer_model,wachter,ebm,max,1.0,157,
+credit,explanation_quality_signal_by_explainer_model,wachter,ebm,faithfulness_evidence_sources,model_native_common_reference:157,157,
+credit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,n_unique,1,173,
+credit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,values,1,173,
+credit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,min,1.0,173,
+credit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,max,1.0,173,
+credit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:173,173,
+credit,explanation_quality_signal_by_explainer_model,wachter,xgboost,n_unique,1,151,
+credit,explanation_quality_signal_by_explainer_model,wachter,xgboost,values,1,151,
+credit,explanation_quality_signal_by_explainer_model,wachter,xgboost,min,1.0,151,
+credit,explanation_quality_signal_by_explainer_model,wachter,xgboost,max,1.0,151,
+credit,explanation_quality_signal_by_explainer_model,wachter,xgboost,faithfulness_evidence_sources,model_native_common_reference:151,151,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,n,360,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,mean_verifiability,1.0,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,min_verifiability,0.9999999999999999,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1,1.0,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1[attribution],1.0,144,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1[counterfactual],1.0,144,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1[rule],1.0,72,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,n,360,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,mean_verifiability,1.0,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,min_verifiability,0.9999999999999999,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1,1.0,360,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1[attribution],1.0,144,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1[counterfactual],1.0,144,
+credit,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1[rule],1.0,72,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,n,358,358,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,mean_verifiability,0.5159372866837678,358,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,min_verifiability,0.49999999999999994,358,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1,0.0,358,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1[attribution],0.0,143,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1[counterfactual],0.0,143,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1[rule],0.0,72,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,n,360,360,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,mean_verifiability,0.509150704455863,360,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,min_verifiability,0.49999999999999994,360,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1,0.0,360,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1[attribution],0.0,144,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1[counterfactual],0.0,144,
+credit,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1[rule],0.0,72,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,n,323,323,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,mean_verifiability,0.46340551470337543,323,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,min_verifiability,0.0,323,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1,0.0,323,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1[attribution],0.0,144,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1[counterfactual],0.0,107,
+credit,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1[rule],0.0,72,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,n,331,331,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,mean_verifiability,0.4690529598521935,331,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,min_verifiability,0.0,331,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1,0.0,331,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1[attribution],0.0,144,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1[counterfactual],0.0,115,
+credit,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1[rule],0.0,72,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,n,341,341,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,mean_verifiability,0.945075071779185,341,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,min_verifiability,0.5,341,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1,0.7302052785923754,341,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1[attribution],0.6805555555555556,144,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1[counterfactual],0.752,125,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1[rule],0.7916666666666666,72,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,n,337,337,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,mean_verifiability,0.9508129170258927,337,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,min_verifiability,0.5,337,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1,0.7537091988130564,337,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1[attribution],0.6736111111111112,144,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1[counterfactual],0.8264462809917356,121,
+credit,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1[rule],0.7916666666666666,72,
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|ebm,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.917
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|ebm,C,abs_diff_config_mean,0.021581884124354023,24,dice=0.978418; wachter=1.000000; tied=False; instance_identical_share=0.625
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|ebm,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|logistic_regression,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.750
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|logistic_regression,C,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.750
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|logistic_regression,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|xgboost,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|xgboost,C,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|audit|xgboost,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|ebm,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.792
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|ebm,C,abs_diff_config_mean,0.04298438455808096,24,dice=0.957016; wachter=1.000000; tied=False; instance_identical_share=0.250
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|ebm,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|logistic_regression,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.958
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|logistic_regression,C,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.958
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|logistic_regression,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|xgboost,V,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|xgboost,C,abs_diff_config_mean,0.0023559935037199553,24,dice=0.997644; wachter=1.000000; tied=False; instance_identical_share=0.917
+credit,dice_wachter_vcr_tie,default_of_credit_card_clients|primary|xgboost,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|ebm,V,abs_diff_config_mean,0.003813629180874467,24,dice=0.503814; wachter=0.500000; tied=False; instance_identical_share=0.583
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|ebm,C,abs_diff_config_mean,0.010779046583514584,24,dice=0.989221; wachter=1.000000; tied=False; instance_identical_share=0.458
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|ebm,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|logistic_regression,V,abs_diff_config_mean,0.003698656853269422,24,dice=0.503699; wachter=0.500000; tied=False; instance_identical_share=0.708
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|logistic_regression,C,abs_diff_config_mean,0.20747802391438852,24,dice=0.999145; wachter=0.791667; tied=False; instance_identical_share=0.167
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|logistic_regression,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|xgboost,V,abs_diff_config_mean,0.0045367231167835476,23,dice=0.504537; wachter=0.500000; tied=False; instance_identical_share=0.696
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|xgboost,C,abs_diff_config_mean,0.011574736830375687,23,dice=0.988425; wachter=1.000000; tied=False; instance_identical_share=0.522
+credit,dice_wachter_vcr_tie,give_me_some_credit|audit|xgboost,R,abs_diff_config_mean,0.0,23,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|ebm,V,abs_diff_config_mean,0.007523718853368888,24,dice=0.507524; wachter=0.500000; tied=False; instance_identical_share=0.542
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|ebm,C,abs_diff_config_mean,0.00641457082290342,24,dice=0.993585; wachter=1.000000; tied=False; instance_identical_share=0.500
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|ebm,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|logistic_regression,V,abs_diff_config_mean,0.002634809481301459,24,dice=0.502635; wachter=0.500000; tied=False; instance_identical_share=0.708
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|logistic_regression,C,abs_diff_config_mean,0.16493009251697321,24,dice=0.998263; wachter=0.833333; tied=False; instance_identical_share=0.083
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|logistic_regression,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|xgboost,V,abs_diff_config_mean,0.0022118205441629124,24,dice=0.502212; wachter=0.500000; tied=False; instance_identical_share=0.875
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|xgboost,C,abs_diff_config_mean,0.010489776179668286,24,dice=0.989510; wachter=1.000000; tied=False; instance_identical_share=0.500
+credit,dice_wachter_vcr_tie,give_me_some_credit|primary|xgboost,R,abs_diff_config_mean,0.0,24,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|audit|ebm,V,abs_diff_config_mean,0.0,11,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=0.727
+credit,dice_wachter_vcr_tie,heloc|audit|ebm,C,abs_diff_config_mean,0.0,11,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.727
+credit,dice_wachter_vcr_tie,heloc|audit|ebm,R,abs_diff_config_mean,0.0,11,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|audit|logistic_regression,V,abs_diff_config_mean,0.0,19,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=0.842
+credit,dice_wachter_vcr_tie,heloc|audit|logistic_regression,C,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.842
+credit,dice_wachter_vcr_tie,heloc|audit|logistic_regression,R,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|audit|xgboost,V,abs_diff_config_mean,0.0,13,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|audit|xgboost,C,abs_diff_config_mean,0.0,13,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|audit|xgboost,R,abs_diff_config_mean,0.0,13,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|primary|ebm,V,abs_diff_config_mean,0.0,19,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=0.895
+credit,dice_wachter_vcr_tie,heloc|primary|ebm,C,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.895
+credit,dice_wachter_vcr_tie,heloc|primary|ebm,R,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|primary|logistic_regression,V,abs_diff_config_mean,0.0,19,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=0.842
+credit,dice_wachter_vcr_tie,heloc|primary|logistic_regression,C,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=0.842
+credit,dice_wachter_vcr_tie,heloc|primary|logistic_regression,R,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|primary|xgboost,V,abs_diff_config_mean,0.0,11,dice=0.500000; wachter=0.500000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|primary|xgboost,C,abs_diff_config_mean,0.0,11,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,heloc|primary|xgboost,R,abs_diff_config_mean,0.0,11,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|audit|ebm,V,abs_diff_config_mean,0.022975182694670915,17,dice=0.976267; wachter=0.953292; tied=False; instance_identical_share=0.588
+credit,dice_wachter_vcr_tie,south_german_credit|audit|ebm,C,abs_diff_config_mean,0.07394622189546307,17,dice=0.786092; wachter=0.712146; tied=False; instance_identical_share=0.000
+credit,dice_wachter_vcr_tie,south_german_credit|audit|ebm,R,abs_diff_config_mean,0.0,17,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|audit|logistic_regression,V,abs_diff_config_mean,0.08236841635552217,18,dice=0.971257; wachter=0.888889; tied=False; instance_identical_share=0.611
+credit,dice_wachter_vcr_tie,south_german_credit|audit|logistic_regression,C,abs_diff_config_mean,0.015570117771119718,18,dice=0.733391; wachter=0.717821; tied=False; instance_identical_share=0.056
+credit,dice_wachter_vcr_tie,south_german_credit|audit|logistic_regression,R,abs_diff_config_mean,0.0,18,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|audit|xgboost,V,abs_diff_config_mean,0.2164314003776706,18,dice=0.964752; wachter=0.748320; tied=False; instance_identical_share=0.278
+credit,dice_wachter_vcr_tie,south_german_credit|audit|xgboost,C,abs_diff_config_mean,0.1974584368032689,18,dice=0.802542; wachter=1.000000; tied=False; instance_identical_share=0.056
+credit,dice_wachter_vcr_tie,south_german_credit|audit|xgboost,R,abs_diff_config_mean,0.0,18,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|primary|ebm,V,abs_diff_config_mean,0.008275157919907405,14,dice=0.975129; wachter=0.966854; tied=False; instance_identical_share=0.857
+credit,dice_wachter_vcr_tie,south_german_credit|primary|ebm,C,abs_diff_config_mean,0.07682308307715846,14,dice=0.769451; wachter=0.692628; tied=False; instance_identical_share=0.000
+credit,dice_wachter_vcr_tie,south_german_credit|primary|ebm,R,abs_diff_config_mean,0.0,14,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|primary|logistic_regression,V,abs_diff_config_mean,0.06333165079634262,21,dice=0.972289; wachter=0.908957; tied=False; instance_identical_share=0.619
+credit,dice_wachter_vcr_tie,south_german_credit|primary|logistic_regression,C,abs_diff_config_mean,0.018324205294021567,21,dice=0.707245; wachter=0.725569; tied=False; instance_identical_share=0.095
+credit,dice_wachter_vcr_tie,south_german_credit|primary|logistic_regression,R,abs_diff_config_mean,0.0,21,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,south_german_credit|primary|xgboost,V,abs_diff_config_mean,0.18759529179560475,14,dice=0.980587; wachter=0.792992; tied=False; instance_identical_share=0.500
+credit,dice_wachter_vcr_tie,south_german_credit|primary|xgboost,C,abs_diff_config_mean,0.15049770697289155,14,dice=0.797644; wachter=0.948141; tied=False; instance_identical_share=0.000
+credit,dice_wachter_vcr_tie,south_german_credit|primary|xgboost,R,abs_diff_config_mean,0.0,14,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+credit,dice_wachter_vcr_tie,ALL,V,configs_tied,12,24,
+credit,dice_wachter_vcr_tie,ALL,C,configs_tied,9,24,
+credit,dice_wachter_vcr_tie,ALL,R,configs_tied,24,24,
+credit,dice_wachter_vcr_tie,ALL,VCR,configs_tied,9,24,
+nullbaselines,corrections_status,bundle,,corrections_version,v2,,v1 = no corrections recorded
+nullbaselines,corrections_status,option,native_contributions,value,True,,v1 default False
+nullbaselines,corrections_status,option,common_faithfulness_reference,value,True,,v1 default False
+nullbaselines,corrections_status,option,faithfulness_quality_weight,value,0.0,,v1 default 0.2
+nullbaselines,corrections_status,option,counterfactual_reasons_from_changes,value,True,,v1 default False
+nullbaselines,corrections_status,option,cf_respect_nonactionable,value,True,,v1 default False
+nullbaselines,corrections_status,option,reason_grouping_fix,value,True,,v1 default False
+nullbaselines,corrections_status,option,numeric_parsing_fix,value,True,,v1 default False
+nullbaselines,corrections_status,option,sampling_selection,value,stratified_random,,v1 default boundary_nearest
+nullbaselines,corrections_status,option,sampling_seed,value,42,,v1 default 42
+nullbaselines,corrections_status,option,persist_score_subcomponents,value,True,,v1 default False
+nullbaselines,corrections_status,option,record_data_provenance,value,True,,v1 default False
+nullbaselines,corrections_status,global_ranking,attribution,share_common_reference_evidence,1.0,576,model_native_common_reference:576
+nullbaselines,corrections_status,random_reasons,attribution,share_common_reference_evidence,1.0,564,model_native_common_reference:564
+nullbaselines,corrections_status,faithfulness_quality_weight,persisted,values,0,,quality signal still recorded; weight 0 drops it from the score (renormalized)
+nullbaselines,non_recourse_actionability_ceiling,global_ranking,attribution,ceiling,0.35,576,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,global_ranking,attribution,max_unified_actionability,0.35,576,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,global_ranking,attribution,n_above_ceiling,0,576,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,global_ranking,attribution,max_alf_component,0.0,576,
+nullbaselines,non_recourse_actionability_ceiling,random_reasons,attribution,ceiling,0.35,564,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,random_reasons,attribution,max_unified_actionability,0.35000000000000003,564,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,random_reasons,attribution,n_above_ceiling,0,564,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,random_reasons,attribution,max_alf_component,0.0,564,
+nullbaselines,non_recourse_actionability_ceiling,ALL,ALL,ceiling,0.35,1140,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,ALL,ALL,max_unified_actionability,0.35000000000000003,1140,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,ALL,ALL,n_above_ceiling,0,1140,explanations without counterfactual changes; ceiling=0.35
+nullbaselines,non_recourse_actionability_ceiling,ALL,ALL,max_alf_component,0.0,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,mean,0.5721842105263157,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,min,0.55,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,p25,0.55,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,median,0.55,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,p75,0.55,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,max,0.64,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,n_unique,2,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,share_eq_1,0.0,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,ALL,top_values,0.55:0.754;0.64:0.246,1140,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,mean,0.5725,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,min,0.55,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,p25,0.55,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,median,0.55,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,p75,0.5725,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,max,0.64,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,n_unique,2,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,share_eq_1,0.0,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,global_ranking,top_values,0.55:0.750;0.64:0.250,576,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,mean,0.5718617021276595,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,min,0.55,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,p25,0.55,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,median,0.55,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,p75,0.55,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,max,0.64,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,n_unique,2,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,share_eq_1,0.0,564,
+nullbaselines,decision_sensitivity_visibility_by_family,attribution,random_reasons,top_values,0.55:0.757;0.64:0.243,564,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,mean,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,min,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,p25,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,median,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,p75,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,max,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,n_unique,1,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,share_eq_1,1.0,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,ALL,top_values,1:1.000,1140,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,mean,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,min,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,p25,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,median,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,p75,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,max,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,n_unique,1,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,share_eq_1,1.0,576,
+nullbaselines,recourse_simplicity_by_family,attribution,global_ranking,top_values,1:1.000,576,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,mean,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,min,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,p25,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,median,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,p75,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,max,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,n_unique,1,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,share_eq_1,1.0,564,
+nullbaselines,recourse_simplicity_by_family,attribution,random_reasons,top_values,1:1.000,564,
+nullbaselines,alf_applicability_by_explainer,global_ranking,attribution,n_applicable,0,576,
+nullbaselines,alf_applicability_by_explainer,global_ranking,attribution,share_applicable,0.0,576,
+nullbaselines,alf_applicability_by_explainer,random_reasons,attribution,n_applicable,0,564,
+nullbaselines,alf_applicability_by_explainer,random_reasons,attribution,share_applicable,0.0,564,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,ebm,n_unique,1,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,ebm,values,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,ebm,min,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,ebm,max,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,ebm,faithfulness_evidence_sources,model_native_common_reference:192,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,logistic_regression,n_unique,1,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,logistic_regression,values,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,logistic_regression,min,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,logistic_regression,max,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:192,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,xgboost,n_unique,1,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,xgboost,values,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,xgboost,min,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,xgboost,max,0.5,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,global_ranking,xgboost,faithfulness_evidence_sources,model_native_common_reference:192,192,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,ebm,n_unique,1,188,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,ebm,values,0.5,188,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,ebm,min,0.5,188,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,ebm,max,0.5,188,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,ebm,faithfulness_evidence_sources,model_native_common_reference:188,188,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,logistic_regression,n_unique,1,189,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,logistic_regression,values,0.5,189,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,logistic_regression,min,0.5,189,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,logistic_regression,max,0.5,189,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:189,189,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,xgboost,n_unique,1,187,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,xgboost,values,0.5,187,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,xgboost,min,0.5,187,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,xgboost,max,0.5,187,
+nullbaselines,explanation_quality_signal_by_explainer_model,random_reasons,xgboost,faithfulness_evidence_sources,model_native_common_reference:187,187,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,n,144,144,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,mean_verifiability,1.0,144,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,min_verifiability,0.9999999999999999,144,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1,1.0,144,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,audit,share_eq_1[attribution],1.0,144,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,n,143,143,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,mean_verifiability,1.0,143,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,min_verifiability,0.9999999999999999,143,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1,1.0,143,
+nullbaselines,verifiability_saturation_by_dataset_track,default_of_credit_card_clients,primary,share_eq_1[attribution],1.0,143,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,n,142,142,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,mean_verifiability,0.6047672922696996,142,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,min_verifiability,0.5,142,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1,0.014084507042253521,142,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,audit,share_eq_1[attribution],0.014084507042253521,142,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,n,143,143,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,mean_verifiability,0.5742466092224408,143,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,min_verifiability,0.49999999999999994,143,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1,0.02097902097902098,143,
+nullbaselines,verifiability_saturation_by_dataset_track,give_me_some_credit,primary,share_eq_1[attribution],0.02097902097902098,143,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,audit,n,142,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,audit,mean_verifiability,0.4236167167206743,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,audit,min_verifiability,0.244406621254998,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1,0.0,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,audit,share_eq_1[attribution],0.0,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,primary,n,142,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,primary,mean_verifiability,0.4173852651121415,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,primary,min_verifiability,0.24068674866207476,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1,0.0,142,
+nullbaselines,verifiability_saturation_by_dataset_track,heloc,primary,share_eq_1[attribution],0.0,142,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,audit,n,143,143,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,audit,mean_verifiability,0.9607633999039134,143,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,audit,min_verifiability,0.7442489223189325,143,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1,0.4405594405594406,143,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,audit,share_eq_1[attribution],0.4405594405594406,143,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,primary,n,141,141,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,primary,mean_verifiability,0.9563072958211569,141,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,primary,min_verifiability,0.5,141,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1,0.40425531914893614,141,
+nullbaselines,verifiability_saturation_by_dataset_track,south_german_credit,primary,share_eq_1[attribution],0.40425531914893614,141,
+noncredit,corrections_status,bundle,,corrections_version,v2,,v1 = no corrections recorded
+noncredit,corrections_status,option,native_contributions,value,True,,v1 default False
+noncredit,corrections_status,option,common_faithfulness_reference,value,True,,v1 default False
+noncredit,corrections_status,option,faithfulness_quality_weight,value,0.0,,v1 default 0.2
+noncredit,corrections_status,option,counterfactual_reasons_from_changes,value,True,,v1 default False
+noncredit,corrections_status,option,cf_respect_nonactionable,value,True,,v1 default False
+noncredit,corrections_status,option,reason_grouping_fix,value,True,,v1 default False
+noncredit,corrections_status,option,numeric_parsing_fix,value,True,,v1 default False
+noncredit,corrections_status,option,sampling_selection,value,stratified_random,,v1 default boundary_nearest
+noncredit,corrections_status,option,sampling_seed,value,42,,v1 default 42
+noncredit,corrections_status,option,persist_score_subcomponents,value,True,,v1 default False
+noncredit,corrections_status,option,record_data_provenance,value,True,,v1 default False
+noncredit,corrections_status,anchors,rule,share_common_reference_evidence,1.0,432,model_native_common_reference:432
+noncredit,corrections_status,dice,counterfactual,share_common_reference_evidence,1.0,146,model_native_common_reference:146
+noncredit,corrections_status,lime,attribution,share_common_reference_evidence,1.0,428,model_native_common_reference:428
+noncredit,corrections_status,shap,attribution,share_common_reference_evidence,1.0,432,model_native_common_reference:432
+noncredit,corrections_status,wachter,counterfactual,share_common_reference_evidence,1.0,115,model_native_common_reference:115
+noncredit,corrections_status,faithfulness_quality_weight,persisted,values,0,,quality signal still recorded; weight 0 drops it from the score (renormalized)
+noncredit,cf_reason_source,dice,counterfactual_changes,count,146,146,
+noncredit,cf_reason_source,wachter,counterfactual_changes,count,115,115,
+noncredit,cf_nondenial_reason_share,dice,mean,mean,0.33573059360730595,146,share of cited changed features whose native contribution is <= 0
+noncredit,cf_nondenial_reason_share,wachter,mean,mean,0.0,115,share of cited changed features whose native contribution is <= 0
+noncredit,non_recourse_actionability_ceiling,anchors,rule,ceiling,0.35,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,anchors,rule,max_unified_actionability,0.35,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,anchors,rule,n_above_ceiling,0,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,anchors,rule,max_alf_component,0.0,432,
+noncredit,non_recourse_actionability_ceiling,lime,attribution,ceiling,0.35,428,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,lime,attribution,max_unified_actionability,0.35,428,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,lime,attribution,n_above_ceiling,0,428,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,lime,attribution,max_alf_component,0.0,428,
+noncredit,non_recourse_actionability_ceiling,shap,attribution,ceiling,0.35,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,shap,attribution,max_unified_actionability,0.35,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,shap,attribution,n_above_ceiling,0,432,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,shap,attribution,max_alf_component,0.0,432,
+noncredit,non_recourse_actionability_ceiling,ALL,ALL,ceiling,0.35,1292,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,ALL,ALL,max_unified_actionability,0.35,1292,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,ALL,ALL,n_above_ceiling,0,1292,explanations without counterfactual changes; ceiling=0.35
+noncredit,non_recourse_actionability_ceiling,ALL,ALL,max_alf_component,0.0,1292,
+noncredit,recourse_actionability_range,dice,counterfactual,min,0.4779640184328414,146,
+noncredit,recourse_actionability_range,dice,counterfactual,median,0.6542983301305756,146,
+noncredit,recourse_actionability_range,dice,counterfactual,max,0.7619333337601333,146,
+noncredit,recourse_actionability_range,wachter,counterfactual,min,0.5698925571519478,115,
+noncredit,recourse_actionability_range,wachter,counterfactual,median,0.7089264994131488,115,
+noncredit,recourse_actionability_range,wachter,counterfactual,max,0.7634597646160293,115,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,mean,0.5499999999999998,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,min,0.55,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,p25,0.55,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,median,0.55,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,p75,0.55,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,max,0.55,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,n_unique,1,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,share_eq_1,0.0,860,
+noncredit,decision_sensitivity_visibility_by_family,attribution,ALL,top_values,0.55:1.000,860,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,mean,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,min,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,p25,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,median,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,p75,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,max,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,n_unique,1,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,share_eq_1,1.0,261,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,ALL,top_values,1:1.000,261,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,mean,0.5499999999999999,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,min,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,p25,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,median,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,p75,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,max,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,n_unique,1,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,share_eq_1,0.0,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,ALL,top_values,0.55:1.000,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,mean,0.5499999999999999,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,min,0.55,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,p25,0.55,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,median,0.55,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,p75,0.55,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,max,0.55,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,n_unique,1,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,share_eq_1,0.0,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,lime,top_values,0.55:1.000,428,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,mean,0.5499999999999999,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,min,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,p25,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,median,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,p75,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,max,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,n_unique,1,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,share_eq_1,0.0,432,
+noncredit,decision_sensitivity_visibility_by_family,attribution,shap,top_values,0.55:1.000,432,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,mean,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,min,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,p25,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,median,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,p75,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,max,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,n_unique,1,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,share_eq_1,1.0,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,dice,top_values,1:1.000,146,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,mean,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,min,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,p25,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,median,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,p75,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,max,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,n_unique,1,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,share_eq_1,1.0,115,
+noncredit,decision_sensitivity_visibility_by_family,counterfactual,wachter,top_values,1:1.000,115,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,mean,0.5499999999999999,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,min,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,p25,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,median,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,p75,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,max,0.55,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,n_unique,1,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,share_eq_1,0.0,432,
+noncredit,decision_sensitivity_visibility_by_family,rule,anchors,top_values,0.55:1.000,432,
+noncredit,recourse_simplicity_by_family,attribution,ALL,mean,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,min,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,p25,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,median,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,p75,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,max,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,n_unique,1,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,share_eq_1,1.0,860,
+noncredit,recourse_simplicity_by_family,attribution,ALL,top_values,1:1.000,860,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,mean,0.9800766283524904,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,min,0.8,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,p25,1.0,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,median,1.0,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,p75,1.0,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,max,1.0,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,n_unique,2,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,share_eq_1,0.9003831417624522,261,
+noncredit,recourse_simplicity_by_family,counterfactual,ALL,top_values,1:0.900;0.8:0.100,261,
+noncredit,recourse_simplicity_by_family,rule,ALL,mean,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,min,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,p25,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,median,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,p75,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,max,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,n_unique,1,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,share_eq_1,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,ALL,top_values,1:1.000,432,
+noncredit,recourse_simplicity_by_family,attribution,lime,mean,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,min,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,p25,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,median,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,p75,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,max,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,n_unique,1,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,share_eq_1,1.0,428,
+noncredit,recourse_simplicity_by_family,attribution,lime,top_values,1:1.000,428,
+noncredit,recourse_simplicity_by_family,attribution,shap,mean,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,min,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,p25,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,median,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,p75,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,max,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,n_unique,1,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,share_eq_1,1.0,432,
+noncredit,recourse_simplicity_by_family,attribution,shap,top_values,1:1.000,432,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,mean,0.9712328767123288,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,min,0.8,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,p25,1.0,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,median,1.0,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,p75,1.0,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,max,1.0,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,n_unique,2,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,share_eq_1,0.8561643835616438,146,
+noncredit,recourse_simplicity_by_family,counterfactual,dice,top_values,1:0.856;0.8:0.144,146,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,mean,0.991304347826087,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,min,0.8,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,p25,1.0,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,median,1.0,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,p75,1.0,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,max,1.0,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,n_unique,2,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,share_eq_1,0.9565217391304348,115,
+noncredit,recourse_simplicity_by_family,counterfactual,wachter,top_values,1:0.957;0.8:0.043,115,
+noncredit,recourse_simplicity_by_family,rule,anchors,mean,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,min,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,p25,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,median,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,p75,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,max,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,n_unique,1,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,share_eq_1,1.0,432,
+noncredit,recourse_simplicity_by_family,rule,anchors,top_values,1:1.000,432,
+noncredit,alf_applicability_by_explainer,anchors,rule,n_applicable,0,432,
+noncredit,alf_applicability_by_explainer,anchors,rule,share_applicable,0.0,432,
+noncredit,alf_applicability_by_explainer,dice,counterfactual,n_applicable,146,146,
+noncredit,alf_applicability_by_explainer,dice,counterfactual,share_applicable,1.0,146,
+noncredit,alf_applicability_by_explainer,lime,attribution,n_applicable,0,428,
+noncredit,alf_applicability_by_explainer,lime,attribution,share_applicable,0.0,428,
+noncredit,alf_applicability_by_explainer,shap,attribution,n_applicable,0,432,
+noncredit,alf_applicability_by_explainer,shap,attribution,share_applicable,0.0,432,
+noncredit,alf_applicability_by_explainer,wachter,counterfactual,n_applicable,115,115,
+noncredit,alf_applicability_by_explainer,wachter,counterfactual,share_applicable,1.0,115,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,ebm,n_unique,47,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,ebm,values,0.558824;0.636364;0.647059;0.666667;0.692308;0.72;0.75;0.764706;0.785714;0.789474;...,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,ebm,min,0.5588235294117647,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,ebm,max,1.0,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,ebm,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,n_unique,57,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,values,0.208333;0.4375;0.5625;0.583333;0.633333;0.666667;0.677419;0.678571;0.68;0.6875;...,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,min,0.20833333333333334,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,max,1.0,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,xgboost,n_unique,28,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,xgboost,values,0.5625;0.625;0.724138;0.733333;0.758621;0.8;0.807692;0.875;0.888889;0.909091;...,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,xgboost,min,0.5625,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,xgboost,max,1.0,144,
+noncredit,explanation_quality_signal_by_explainer_model,anchors,xgboost,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,dice,ebm,n_unique,1,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,ebm,values,1,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,ebm,min,1.0,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,ebm,max,1.0,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,ebm,faithfulness_evidence_sources,model_native_common_reference:49,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,n_unique,1,48,
+noncredit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,values,1,48,
+noncredit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,min,1.0,48,
+noncredit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,max,1.0,48,
+noncredit,explanation_quality_signal_by_explainer_model,dice,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:48,48,
+noncredit,explanation_quality_signal_by_explainer_model,dice,xgboost,n_unique,1,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,xgboost,values,1,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,xgboost,min,1.0,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,xgboost,max,1.0,49,
+noncredit,explanation_quality_signal_by_explainer_model,dice,xgboost,faithfulness_evidence_sources,model_native_common_reference:49,49,
+noncredit,explanation_quality_signal_by_explainer_model,lime,ebm,n_unique,144,144,
+noncredit,explanation_quality_signal_by_explainer_model,lime,ebm,values,0.29872;0.302474;0.304721;0.310158;0.311381;0.312978;0.315912;0.316405;0.316699;0.317139;...,144,
+noncredit,explanation_quality_signal_by_explainer_model,lime,ebm,min,0.2987198233080548,144,
+noncredit,explanation_quality_signal_by_explainer_model,lime,ebm,max,0.4752594419692283,144,
+noncredit,explanation_quality_signal_by_explainer_model,lime,ebm,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,n_unique,142,143,
+noncredit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,values,0.564289;0.870135;0.870634;0.871009;0.872182;0.872219;0.872363;0.873199;0.873296;0.873751;...,143,
+noncredit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,min,0.5642886273952037,143,
+noncredit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,max,0.931166341592775,143,
+noncredit,explanation_quality_signal_by_explainer_model,lime,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:143,143,
+noncredit,explanation_quality_signal_by_explainer_model,lime,xgboost,n_unique,141,141,
+noncredit,explanation_quality_signal_by_explainer_model,lime,xgboost,values,0.407078;0.410248;0.414647;0.420268;0.422117;0.423598;0.426532;0.430425;0.430773;0.430844;...,141,
+noncredit,explanation_quality_signal_by_explainer_model,lime,xgboost,min,0.4070779838044274,141,
+noncredit,explanation_quality_signal_by_explainer_model,lime,xgboost,max,0.6941364410323618,141,
+noncredit,explanation_quality_signal_by_explainer_model,lime,xgboost,faithfulness_evidence_sources,model_native_common_reference:141,141,
+noncredit,explanation_quality_signal_by_explainer_model,shap,ebm,n_unique,1,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,ebm,values,0.88,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,ebm,min,0.88,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,ebm,max,0.88,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,ebm,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,n_unique,1,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,values,1,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,min,1.0,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,max,1.0,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,xgboost,n_unique,1,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,xgboost,values,0.97,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,xgboost,min,0.97,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,xgboost,max,0.97,144,
+noncredit,explanation_quality_signal_by_explainer_model,shap,xgboost,faithfulness_evidence_sources,model_native_common_reference:144,144,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,ebm,n_unique,1,35,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,ebm,values,1,35,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,ebm,min,1.0,35,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,ebm,max,1.0,35,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,ebm,faithfulness_evidence_sources,model_native_common_reference:35,35,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,n_unique,1,36,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,values,1,36,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,min,1.0,36,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,max,1.0,36,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,logistic_regression,faithfulness_evidence_sources,model_native_common_reference:36,36,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,xgboost,n_unique,1,44,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,xgboost,values,1,44,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,xgboost,min,1.0,44,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,xgboost,max,1.0,44,
+noncredit,explanation_quality_signal_by_explainer_model,wachter,xgboost,faithfulness_evidence_sources,model_native_common_reference:44,44,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,n,214,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,mean_verifiability,0.90711164067369,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,min_verifiability,0.5,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,share_eq_1,0.5046728971962616,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,share_eq_1[attribution],0.4507042253521127,142,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,audit,share_eq_1[rule],0.6111111111111112,72,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,n,214,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,mean_verifiability,0.9142655786917233,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,min_verifiability,0.5,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,share_eq_1,0.5093457943925234,214,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,share_eq_1[attribution],0.45774647887323944,142,
+noncredit,verifiability_saturation_by_dataset_track,fda_inspections,primary,share_eq_1[rule],0.6111111111111112,72,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,n,347,347,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,mean_verifiability,0.7649048798367903,347,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,min_verifiability,0.5,347,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,share_eq_1,0.276657060518732,347,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,share_eq_1[attribution],0.125,144,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,share_eq_1[counterfactual],0.4580152671755725,131,
+noncredit,verifiability_saturation_by_dataset_track,hmda,audit,share_eq_1[rule],0.25,72,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,n,344,344,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,mean_verifiability,0.7702222152729985,344,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,min_verifiability,0.5,344,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,share_eq_1,0.23255813953488372,344,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,share_eq_1[attribution],0.06944444444444445,144,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,share_eq_1[counterfactual],0.4140625,128,
+noncredit,verifiability_saturation_by_dataset_track,hmda,primary,share_eq_1[rule],0.2361111111111111,72,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,n,218,218,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,mean_verifiability,0.867681783930341,218,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,min_verifiability,0.49999999999999994,218,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,share_eq_1,0.3073394495412844,218,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,share_eq_1[attribution],0.1388888888888889,144,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,share_eq_1[counterfactual],1.0,2,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,audit,share_eq_1[rule],0.625,72,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,n,216,216,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,mean_verifiability,0.860385343478611,216,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,min_verifiability,0.5,216,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,share_eq_1,0.3194444444444444,216,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,share_eq_1[attribution],0.16666666666666666,144,
+noncredit,verifiability_saturation_by_dataset_track,ny_courts_pretrial,primary,share_eq_1[rule],0.625,72,
+noncredit,dice_wachter_vcr_tie,hmda|audit|ebm,V,abs_diff_config_mean,0.10986180703218085,17,dice=0.786332; wachter=0.676471; tied=False; instance_identical_share=0.176
+noncredit,dice_wachter_vcr_tie,hmda|audit|ebm,C,abs_diff_config_mean,0.06702883913267443,17,dice=0.743499; wachter=0.676471; tied=False; instance_identical_share=0.059
+noncredit,dice_wachter_vcr_tie,hmda|audit|ebm,R,abs_diff_config_mean,0.0,17,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,hmda|audit|logistic_regression,V,abs_diff_config_mean,0.25140290786177844,19,dice=0.748597; wachter=1.000000; tied=False; instance_identical_share=0.263
+noncredit,dice_wachter_vcr_tie,hmda|audit|logistic_regression,C,abs_diff_config_mean,0.34105783238895904,19,dice=0.658942; wachter=1.000000; tied=False; instance_identical_share=0.105
+noncredit,dice_wachter_vcr_tie,hmda|audit|logistic_regression,R,abs_diff_config_mean,0.0,19,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,hmda|audit|xgboost,V,abs_diff_config_mean,0.04558836813752265,23,dice=0.787004; wachter=0.741416; tied=False; instance_identical_share=0.304
+noncredit,dice_wachter_vcr_tie,hmda|audit|xgboost,C,abs_diff_config_mean,0.039695348421875165,23,dice=0.658242; wachter=0.697938; tied=False; instance_identical_share=0.000
+noncredit,dice_wachter_vcr_tie,hmda|audit|xgboost,R,abs_diff_config_mean,0.0,23,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,hmda|primary|ebm,V,abs_diff_config_mean,0.10738020128916914,18,dice=0.790858; wachter=0.683477; tied=False; instance_identical_share=0.222
+noncredit,dice_wachter_vcr_tie,hmda|primary|ebm,C,abs_diff_config_mean,0.08648932809573917,18,dice=0.697600; wachter=0.611111; tied=False; instance_identical_share=0.000
+noncredit,dice_wachter_vcr_tie,hmda|primary|ebm,R,abs_diff_config_mean,0.0,18,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,hmda|primary|logistic_regression,V,abs_diff_config_mean,0.2566808742765493,17,dice=0.743319; wachter=1.000000; tied=False; instance_identical_share=0.235
+noncredit,dice_wachter_vcr_tie,hmda|primary|logistic_regression,C,abs_diff_config_mean,0.3518264854054489,17,dice=0.648174; wachter=1.000000; tied=False; instance_identical_share=0.118
+noncredit,dice_wachter_vcr_tie,hmda|primary|logistic_regression,R,abs_diff_config_mean,0.0,17,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,hmda|primary|xgboost,V,abs_diff_config_mean,0.1080828352895924,21,dice=0.783551; wachter=0.675468; tied=False; instance_identical_share=0.190
+noncredit,dice_wachter_vcr_tie,hmda|primary|xgboost,C,abs_diff_config_mean,0.0584670916214618,21,dice=0.710125; wachter=0.651658; tied=False; instance_identical_share=0.000
+noncredit,dice_wachter_vcr_tie,hmda|primary|xgboost,R,abs_diff_config_mean,0.0,21,dice=1.000000; wachter=1.000000; tied=True; instance_identical_share=1.000
+noncredit,dice_wachter_vcr_tie,ALL,V,configs_tied,0,18,
+noncredit,dice_wachter_vcr_tie,ALL,C,configs_tied,0,18,
+noncredit,dice_wachter_vcr_tie,ALL,R,configs_tied,6,18,
+noncredit,dice_wachter_vcr_tie,ALL,VCR,configs_tied,0,18,

@@ -236,31 +236,6 @@ def models_table(bundles: dict, out_dir: Path) -> None:
     ))
 
 
-# Render-time edits to the taxonomy's legal_basis text. feature_taxonomy_v2.json itself stays unchanged: the result
-# bundles record its SHA-256 and denial_reasons.py stops on a mismatch. The DCJS clause was a placeholder without a
-# verified citation, so it gives way to a note that the correctability label is practical judgment. @SECRULES@ becomes a reference to the section that discusses bureau scores.
-LEGAL_BASIS_EDITS = (
-    ("; DCJS criminal-history record review (citation to be confirmed)", "; the correctability label is practical judgment"),
-    (
-        "(a failed qualifying score is an insufficient reason)",
-        "(failing the qualifying score of the creditor's own system is an insufficient reason; whether naming a bureau "
-        "score used as an input is specific enough is open, @SECRULES@)",
-    ),
-    ("(credit-score disclosure)", "(disclosure of the credit score)"),
-    ("(inputs to the FFIEC-derived category)", "(inputs to the category the FFIEC derives)"),
-    # N.Y. Crim. Proc. Law 510.30 no longer lists factors (revision of 2023-06-09); the securing-order factors are in
-    # 510.10(1), including (b) the charges and (c) the criminal conviction record, and age is not among them.
-    ("(age is not a suspect class); N.Y. Crim. Proc. Law 510.30", "(age is not a suspect class)"),
-    ("N.Y. Crim. Proc. Law 510.30 (criminal record as a factor)",
-     "N.Y. Crim. Proc. Law 510.10(1)(c) (criminal conviction record as a factor)"),
-    ("N.Y. Crim. Proc. Law 510.10, 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
-    ("N.Y. Crim. Proc. Law 510.30;", "N.Y. Crim. Proc. Law 510.10(1)(b) (charges as a factor);"),
-    # Labels that no legal provision fixes are shown as set in the authors' review.
-    ("none (practical judgment)", "set in the authors' review"),
-    ("is practical judgment", "is set in the authors' review"),
-    ("labels otherwise practical judgment", "other labels set in the authors' review"),
-    ("practical judgment", "set in the authors' review"),
-)
 MONTHS = ("january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november",
           "december")
 PRINCIPAL_REASON_CODE = {"High": "H", "Medium": "M", "Low": "L"}
@@ -277,11 +252,9 @@ def plain_meaning(spec: dict) -> str:
 
 def legal_basis(spec: dict) -> str:
     text = str(spec.get("legal_basis", ""))
-    for old, new in LEGAL_BASIS_EDITS:
-        text = text.replace(old, new)
     if "to be confirmed" in text:
         sys.exit(f"unresolved placeholder in the taxonomy's legal basis: {text}")
-    return tex(text).replace("@SECRULES@", r"Section~\ref{sec:lessons-rules}")
+    return tex(text)
 
 
 def taxonomy_table(repo_root: Path, out_dir: Path) -> None:
@@ -460,7 +433,7 @@ def band_sweep(analysis: Path, out_dir: Path) -> None:
         "@{}lrrrrrrrrrrr@{}",
         r"Model & Band & Min. & Ref. rows & In common & Same first (\%) & Same as avg. (\%) & SHAP & LIME & DiCE & Anchors & Wachter",
         rows,
-        "Reference population of the marginal applicant method (consumer credit, models refit). Band: distance below the cutoff, "
+        "Reference population of the marginal applicant method (consumer credit, models fitted again). Band: distance below the cutoff, "
         "in the predicted probability of the adverse outcome, within which approved applicants count as marginal. Min.: minimum "
         "number of approved applicants. Ref. rows: mean size of the reference group. "
         "In common: share of the baseline's four reasons (band 0.10, at least 200) that the setting also selects. Same first: "
@@ -509,7 +482,7 @@ def lime_sampling(analysis: Path, denial_dir: Path, sources: dict, out_dir: Path
     rows += [line(f"Share of marginal applicant reasons named, {label.lower()}", [f2(coverage(sub, m)) for _n, sub, _l in runs])
              for m, label in MODELS]
     rows.append(line("Overlap of reasons across applicants", [f2(spec.get(n)) for n, _s, _l in runs]))
-    caption = ("LIME without discretization, with perturbations drawn as in the main runs from the mean "
+    caption = ("LIME without discretization, with samples drawn as in the main runs from the mean "
                "and spread of 64 training applicants, and drawn around the applicant with the same spread")
     if len(runs) == 3:
         caption += (", and LIME in the library's default mode, which discretizes each factor into quartiles of the same 64 "
@@ -631,16 +604,16 @@ def proxy_baselines(analysis: Path, out_dir: Path) -> None:
         "Possible proxies on the marginal applicant method's notices, in percent of denied applicants. With: the version "
         "that keeps the protected characteristics. Dropped: the same models and applicants with the characteristics left out "
         "of the ranking, so the next ranked factors fill the freed places. Placebo: as many factors labeled neither protected "
-        "nor possible proxy left out instead. Refit: the version fit without the characteristics, which explains other "
-        "applicants. Refit $-$ dropped: difference in percentage points with a 95\\% bootstrap interval. Chance: four "
+        "nor possible proxy left out instead. Without: the version trained without the characteristics, which explains other "
+        "applicants. Without $-$ dropped: difference in percentage points with a 95\\% bootstrap interval. Chance: four "
         "reasons drawn at random from the version's factors, with and without the characteristics. HMDA, neighborhoods: "
         "county and census tract enter as the smoothed denial rate of each code among training applicants; HMDA, numeric "
         "codes: they enter as numbers, which sort tracts by state and county.",
         "tab:app-proxy", "@{}llrrrrrrr@{}",
-        [r"Data & Notice names & With & Dropped & Placebo & Refit & Refit $-$ dropped & \multicolumn{2}{c@{}}{Chance} \\",
+        [r"Data & Notice names & With & Dropped & Placebo & Without & Without $-$ dropped & \multicolumn{2}{c@{}}{Chance} \\",
          r"\cmidrule(l){8-9} & & & & & & & with & without \\"],
         rows,
-        size=r"\footnotesize\setlength{\tabcolsep}{4pt}",
+        size=r"\footnotesize\setlength{\tabcolsep}{3pt}",
     ))
 
 
@@ -678,17 +651,17 @@ def within_class(analysis: Path, out_dir: Path) -> None:
 
     rates = [
         ("within_seed", "ebm", "Boosting machine, another seed"),
-        ("within_boot_pairs", "ebm", "Boosting machine, two resamples"),
-        ("within_boot_pairs", "xgboost", "Boosted trees, two resamples"),
-        ("within_boot_vs_original", "ebm", "Boosting machine, original and a resample"),
-        ("within_boot_vs_original", "xgboost", "Boosted trees, original and a resample"),
+        ("within_boot_pairs", "ebm", "Boosting machine, two retrained copies"),
+        ("within_boot_pairs", "xgboost", "Boosted trees, two retrained copies"),
+        ("within_boot_vs_original", "ebm", "Boosting machine, original and a retrained copy"),
+        ("within_boot_vs_original", "xgboost", "Boosted trees, original and a retrained copy"),
         ("across_original", "ebm_vs_xgboost", "The two classes, original fits"),
-        ("across_boot", "ebm_vs_xgboost", "The two classes, same resample"),
+        ("across_boot", "ebm_vs_xgboost", "The two classes, same fresh sample"),
     ]
     differences = [
         ("across_original|ebm_vs_xgboost", "within_seed|ebm", "Classes, original fits $-$ machine seeds"),
-        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|ebm", "Classes, same resample $-$ machine resamples"),
-        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|xgboost", "Classes, same resample $-$ trees resamples"),
+        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|ebm", "Classes, same sample $-$ machine copies"),
+        ("across_boot|ebm_vs_xgboost", "within_boot_pairs|xgboost", "Classes, same sample $-$ trees copies"),
     ]
     width = str(len(scopes) + 1)
     rows = [r"\multicolumn{" + width + r"}{@{}l}{\emph{Applicants whose first reason differs (\%)}} \\"]
@@ -698,18 +671,18 @@ def within_class(analysis: Path, out_dir: Path) -> None:
     for across, within_kind, label in differences:
         rows.append(label + " & " + " & ".join(cell(contrasts.get((across, within_kind, s)), "difference", True)
                                                for s in scopes) + r" \\")
-    rows.append(r"\midrule \multicolumn{" + width + r"}{@{}l}{\emph{Resamples kept of 20 (audit, primary)}} \\")
+    rows.append(r"\midrule \multicolumn{" + width + r"}{@{}l}{\emph{Retrained copies kept of 20 (audit, primary)}} \\")
     for model_id, label in (("ebm", "Boosting machine"), ("xgboost", "Boosted trees")):
         rows.append(label + " & " + " & ".join(kept(model_id, s) for s in scopes[:-1]) + r" & -- \\")
     write(out_dir, "tab_within_class.tex", simple_table(
         "The marginal applicant method's first reason within and across the two model classes of "
         "Figure~\\ref{fig:modelchoice}, for the same 96 denied applicants in both versions of the data. Another seed: the "
-        "boosting machine refit on the same training data with one of ten other random seeds (the boosted trees give the "
-        "same model for every seed). Resample: a bootstrap resample of the training data, drawn within each outcome, one "
-        "of 20 per dataset and version and shared by the two classes. A refit counts if its ROC AUC is within 0.02 of the "
-        "original fit's, and a pair of classes on the same resample counts if both fits count and their ROC AUC differ by "
-        "at most 0.02. Each applicant counts once per version, averaged over its refits. Intervals are 95\\% bootstrap "
-        "intervals that resample the refits and the applicants within dataset, with both versions of an applicant "
+        "boosting machine retrained on the same training data with one of ten other random seeds (the boosted trees give the "
+        "same model for every seed). Fresh sample: a bootstrap sample of the training data, drawn within each outcome, one "
+        "of 20 per dataset and version and shared by the two classes. A retrained model counts if its ROC AUC is within 0.02 of the "
+        "original fit's, and a pair of classes on the same fresh sample counts if both models count and their ROC AUC differ by "
+        "at most 0.02. Each applicant counts once per version, averaged over its retrained models. Intervals are 95\\% bootstrap "
+        "intervals that resample the retrained models and the applicants within dataset, with both versions of an applicant "
         "together; the differences are paired.",
         "tab:app-within", "@{}lrrrrr@{}",
         [r"Comparison & HELOC & Default Credit & Give Me Some Credit & South German Credit & Pooled \\"],
@@ -770,12 +743,12 @@ def reason_families_table(analysis: Path, out_dir: Path) -> None:
         "In the upper block None merges nothing and reproduces Figure~\\ref{fig:modelchoice} and Table~\\ref{tab:app-within}; "
         "in the lower block None differs from them because summing also merges the months of each Default Credit history. Pooled over "
         "the four consumer credit datasets except the last column. Methods: the two commentary methods on the same model. "
-        "Refits: two bootstrap refits of the boosting machine or the boosted trees. Classes: the two classes, original fits "
-        "and on the same resample. Differences are paired, in percentage points. Intervals as in Table~\\ref{tab:app-within}.",
+        "Retrained: two copies of the boosting machine or the boosted trees, retrained on fresh bootstrap samples. Classes: the two classes, original models "
+        "and trained on the same fresh sample. Differences are paired, in percentage points. Intervals as in Table~\\ref{tab:app-within}.",
         "tab:app-families", "@{}lrrrrrrrr@{}",
-        [r"Threshold & Methods & \multicolumn{2}{c}{Refits} & \multicolumn{2}{c}{Classes} & "
-         r"\multicolumn{2}{c}{Classes $-$ refits} & HELOC \\",
-         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & machine & trees & original & same resample & "
+        [r"Threshold & Methods & \multicolumn{2}{c}{Retrained} & \multicolumn{2}{c}{Classes} & "
+         r"\multicolumn{2}{c}{Classes $-$ retrained} & HELOC \\",
+         r"\cmidrule(lr){3-4}\cmidrule(lr){5-6}\cmidrule(lr){7-8} & & machine & trees & original & same sample & "
          r"machine & trees & classes \\"],
         rows,
         size=r"\scriptsize\setlength{\tabcolsep}{2.5pt}",
@@ -856,7 +829,7 @@ def worked_notices(denial_dir: Path, source: dict, out_dir: Path) -> None:
         direction_table("A first reason that helped the applicant.", "SHAP's notice for a denied applicant lists first a factor that favored approval", shap_case),
         direction_table(
             "Signs that contradict the model.",
-            "LIME's notice, which takes each sign from the slope of LIME's local linear surrogate, marks factors as favoring "
+            "LIME's notice, which takes each sign from the slope of LIME's local linear model, marks factors as favoring "
             "approval that the model counts against the applicant",
             lime_case,
         ),

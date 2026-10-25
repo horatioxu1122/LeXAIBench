@@ -1,0 +1,421 @@
+scope,metric,role,explainer_id,label,source_bundle,matched_to_baseline_instances,n_instances,mean
+__pooled__,faithfulness,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.7852853409544105
+__pooled__,faithfulness_no_quality,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.7852853409544105
+__pooled__,stability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,1.0
+__pooled__,comprehensibility,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.694813829787234
+__pooled__,comprehensibility_no_rs,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.6185172872340425
+__pooled__,css,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.7775571981769248
+__pooled__,css_no_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.8458032145905097
+__pooled__,css_verifiability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.7132879618251206
+__pooled__,css_correctability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.9012200746511536
+__pooled__,css_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.5728191489361703
+__pooled__,css_reason_specificity,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,1.0
+__pooled__,actionability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,564,0.32036602239534606
+__pooled__,faithfulness,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.42438873580988773
+__pooled__,faithfulness_no_quality,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.42438873580988773
+__pooled__,stability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.3878845789223855
+__pooled__,comprehensibility,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.8822901891252956
+__pooled__,comprehensibility_no_rs,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.8528627364066194
+__pooled__,css,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.8136940833320779
+__pooled__,css_no_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.894304877066884
+__pooled__,css_verifiability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.7740230611864705
+__pooled__,css_correctability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.9617391314807395
+__pooled__,css_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.5718617021276596
+__pooled__,css_reason_specificity,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,1.0
+__pooled__,actionability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,564,0.33852173944422187
+__pooled__,faithfulness,real_explainer,anchors,anchors,credit,True,564,0.448028150715363
+__pooled__,faithfulness_no_quality,real_explainer,anchors,anchors,credit,True,564,0.448028150715363
+__pooled__,stability,real_explainer,anchors,anchors,credit,True,564,0.6203038810086683
+__pooled__,comprehensibility,real_explainer,anchors,anchors,credit,True,564,0.9463563829787234
+__pooled__,comprehensibility_no_rs,real_explainer,anchors,anchors,credit,True,564,0.9329454787234042
+__pooled__,css,real_explainer,anchors,anchors,credit,True,564,0.7964051418439717
+__pooled__,css_no_dsv,real_explainer,anchors,anchors,credit,True,564,0.8710401891252955
+__pooled__,css_verifiability,real_explainer,anchors,anchors,credit,True,564,0.7377364066193853
+__pooled__,css_correctability,real_explainer,anchors,anchors,credit,True,564,0.9398640661938535
+__pooled__,css_dsv,real_explainer,anchors,anchors,credit,True,564,0.5725000000000001
+__pooled__,css_reason_specificity,real_explainer,anchors,anchors,credit,True,564,1.0
+__pooled__,actionability,real_explainer,anchors,anchors,credit,True,564,0.331959219858156
+__pooled__,faithfulness,real_explainer,dice,dice,credit,True,550,0.5401775918992978
+__pooled__,faithfulness_no_quality,real_explainer,dice,dice,credit,True,550,0.5401775918992978
+__pooled__,stability,real_explainer,dice,dice,credit,True,550,0.7031052188552188
+__pooled__,comprehensibility,real_explainer,dice,dice,credit,True,550,0.8057106060606061
+__pooled__,comprehensibility_no_rs,real_explainer,dice,dice,credit,True,550,0.7752291666666666
+__pooled__,css,real_explainer,dice,dice,credit,True,550,0.9060340614909265
+__pooled__,css_no_dsv,real_explainer,dice,dice,credit,True,550,0.8747120819879021
+__pooled__,css_verifiability,real_explainer,dice,dice,credit,True,550,0.7513687565340824
+__pooled__,css_correctability,real_explainer,dice,dice,credit,True,550,0.9354114484356728
+__pooled__,css_dsv,real_explainer,dice,dice,credit,True,550,1.0
+__pooled__,css_reason_specificity,real_explainer,dice,dice,credit,True,550,1.0
+__pooled__,actionability,real_explainer,dice,dice,credit,True,550,0.6989327648523331
+__pooled__,faithfulness,real_explainer,lime,lime,credit,True,563,0.6322484554917064
+__pooled__,faithfulness_no_quality,real_explainer,lime,lime,credit,True,563,0.6322484554917064
+__pooled__,stability,real_explainer,lime,lime,credit,True,563,0.8772604064856322
+__pooled__,comprehensibility,real_explainer,lime,lime,credit,True,563,0.8781231497927767
+__pooled__,comprehensibility_no_rs,real_explainer,lime,lime,credit,True,563,0.847653937240971
+__pooled__,css,real_explainer,lime,lime,credit,True,563,0.8117222110473693
+__pooled__,css_no_dsv,real_explainer,lime,lime,credit,True,563,0.8913430546350951
+__pooled__,css_verifiability,real_explainer,lime,lime,credit,True,563,0.7423067094060858
+__pooled__,css_correctability,real_explainer,lime,lime,credit,True,563,0.9860509271816522
+__pooled__,css_dsv,real_explainer,lime,lime,credit,True,563,0.5728596802841919
+__pooled__,css_reason_specificity,real_explainer,lime,lime,credit,True,563,1.0
+__pooled__,actionability,real_explainer,lime,lime,credit,True,563,0.34581527815449564
+__pooled__,faithfulness,real_explainer,shap,shap,credit,True,564,0.8330807193278789
+__pooled__,faithfulness_no_quality,real_explainer,shap,shap,credit,True,564,0.8330807193278789
+__pooled__,stability,real_explainer,shap,shap,credit,True,564,0.9079894101717388
+__pooled__,comprehensibility,real_explainer,shap,shap,credit,True,564,0.7900650118203311
+__pooled__,comprehensibility_no_rs,real_explainer,shap,shap,credit,True,564,0.7375812647754137
+__pooled__,css,real_explainer,shap,shap,credit,True,564,0.7864138537798602
+__pooled__,css_no_dsv,real_explainer,shap,shap,credit,True,564,0.8576120887277568
+__pooled__,css_verifiability,real_explainer,shap,shap,credit,True,564,0.7162035657738846
+__pooled__,css_correctability,real_explainer,shap,shap,credit,True,564,0.9278266560455076
+__pooled__,css_dsv,real_explainer,shap,shap,credit,True,564,0.5728191489361703
+__pooled__,css_reason_specificity,real_explainer,shap,shap,credit,True,564,1.0
+__pooled__,actionability,real_explainer,shap,shap,credit,True,564,0.3283479968136523
+__pooled__,faithfulness,real_explainer,wachter,wachter,credit,True,472,0.38700041843699245
+__pooled__,faithfulness_no_quality,real_explainer,wachter,wachter,credit,True,472,0.38700041843699245
+__pooled__,stability,real_explainer,wachter,wachter,credit,True,472,0.7594544491525423
+__pooled__,comprehensibility,real_explainer,wachter,wachter,credit,True,472,0.9684427966101695
+__pooled__,comprehensibility_no_rs,real_explainer,wachter,wachter,credit,True,472,0.9700873940677966
+__pooled__,css,real_explainer,wachter,wachter,credit,True,472,0.9012520977833595
+__pooled__,css_no_dsv,real_explainer,wachter,wachter,credit,True,472,0.8683361303778127
+__pooled__,css_verifiability,real_explainer,wachter,wachter,credit,True,472,0.73178320192213
+__pooled__,css_correctability,real_explainer,wachter,wachter,credit,True,472,0.9390571240224018
+__pooled__,css_dsv,real_explainer,wachter,wachter,credit,True,472,1.0
+__pooled__,css_reason_specificity,real_explainer,wachter,wachter,credit,True,472,1.0
+__pooled__,actionability,real_explainer,wachter,wachter,credit,True,472,0.7069438486361467
+default_of_credit_card_clients,faithfulness,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.8126581356854897
+default_of_credit_card_clients,faithfulness_no_quality,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.8126581356854897
+default_of_credit_card_clients,stability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,1.0
+default_of_credit_card_clients,comprehensibility,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.7565034965034966
+default_of_credit_card_clients,comprehensibility_no_rs,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.6956293706293705
+default_of_credit_card_clients,css,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.89296615309248
+default_of_credit_card_clients,css_no_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.9772882041233065
+default_of_credit_card_clients,css_verifiability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,1.0
+default_of_credit_card_clients,css_correctability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.9432205103082666
+default_of_credit_card_clients,css_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.64
+default_of_credit_card_clients,css_reason_specificity,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,1.0
+default_of_credit_card_clients,actionability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,143,0.3329661530924799
+default_of_credit_card_clients,faithfulness,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.4086289598621399
+default_of_credit_card_clients,faithfulness_no_quality,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.4086289598621399
+default_of_credit_card_clients,stability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.3442687090897318
+default_of_credit_card_clients,comprehensibility,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.9388811188811188
+default_of_credit_card_clients,comprehensibility_no_rs,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.9236013986013986
+default_of_credit_card_clients,css,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.9017672648255408
+default_of_credit_card_clients,css_no_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.990281761026129
+default_of_credit_card_clients,css_verifiability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,1.0
+default_of_credit_card_clients,css_correctability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.9757044025653226
+default_of_credit_card_clients,css_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.6362237762237762
+default_of_credit_card_clients,css_reason_specificity,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,1.0
+default_of_credit_card_clients,actionability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,143,0.34271132076959676
+default_of_credit_card_clients,faithfulness,real_explainer,anchors,anchors,credit,True,143,0.48283313466506084
+default_of_credit_card_clients,faithfulness_no_quality,real_explainer,anchors,anchors,credit,True,143,0.48283313466506084
+default_of_credit_card_clients,stability,real_explainer,anchors,anchors,credit,True,143,0.6507025382025382
+default_of_credit_card_clients,comprehensibility,real_explainer,anchors,anchors,credit,True,143,0.9848251748251747
+default_of_credit_card_clients,comprehensibility_no_rs,real_explainer,anchors,anchors,credit,True,143,0.9810314685314685
+default_of_credit_card_clients,css,real_explainer,anchors,anchors,credit,True,143,0.893951048951049
+default_of_credit_card_clients,css_no_dsv,real_explainer,anchors,anchors,credit,True,143,0.9790209790209791
+default_of_credit_card_clients,css_verifiability,real_explainer,anchors,anchors,credit,True,143,1.0
+default_of_credit_card_clients,css_correctability,real_explainer,anchors,anchors,credit,True,143,0.9475524475524476
+default_of_credit_card_clients,css_dsv,real_explainer,anchors,anchors,credit,True,143,0.6387412587412588
+default_of_credit_card_clients,css_reason_specificity,real_explainer,anchors,anchors,credit,True,143,1.0
+default_of_credit_card_clients,actionability,real_explainer,anchors,anchors,credit,True,143,0.33426573426573425
+default_of_credit_card_clients,faithfulness,real_explainer,dice,dice,credit,True,143,0.5789445720202705
+default_of_credit_card_clients,faithfulness_no_quality,real_explainer,dice,dice,credit,True,143,0.5789445720202705
+default_of_credit_card_clients,stability,real_explainer,dice,dice,credit,True,143,0.811072261072261
+default_of_credit_card_clients,comprehensibility,real_explainer,dice,dice,credit,True,143,0.8957342657342657
+default_of_credit_card_clients,comprehensibility_no_rs,real_explainer,dice,dice,credit,True,143,0.8752622377622378
+default_of_credit_card_clients,css,real_explainer,dice,dice,credit,True,143,0.9966304874983195
+default_of_credit_card_clients,css_no_dsv,real_explainer,dice,dice,credit,True,143,0.9955073166644259
+default_of_credit_card_clients,css_verifiability,real_explainer,dice,dice,credit,True,143,1.0
+default_of_credit_card_clients,css_correctability,real_explainer,dice,dice,credit,True,143,0.988768291661065
+default_of_credit_card_clients,css_dsv,real_explainer,dice,dice,credit,True,143,1.0
+default_of_credit_card_clients,css_reason_specificity,real_explainer,dice,dice,credit,True,143,1.0
+default_of_credit_card_clients,actionability,real_explainer,dice,dice,credit,True,143,0.7506761996847051
+default_of_credit_card_clients,faithfulness,real_explainer,lime,lime,credit,True,143,0.771916679635123
+default_of_credit_card_clients,faithfulness_no_quality,real_explainer,lime,lime,credit,True,143,0.771916679635123
+default_of_credit_card_clients,stability,real_explainer,lime,lime,credit,True,143,0.9033653846153846
+default_of_credit_card_clients,comprehensibility,real_explainer,lime,lime,credit,True,143,0.9797902097902097
+default_of_credit_card_clients,comprehensibility_no_rs,real_explainer,lime,lime,credit,True,143,0.9747377622377622
+default_of_credit_card_clients,css,real_explainer,lime,lime,credit,True,143,0.9099999999999999
+default_of_credit_card_clients,css_no_dsv,real_explainer,lime,lime,credit,True,143,1.0
+default_of_credit_card_clients,css_verifiability,real_explainer,lime,lime,credit,True,143,1.0
+default_of_credit_card_clients,css_correctability,real_explainer,lime,lime,credit,True,143,1.0
+default_of_credit_card_clients,css_dsv,real_explainer,lime,lime,credit,True,143,0.64
+default_of_credit_card_clients,css_reason_specificity,real_explainer,lime,lime,credit,True,143,1.0
+default_of_credit_card_clients,actionability,real_explainer,lime,lime,credit,True,143,0.35
+default_of_credit_card_clients,faithfulness,real_explainer,shap,shap,credit,True,143,0.8735841926301793
+default_of_credit_card_clients,faithfulness_no_quality,real_explainer,shap,shap,credit,True,143,0.8735841926301793
+default_of_credit_card_clients,stability,real_explainer,shap,shap,credit,True,143,0.8732730078563412
+default_of_credit_card_clients,comprehensibility,real_explainer,shap,shap,credit,True,143,0.8626573426573425
+default_of_credit_card_clients,comprehensibility_no_rs,real_explainer,shap,shap,credit,True,143,0.8283216783216782
+default_of_credit_card_clients,css,real_explainer,shap,shap,credit,True,143,0.9029933328454398
+default_of_credit_card_clients,css_no_dsv,real_explainer,shap,shap,credit,True,143,0.9906577771272529
+default_of_credit_card_clients,css_verifiability,real_explainer,shap,shap,credit,True,143,1.0
+default_of_credit_card_clients,css_correctability,real_explainer,shap,shap,credit,True,143,0.9766444428181323
+default_of_credit_card_clients,css_dsv,real_explainer,shap,shap,credit,True,143,0.64
+default_of_credit_card_clients,css_reason_specificity,real_explainer,shap,shap,credit,True,143,1.0
+default_of_credit_card_clients,actionability,real_explainer,shap,shap,credit,True,143,0.34299333284543965
+default_of_credit_card_clients,faithfulness,real_explainer,wachter,wachter,credit,True,143,0.45072725440575034
+default_of_credit_card_clients,faithfulness_no_quality,real_explainer,wachter,wachter,credit,True,143,0.45072725440575034
+default_of_credit_card_clients,stability,real_explainer,wachter,wachter,credit,True,143,0.8271853146853146
+default_of_credit_card_clients,comprehensibility,real_explainer,wachter,wachter,credit,True,143,0.9969230769230769
+default_of_credit_card_clients,comprehensibility_no_rs,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css_no_dsv,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css_verifiability,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css_correctability,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css_dsv,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,css_reason_specificity,real_explainer,wachter,wachter,credit,True,143,1.0
+default_of_credit_card_clients,actionability,real_explainer,wachter,wachter,credit,True,143,0.7536520059009747
+give_me_some_credit,faithfulness,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.9384719620748827
+give_me_some_credit,faithfulness_no_quality,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.9384719620748827
+give_me_some_credit,stability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,1.0
+give_me_some_credit,comprehensibility,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.6641489361702128
+give_me_some_credit,comprehensibility_no_rs,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.5801861702127659
+give_me_some_credit,css,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.7507619994954194
+give_me_some_credit,css_no_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.8176826659938926
+give_me_some_credit,css_verifiability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.5442066649847316
+give_me_some_credit,css_correctability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,1.0
+give_me_some_credit,css_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.55
+give_me_some_credit,css_reason_specificity,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,1.0
+give_me_some_credit,actionability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,141,0.35
+give_me_some_credit,faithfulness,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.5609996223268774
+give_me_some_credit,faithfulness_no_quality,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.5609996223268774
+give_me_some_credit,stability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.5143997898607827
+give_me_some_credit,comprehensibility,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.848741134751773
+give_me_some_credit,comprehensibility_no_rs,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.8109264184397164
+give_me_some_credit,css,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.7662447020914915
+give_me_some_credit,css_no_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.838326269455322
+give_me_some_credit,css_verifiability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.6354808178867452
+give_me_some_credit,css_correctability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.9603348557515601
+give_me_some_credit,css_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.55
+give_me_some_credit,css_reason_specificity,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,1.0
+give_me_some_credit,actionability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,141,0.338100456725468
+give_me_some_credit,faithfulness,real_explainer,anchors,anchors,credit,True,141,0.5517356918983678
+give_me_some_credit,faithfulness_no_quality,real_explainer,anchors,anchors,credit,True,141,0.5517356918983678
+give_me_some_credit,stability,real_explainer,anchors,anchors,credit,True,141,0.6641811137378513
+give_me_some_credit,comprehensibility,real_explainer,anchors,anchors,credit,True,141,0.9284042553191489
+give_me_some_credit,comprehensibility_no_rs,real_explainer,anchors,anchors,credit,True,141,0.9105053191489362
+give_me_some_credit,css,real_explainer,anchors,anchors,credit,True,141,0.7483156028368794
+give_me_some_credit,css_no_dsv,real_explainer,anchors,anchors,credit,True,141,0.8144208037825059
+give_me_some_credit,css_verifiability,real_explainer,anchors,anchors,credit,True,141,0.5384160756501183
+give_me_some_credit,css_correctability,real_explainer,anchors,anchors,credit,True,141,0.9976359338061465
+give_me_some_credit,css_dsv,real_explainer,anchors,anchors,credit,True,141,0.55
+give_me_some_credit,css_reason_specificity,real_explainer,anchors,anchors,credit,True,141,1.0
+give_me_some_credit,actionability,real_explainer,anchors,anchors,credit,True,141,0.34929078014184395
+give_me_some_credit,faithfulness,real_explainer,dice,dice,credit,True,141,0.6642315134270623
+give_me_some_credit,faithfulness_no_quality,real_explainer,dice,dice,credit,True,141,0.6642315134270623
+give_me_some_credit,stability,real_explainer,dice,dice,credit,True,141,0.6561859732072498
+give_me_some_credit,comprehensibility,real_explainer,dice,dice,credit,True,141,0.7712765957446809
+give_me_some_credit,comprehensibility_no_rs,real_explainer,dice,dice,credit,True,141,0.7260342789598109
+give_me_some_credit,css,real_explainer,dice,dice,credit,True,141,0.8491102147265195
+give_me_some_credit,css_no_dsv,real_explainer,dice,dice,credit,True,141,0.7988136196353594
+give_me_some_credit,css_verifiability,real_explainer,dice,dice,credit,True,141,0.5041564864731507
+give_me_some_credit,css_correctability,real_explainer,dice,dice,credit,True,141,0.9928775626152475
+give_me_some_credit,css_dsv,real_explainer,dice,dice,credit,True,141,1.0
+give_me_some_credit,css_reason_specificity,real_explainer,dice,dice,credit,True,141,1.0
+give_me_some_credit,actionability,real_explainer,dice,dice,credit,True,141,0.6964758391379426
+give_me_some_credit,faithfulness,real_explainer,lime,lime,credit,True,140,0.9062111938484678
+give_me_some_credit,faithfulness_no_quality,real_explainer,lime,lime,credit,True,140,0.9062111938484678
+give_me_some_credit,stability,real_explainer,lime,lime,credit,True,140,0.7278924122889896
+give_me_some_credit,comprehensibility,real_explainer,lime,lime,credit,True,140,0.7472202380952381
+give_me_some_credit,comprehensibility_no_rs,real_explainer,lime,lime,credit,True,140,0.6840252976190476
+give_me_some_credit,css,real_explainer,lime,lime,credit,True,140,0.7374709967424211
+give_me_some_credit,css_no_dsv,real_explainer,lime,lime,credit,True,140,0.7999613289898948
+give_me_some_credit,css_verifiability,real_explainer,lime,lime,credit,True,140,0.505996108953283
+give_me_some_credit,css_correctability,real_explainer,lime,lime,credit,True,140,0.9939072135214541
+give_me_some_credit,css_dsv,real_explainer,lime,lime,credit,True,140,0.55
+give_me_some_credit,css_reason_specificity,real_explainer,lime,lime,credit,True,140,1.0
+give_me_some_credit,actionability,real_explainer,lime,lime,credit,True,140,0.3481721640564362
+give_me_some_credit,faithfulness,real_explainer,shap,shap,credit,True,141,0.9342486174128626
+give_me_some_credit,faithfulness_no_quality,real_explainer,shap,shap,credit,True,141,0.9342486174128626
+give_me_some_credit,stability,real_explainer,shap,shap,credit,True,141,0.8616387262811612
+give_me_some_credit,comprehensibility,real_explainer,shap,shap,credit,True,141,0.7409101654846336
+give_me_some_credit,comprehensibility_no_rs,real_explainer,shap,shap,credit,True,141,0.6761377068557919
+give_me_some_credit,css,real_explainer,shap,shap,credit,True,141,0.739949074539322
+give_me_some_credit,css_no_dsv,real_explainer,shap,shap,credit,True,141,0.803265432719096
+give_me_some_credit,css_verifiability,real_explainer,shap,shap,credit,True,141,0.5151372598459362
+give_me_some_credit,css_correctability,real_explainer,shap,shap,credit,True,141,0.9930263219518038
+give_me_some_credit,css_dsv,real_explainer,shap,shap,credit,True,141,0.55
+give_me_some_credit,css_reason_specificity,real_explainer,shap,shap,credit,True,141,1.0
+give_me_some_credit,actionability,real_explainer,shap,shap,credit,True,141,0.34790789658554117
+give_me_some_credit,faithfulness,real_explainer,wachter,wachter,credit,True,140,0.4456479791078215
+give_me_some_credit,faithfulness_no_quality,real_explainer,wachter,wachter,credit,True,140,0.4456479791078215
+give_me_some_credit,stability,real_explainer,wachter,wachter,credit,True,140,0.6513392857142857
+give_me_some_credit,comprehensibility,real_explainer,wachter,wachter,credit,True,140,0.9511428571428571
+give_me_some_credit,comprehensibility_no_rs,real_explainer,wachter,wachter,credit,True,140,0.9492857142857143
+give_me_some_credit,css,real_explainer,wachter,wachter,credit,True,140,0.8328571428571429
+give_me_some_credit,css_no_dsv,real_explainer,wachter,wachter,credit,True,140,0.7771428571428571
+give_me_some_credit,css_verifiability,real_explainer,wachter,wachter,credit,True,140,0.5
+give_me_some_credit,css_correctability,real_explainer,wachter,wachter,credit,True,140,0.9428571428571428
+give_me_some_credit,css_dsv,real_explainer,wachter,wachter,credit,True,140,1.0
+give_me_some_credit,css_reason_specificity,real_explainer,wachter,wachter,credit,True,140,1.0
+give_me_some_credit,actionability,real_explainer,wachter,wachter,credit,True,140,0.6795923716727527
+heloc,faithfulness,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.6515151495503483
+heloc,faithfulness_no_quality,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.6515151495503483
+heloc,stability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,1.0
+heloc,comprehensibility,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.67
+heloc,comprehensibility_no_rs,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.5875
+heloc,css,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.655118650682715
+heloc,css_no_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.6901582009102866
+heloc,css_verifiability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.36269775113785835
+heloc,css_correctability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.8626977511378583
+heloc,css_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.55
+heloc,css_reason_specificity,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,1.0
+heloc,actionability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.30880932534135747
+heloc,faithfulness,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.31690699609927864
+heloc,faithfulness_no_quality,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.31690699609927864
+heloc,stability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.33409037673360586
+heloc,comprehensibility,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.8601904761904762
+heloc,comprehensibility_no_rs,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.8252380952380952
+heloc,css,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.7259034800547567
+heloc,css_no_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.7845379734063422
+heloc,css_verifiability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.48067246675792785
+heloc,css_correctability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.9806724667579279
+heloc,css_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.55
+heloc,css_reason_specificity,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,1.0
+heloc,actionability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.3442017400273783
+heloc,faithfulness,real_explainer,anchors,anchors,credit,True,140,0.31642996160318615
+heloc,faithfulness_no_quality,real_explainer,anchors,anchors,credit,True,140,0.31642996160318615
+heloc,stability,real_explainer,anchors,anchors,credit,True,140,0.5018353174603174
+heloc,comprehensibility,real_explainer,anchors,anchors,credit,True,140,0.9462857142857142
+heloc,comprehensibility_no_rs,real_explainer,anchors,anchors,credit,True,140,0.9328571428571428
+heloc,css,real_explainer,anchors,anchors,credit,True,140,0.7075
+heloc,css_no_dsv,real_explainer,anchors,anchors,credit,True,140,0.7599999999999999
+heloc,css_verifiability,real_explainer,anchors,anchors,credit,True,140,0.45
+heloc,css_correctability,real_explainer,anchors,anchors,credit,True,140,0.95
+heloc,css_dsv,real_explainer,anchors,anchors,credit,True,140,0.55
+heloc,css_reason_specificity,real_explainer,anchors,anchors,credit,True,140,1.0
+heloc,actionability,real_explainer,anchors,anchors,credit,True,140,0.33499999999999996
+heloc,faithfulness,real_explainer,dice,dice,credit,True,126,0.4012768357200686
+heloc,faithfulness_no_quality,real_explainer,dice,dice,credit,True,126,0.4012768357200686
+heloc,stability,real_explainer,dice,dice,credit,True,126,0.6510104350382128
+heloc,comprehensibility,real_explainer,dice,dice,credit,True,126,0.7764550264550265
+heloc,comprehensibility_no_rs,real_explainer,dice,dice,credit,True,126,0.7659391534391535
+heloc,css,real_explainer,dice,dice,credit,True,126,0.85
+heloc,css_no_dsv,real_explainer,dice,dice,credit,True,126,0.7999999999999999
+heloc,css_verifiability,real_explainer,dice,dice,credit,True,126,0.5
+heloc,css_correctability,real_explainer,dice,dice,credit,True,126,1.0
+heloc,css_dsv,real_explainer,dice,dice,credit,True,126,1.0
+heloc,css_reason_specificity,real_explainer,dice,dice,credit,True,126,1.0
+heloc,actionability,real_explainer,dice,dice,credit,True,126,0.7110154973069519
+heloc,faithfulness,real_explainer,lime,lime,credit,True,140,0.33030380428586825
+heloc,faithfulness_no_quality,real_explainer,lime,lime,credit,True,140,0.33030380428586825
+heloc,stability,real_explainer,lime,lime,credit,True,140,0.9913816137566138
+heloc,comprehensibility,real_explainer,lime,lime,credit,True,140,0.9632857142857142
+heloc,comprehensibility_no_rs,real_explainer,lime,lime,credit,True,140,0.9541071428571428
+heloc,css,real_explainer,lime,lime,credit,True,140,0.7374999999999999
+heloc,css_no_dsv,real_explainer,lime,lime,credit,True,140,0.7999999999999999
+heloc,css_verifiability,real_explainer,lime,lime,credit,True,140,0.5
+heloc,css_correctability,real_explainer,lime,lime,credit,True,140,1.0
+heloc,css_dsv,real_explainer,lime,lime,credit,True,140,0.55
+heloc,css_reason_specificity,real_explainer,lime,lime,credit,True,140,1.0
+heloc,actionability,real_explainer,lime,lime,credit,True,140,0.35
+heloc,faithfulness,real_explainer,shap,shap,credit,True,140,0.7268069448872302
+heloc,faithfulness_no_quality,real_explainer,shap,shap,credit,True,140,0.7268069448872302
+heloc,stability,real_explainer,shap,shap,credit,True,140,0.9168125629881583
+heloc,comprehensibility,real_explainer,shap,shap,credit,True,140,0.7991666666666667
+heloc,comprehensibility_no_rs,real_explainer,shap,shap,credit,True,140,0.7489583333333334
+heloc,css,real_explainer,shap,shap,credit,True,140,0.6742602588412585
+heloc,css_no_dsv,real_explainer,shap,shap,credit,True,140,0.715680345121678
+heloc,css_verifiability,real_explainer,shap,shap,credit,True,140,0.39460043140209755
+heloc,css_correctability,real_explainer,shap,shap,credit,True,140,0.8946004314020974
+heloc,css_dsv,real_explainer,shap,shap,credit,True,140,0.55
+heloc,css_reason_specificity,real_explainer,shap,shap,credit,True,140,1.0
+heloc,actionability,real_explainer,shap,shap,credit,True,140,0.3183801294206292
+heloc,faithfulness,real_explainer,wachter,wachter,credit,True,89,0.3043065032569758
+heloc,faithfulness_no_quality,real_explainer,wachter,wachter,credit,True,89,0.3043065032569758
+heloc,stability,real_explainer,wachter,wachter,credit,True,89,0.6696161048689139
+heloc,comprehensibility,real_explainer,wachter,wachter,credit,True,89,0.95
+heloc,comprehensibility_no_rs,real_explainer,wachter,wachter,credit,True,89,0.9504213483146068
+heloc,css,real_explainer,wachter,wachter,credit,True,89,0.8499999999999999
+heloc,css_no_dsv,real_explainer,wachter,wachter,credit,True,89,0.7999999999999998
+heloc,css_verifiability,real_explainer,wachter,wachter,credit,True,89,0.5
+heloc,css_correctability,real_explainer,wachter,wachter,credit,True,89,1.0
+heloc,css_dsv,real_explainer,wachter,wachter,credit,True,89,1.0
+heloc,css_reason_specificity,real_explainer,wachter,wachter,credit,True,89,1.0
+heloc,actionability,real_explainer,wachter,wachter,credit,True,89,0.7078966867968756
+south_german_credit,faithfulness,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.7368153664689661
+south_german_credit,faithfulness_no_quality,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.7368153664689661
+south_german_credit,stability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,1.0
+south_german_credit,comprehensibility,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.6875
+south_german_credit,comprehensibility_no_rs,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.609375
+south_german_credit,css,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.8091003346794765
+south_german_credit,css_no_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.8954671129059687
+south_german_credit,css_verifiability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.9413113253372904
+south_german_credit,css_correctability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.7973564569276314
+south_german_credit,css_dsv,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.55
+south_german_credit,css_reason_specificity,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,1.0
+south_german_credit,actionability,NULL_BASELINE,global_ranking,global_ranking [NULL BASELINE],nullbaselines,True,140,0.2892069370782894
+south_german_credit,faithfulness,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.41038128238929966
+south_german_credit,faithfulness_no_quality,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.41038128238929966
+south_german_credit,stability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.3588103857094185
+south_german_credit,comprehensibility,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.8803750000000001
+south_german_credit,comprehensibility_no_rs,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.85046875
+south_german_credit,css,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.8593125280476668
+south_german_credit,css_no_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.9624167040635557
+south_german_credit,css_verifiability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.9760861845787742
+south_german_credit,css_correctability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.9299555755801153
+south_german_credit,css_dsv,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.55
+south_german_credit,css_reason_specificity,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,1.0
+south_german_credit,actionability,NULL_BASELINE,random_reasons,random_reasons [NULL BASELINE],nullbaselines,True,140,0.32898667267403453
+south_german_credit,faithfulness,real_explainer,anchors,anchors,credit,True,140,0.4396272254588937
+south_german_credit,faithfulness_no_quality,real_explainer,anchors,anchors,credit,True,140,0.4396272254588937
+south_german_credit,stability,real_explainer,anchors,anchors,credit,True,140,0.663531746031746
+south_german_credit,comprehensibility,real_explainer,anchors,anchors,credit,True,140,0.9252142857142859
+south_german_credit,comprehensibility_no_rs,real_explainer,anchors,anchors,credit,True,140,0.9065178571428572
+south_german_credit,css,real_explainer,anchors,anchors,credit,True,140,0.8341071428571429
+south_german_credit,css_no_dsv,real_explainer,anchors,anchors,credit,True,140,0.9288095238095238
+south_german_credit,css_verifiability,real_explainer,anchors,anchors,credit,True,140,0.9583333333333333
+south_german_credit,css_correctability,real_explainer,anchors,anchors,credit,True,140,0.8636904761904761
+south_german_credit,css_dsv,real_explainer,anchors,anchors,credit,True,140,0.55
+south_german_credit,css_reason_specificity,real_explainer,anchors,anchors,credit,True,140,1.0
+south_german_credit,actionability,real_explainer,anchors,anchors,credit,True,140,0.30910714285714286
+south_german_credit,faithfulness,real_explainer,dice,dice,credit,True,140,0.5006505503697907
+south_german_credit,faithfulness_no_quality,real_explainer,dice,dice,credit,True,140,0.5006505503697907
+south_german_credit,stability,real_explainer,dice,dice,credit,True,140,0.6869642857142857
+south_german_credit,comprehensibility,real_explainer,dice,dice,credit,True,140,0.7747678571428572
+south_german_credit,comprehensibility_no_rs,real_explainer,dice,dice,credit,True,140,0.7309598214285714
+south_german_credit,css,real_explainer,dice,dice,credit,True,140,0.9212573845093619
+south_german_credit,css_no_dsv,real_explainer,dice,dice,credit,True,140,0.8950098460124826
+south_german_credit,css_verifiability,real_explainer,dice,dice,credit,True,140,0.9726196535787931
+south_german_credit,css_correctability,real_explainer,dice,dice,credit,True,140,0.7649049614524133
+south_german_credit,css_dsv,real_explainer,dice,dice,credit,True,140,1.0
+south_german_credit,css_reason_specificity,real_explainer,dice,dice,credit,True,140,1.0
+south_german_credit,actionability,real_explainer,dice,dice,credit,True,140,0.6376805581053184
+south_german_credit,faithfulness,real_explainer,lime,lime,credit,True,140,0.5175692536800073
+south_german_credit,faithfulness_no_quality,real_explainer,lime,lime,credit,True,140,0.5175692536800073
+south_german_credit,stability,real_explainer,lime,lime,credit,True,140,0.8858428228930461
+south_german_credit,comprehensibility,real_explainer,lime,lime,credit,True,140,0.8200178571428572
+south_german_credit,comprehensibility_no_rs,real_explainer,lime,lime,credit,True,140,0.7750223214285714
+south_german_credit,css,real_explainer,lime,lime,credit,True,140,0.8598118948266426
+south_german_credit,css_no_dsv,real_explainer,lime,lime,credit,True,140,0.9630825264355236
+south_german_credit,css_verifiability,real_explainer,lime,lime,credit,True,140,0.9577087295869047
+south_german_credit,css_correctability,real_explainer,lime,lime,credit,True,140,0.949997586501904
+south_german_credit,css_dsv,real_explainer,lime,lime,credit,True,140,0.55
+south_german_credit,css_reason_specificity,real_explainer,lime,lime,credit,True,140,1.0
+south_german_credit,actionability,real_explainer,lime,lime,credit,True,140,0.3349992759505712
+south_german_credit,faithfulness,real_explainer,shap,shap,credit,True,140,0.7960925629670156
+south_german_credit,faithfulness_no_quality,real_explainer,shap,shap,credit,True,140,0.7960925629670156
+south_german_credit,stability,real_explainer,shap,shap,credit,True,140,0.981308342781557
+south_german_credit,comprehensibility,real_explainer,shap,shap,credit,True,140,0.7563214285714286
+south_german_credit,comprehensibility_no_rs,real_explainer,shap,shap,credit,True,140,0.6954017857142857
+south_german_credit,css,real_explainer,shap,shap,credit,True,140,0.8262865084794478
+south_german_credit,css_no_dsv,real_explainer,shap,shap,credit,True,140,0.9183820113059303
+south_german_credit,css_verifiability,real_explainer,shap,shap,credit,True,140,0.9504314075850017
+south_german_credit,css_correctability,real_explainer,shap,shap,credit,True,140,0.8455236206798245
+south_german_credit,css_dsv,real_explainer,shap,shap,credit,True,140,0.55
+south_german_credit,css_reason_specificity,real_explainer,shap,shap,credit,True,140,1.0
+south_german_credit,actionability,real_explainer,shap,shap,credit,True,140,0.3036570862039473
+south_german_credit,faithfulness,real_explainer,wachter,wachter,credit,True,100,0.2873620425727228
+south_german_credit,faithfulness_no_quality,real_explainer,wachter,wachter,credit,True,100,0.2873620425727228
+south_german_credit,stability,real_explainer,wachter,wachter,credit,True,100,0.8939166666666667
+south_german_credit,comprehensibility,real_explainer,wachter,wachter,credit,True,100,0.9683499999999999
+south_german_credit,comprehensibility_no_rs,real_explainer,wachter,wachter,credit,True,100,0.9739375
+south_german_credit,css,real_explainer,wachter,wachter,credit,True,100,0.9014099015374569
+south_german_credit,css_no_dsv,real_explainer,wachter,wachter,credit,True,100,0.8685465353832759
+south_german_credit,css_verifiability,real_explainer,wachter,wachter,credit,True,100,0.8790167130724532
+south_german_credit,css_correctability,real_explainer,wachter,wachter,credit,True,100,0.7923496253857365
+south_german_credit,css_dsv,real_explainer,wachter,wachter,credit,True,100,1.0
+south_german_credit,css_reason_specificity,real_explainer,wachter,wachter,credit,True,100,1.0
+south_german_credit,actionability,real_explainer,wachter,wachter,credit,True,100,0.6775952255331456

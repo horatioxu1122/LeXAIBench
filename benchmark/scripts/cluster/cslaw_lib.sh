@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
-# Shared helpers for the CS&Law re-run scripts. Source this file; do not execute it.
+# Shared helpers for the CS&Law run scripts. Source this file; do not execute it.
 #
 #   source "${REPO_ROOT}/benchmark/scripts/cluster/cslaw_lib.sh"
 #
 # Used by:
 #   benchmark/scripts/cluster/run_cslaw_credit.sh
 #   benchmark/scripts/cluster/run_cslaw_noncredit_v2.sh
-#   benchmark/scripts/cluster/run_cslaw_cross_domain_native.sh   (round 1, superseded)
-#   benchmark/scripts/run_cslaw_offline_analyses.sh
+#   benchmark/scripts/cluster/run_cslaw_hmda_geo.sh
 #
 # Safety rules enforced here:
 #   * every output directory these scripts create is named cslaw_* under
-#     benchmark/outputs, so a published bundle can never be a write target;
+#     benchmark/outputs;
 #   * an existing target directory is refused unless CSLAW_FORCE=1 (--force);
 #   * after each benchmark run, cslaw_check_bundle fails loudly if any model or
 #     explainer silently fell back to a stub backend ("heuristic*" model or
@@ -19,12 +18,8 @@
 #     for v2 runs it also checks that the v2 corrections actually took effect, and
 #     for runs without a cslaw block that no v2 key leaked into the v1 output.
 
+# Commit of the v1 code, the baseline of the regression step in run_cslaw_credit.sh.
 CSLAW_BASELINE_COMMIT="fb5dadc"
-CSLAW_PUBLISHED_CREDIT_BUNDLE_NAME="four_dataset_real_highbudget_heldout_refresh"
-CSLAW_PUBLISHED_NONCREDIT_BUNDLE_NAME="cross_domain_strongest_real_full_cluster"
-CSLAW_PUBLISHED_CREDIT_CONFIG="benchmark/configs/experiment_four_dataset_real_highbudget.json"
-CSLAW_RESCORE_VARIANTS=(css_no_dsv comp_no_recourse_simplicity fid_no_quality all_neutral)
-CSLAW_DSV_SWEEP="0,0.05,0.10,0.15,0.20,0.25,0.30,0.35"
 
 cslaw_log() {
   printf '[cslaw %s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" >&2
@@ -42,8 +37,7 @@ cslaw_validate_tag() {
   fi
 }
 
-# Same thread pinning as benchmark/scripts/run-legalbench.sh, so the CS&Law runs
-# use the same numerical environment as the published runs.
+# One thread per numerical library, the same pinning as the v1 runs.
 cslaw_export_thread_env() {
   local repo_root="$1"
   export UV_CACHE_DIR="${UV_CACHE_DIR:-${repo_root}/.uv-cache}"
@@ -76,11 +70,6 @@ cslaw_guard_name() {
   case "${base}" in
     cslaw_*) ;;
     *) cslaw_die "refusing to write to ${target}: CS&Law outputs must be cslaw_* directories" ;;
-  esac
-  case "${base}" in
-    "${CSLAW_PUBLISHED_CREDIT_BUNDLE_NAME}" | "${CSLAW_PUBLISHED_NONCREDIT_BUNDLE_NAME}")
-      cslaw_die "refusing to write into the published bundle ${target}"
-      ;;
   esac
 }
 

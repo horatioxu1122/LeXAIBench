@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="390pt" height="145.2pt" viewBox="0 0 390 145.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 145.2 
+L 390 145.2 
+L 390 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="n:model">
+    <path d="M 3.5 12.7 
+L 97.857578 12.7 
+Q 99.857578 12.7 99.857578 14.7 
+L 99.857578 51.7 
+Q 99.857578 53.7 97.857578 53.7 
+L 3.5 53.7 
+Q 1.5 53.7 1.5 51.7 
+L 1.5 14.7 
+Q 1.5 12.7 3.5 12.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #f2f2f2; stroke: #8c8c8c; stroke-width: 0.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:explanation-method">
+    <path d="M 113.89138 12.7 
+L 188.779661 12.7 
+Q 190.779661 12.7 190.779661 14.7 
+L 190.779661 51.7 
+Q 190.779661 53.7 188.779661 53.7 
+L 113.89138 53.7 
+Q 111.89138 53.7 111.89138 51.7 
+L 111.89138 14.7 
+Q 111.89138 12.7 113.89138 12.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #f2f2f2; stroke: #8c8c8c; stroke-width: 0.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:notice">
+    <path d="M 204.813464 12.7 
+L 292.293229 12.7 
+Q 294.293229 12.7 294.293229 14.7 
+L 294.293229 51.7 
+Q 294.293229 53.7 292.293229 53.7 
+L 204.813464 53.7 
+Q 202.813464 53.7 202.813464 51.7 
+L 202.813464 14.7 
+Q 202.813464 12.7 204.813464 12.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #f2f2f2; stroke: #8c8c8c; stroke-width: 0.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:commentary-methods">
+    <path d="M 3.5 69.7 
+L 97.857578 69.7 
+Q 99.857578 69.7 99.857578 71.7 
+L 99.857578 99.7 
+Q 99.857578 101.7 97.857578 101.7 
+L 3.5 101.7 
+Q 1.5 101.7 1.5 99.7 
+L 1.5 71.7 
+Q 1.5 69.7 3.5 69.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #f2f2f2; stroke: #8c8c8c; stroke-width: 0.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:reference-notices">
+    <path d="M 3.5 111.7 
+L 97.857578 111.7 
+Q 99.857578 111.7 99.857578 113.7 
+L 99.857578 141.7 
+Q 99.857578 143.7 97.857578 143.7 
+L 3.5 143.7 
+Q 1.5 143.7 1.5 141.7 
+L 1.5 113.7 
+Q 1.5 111.7 3.5 111.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #f2f2f2; stroke: #8c8c8c; stroke-width: 0.6; stroke-linejoin: miter"/>
+   </g>
+   <g id="c:six-tests">
+    <path d="M 308.327031 12.7 
+L 386.5 12.7 
+Q 388.5 12.7 388.5 14.7 
+L 388.5 141.7 
+Q 388.5 143.7 386.5 143.7 
+L 308.327031 143.7 
+Q 306.327031 143.7 306.327031 141.7 
+L 306.327031 14.7 
+Q 306.327031 12.7 308.327031 12.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #ffffff; stroke: #0f4d92; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e1">
+    <path d="M 314.827031 26.212 
+L 380 26.212 
+Q 381.5 26.212 381.5 27.712 
+L 381.5 41.043333 
+Q 381.5 42.543333 380 42.543333 
+L 314.827031 42.543333 
+Q 313.327031 42.543333 313.327031 41.043333 
+L 313.327031 27.712 
+Q 313.327031 26.212 314.827031 26.212 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e2">
+    <path d="M 314.827031 45.543333 
+L 380 45.543333 
+Q 381.5 45.543333 381.5 47.043333 
+L 381.5 60.374667 
+Q 381.5 61.874667 380 61.874667 
+L 314.827031 61.874667 
+Q 313.327031 61.874667 313.327031 60.374667 
+L 313.327031 47.043333 
+Q 313.327031 45.543333 314.827031 45.543333 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e3">
+    <path d="M 314.827031 64.874667 
+L 380 64.874667 
+Q 381.5 64.874667 381.5 66.374667 
+L 381.5 79.706 
+Q 381.5 81.206 380 81.206 
+L 314.827031 81.206 
+Q 313.327031 81.206 313.327031 79.706 
+L 313.327031 66.374667 
+Q 313.327031 64.874667 314.827031 64.874667 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e4">
+    <path d="M 314.827031 84.206 
+L 380 84.206 
+Q 381.5 84.206 381.5 85.706 
+L 381.5 99.037333 
+Q 381.5 100.537333 380 100.537333 
+L 314.827031 100.537333 
+Q 313.327031 100.537333 313.327031 99.037333 
+L 313.327031 85.706 
+Q 313.327031 84.206 314.827031 84.206 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e5">
+    <path d="M 314.827031 103.537333 
+L 380 103.537333 
+Q 381.5 103.537333 381.5 105.037333 
+L 381.5 118.368667 
+Q 381.5 119.868667 380 119.868667 
+L 314.827031 119.868667 
+Q 313.327031 119.868667 313.327031 118.368667 
+L 313.327031 105.037333 
+Q 313.327031 103.537333 314.827031 103.537333 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="n:e6">
+    <path d="M 314.827031 122.868667 
+L 380 122.868667 
+Q 381.5 122.868667 381.5 124.368667 
+L 381.5 137.7 
+Q 381.5 139.2 380 139.2 
+L 314.827031 139.2 
+Q 313.327031 139.2 313.327031 137.7 
+L 313.327031 124.368667 
+Q 313.327031 122.868667 314.827031 122.868667 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #dce6f2; stroke: #0f4d92; stroke-width: 0.5; stroke-linejoin: miter"/>
+   </g>
+   <g id="e:model-to-method:head">
+    <path d="M 111.89138 33.2 
+L 106.89138 30.7 
+L 106.89138 35.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #272727"/>
+   </g>
+   <g id="e:method-to-notice:head">
+    <path d="M 202.813464 33.2 
+L 197.813464 30.7 
+L 197.813464 35.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #272727"/>
+   </g>
+   <g id="e:notice-to-tests:head">
+    <path d="M 306.327031 33.2 
+L 301.327031 30.7 
+L 301.327031 35.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #272727"/>
+   </g>
+   <g id="e:model-to-commentary:head">
+    <path d="M 50.678789 69.7 
+L 48.678789 65.7 
+L 52.678789 65.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #6b6b6b"/>
+   </g>
+   <g id="e:commentary-to-tests:head">
+    <path d="M 306.327031 85.7 
+L 302.327031 83.7 
+L 302.327031 87.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #6b6b6b"/>
+   </g>
+   <g id="e:reference-to-tests:head">
+    <path d="M 306.327031 127.7 
+L 302.327031 125.7 
+L 302.327031 129.7 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #6b6b6b"/>
+   </g>
+   <g id="s:1">
+    <path d="M 6.1 1 
+C 7.319934 1 8.490067 1.484685 9.352691 2.347309 
+C 10.215315 3.209933 10.7 4.380066 10.7 5.6 
+C 10.7 6.819934 10.215315 7.990067 9.352691 8.852691 
+C 8.490067 9.715315 7.319934 10.2 6.1 10.2 
+C 4.880066 10.2 3.709933 9.715315 2.847309 8.852691 
+C 1.984685 7.990067 1.5 6.819934 1.5 5.6 
+C 1.5 4.380066 1.984685 3.209933 2.847309 2.347309 
+C 3.709933 1.484685 4.880066 1 6.1 1 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #ffffff; stroke: #272727; stroke-width: 0.7; stroke-linejoin: miter"/>
+   </g>
+   <g id="s:2">
+    <path d="M 116.49138 1 
+C 117.711314 1 118.881448 1.484685 119.744071 2.347309 
+C 120.606695 3.209933 121.09138 4.380066 121.09138 5.6 
+C 121.09138 6.819934 120.606695 7.990067 119.744071 8.852691 
+C 118.881448 9.715315 117.711314 10.2 116.49138 10.2 
+C 115.271446 10.2 114.101313 9.715315 113.238689 8.852691 
+C 112.376065 7.990067 111.89138 6.819934 111.89138 5.6 
+C 111.89138 4.380066 112.376065 3.209933 113.238689 2.347309 
+C 114.101313 1.484685 115.271446 1 116.49138 1 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #ffffff; stroke: #272727; stroke-width: 0.7; stroke-linejoin: miter"/>
+   </g>
+   <g id="s:3">
+    <path d="M 207.413464 1 
+C 208.633398 1 209.803531 1.484685 210.666155 2.347309 
+C 211.528779 3.209933 212.013464 4.380066 212.013464 5.6 
+C 212.013464 6.819934 211.528779 7.990067 210.666155 8.852691 
+C 209.803531 9.715315 208.633398 10.2 207.413464 10.2 
+C 206.193529 10.2 205.023396 9.715315 204.160772 8.852691 
+C 203.298149 7.990067 202.813464 6.819934 202.813464 5.6 
+C 202.813464 4.380066 203.298149 3.209933 204.160772 2.347309 
+C 205.023396 1.484685 206.193529 1 207.413464 1 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #ffffff; stroke: #272727; stroke-width: 0.7; stroke-linejoin: miter"/>
+   </g>
+   <g id="s:4">
+    <path d="M 310.927031 1 
+C 312.146966 1 313.317099 1.484685 314.179722 2.347309 
+C 315.042346 3.209933 315.527031 4.380066 315.527031 5.6 
+C 315.527031 6.819934 315.042346 7.990067 314.179722 8.852691 
+C 313.317099 9.715315 312.146966 10.2 310.927031 10.2 
+C 309.707097 10.2 308.536964 9.715315 307.67434 8.852691 
+C 306.811716 7.990067 306.327031 6.819934 306.327031 5.6 
+C 306.327031 4.380066 306.811716 3.209933 307.67434 2.347309 
+C 308.536964 1.484685 309.707097 1 310.927031 1 
+z
+" clip-path="url(#p0dede4305e)" style="fill: #ffffff; stroke: #272727; stroke-width: 0.7; stroke-linejoin: miter"/>
+   </g>
+   <g id="e:model-to-method">
+    <path d="M 100.857578 33.2 
+L 106.89138 33.2 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #272727; stroke-width: 1.1"/>
+   </g>
+   <g id="e:method-to-notice">
+    <path d="M 191.779661 33.2 
+L 197.813464 33.2 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #272727; stroke-width: 1.1"/>
+   </g>
+   <g id="e:notice-to-tests">
+    <path d="M 295.293229 33.2 
+L 301.327031 33.2 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #272727; stroke-width: 1.1"/>
+   </g>
+   <g id="e:model-to-commentary">
+    <path d="M 50.678789 54.7 
+L 50.678789 65.7 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #6b6b6b; stroke-width: 0.7"/>
+   </g>
+   <g id="e:commentary-to-tests">
+    <path d="M 100.857578 85.7 
+L 302.327031 85.7 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #6b6b6b; stroke-width: 0.7"/>
+   </g>
+   <g id="e:reference-to-tests">
+    <path d="M 100.857578 127.7 
+L 302.327031 127.7 
+" clip-path="url(#p0dede4305e)" style="fill: none; stroke: #6b6b6b; stroke-width: 0.7"/>
+   </g>
+   <g id="n:model:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="22.417">Model</text>
+   </g>
+   <g id="n:model:item1">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="30.817">Logistic regression</text>
+   </g>
+   <g id="n:model:item2">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="39.217">Explainable boosting machine</text>
+   </g>
+   <g id="n:model:item3">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="47.617">Gradient boosted trees</text>
+   </g>
+   <g id="n:explanation-method:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="151.335521" y="26.617">Explanation method</text>
+   </g>
+   <g id="n:explanation-method:item1">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="151.335521" y="35.017">SHAP, LIME, DiCE,</text>
+   </g>
+   <g id="n:explanation-method:item2">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="151.335521" y="43.417">Anchors, Wachter</text>
+   </g>
+   <g id="n:notice:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="248.553346" y="26.617">Notice</text>
+   </g>
+   <g id="n:notice:item1">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="248.553346" y="35.017">Up to four principal reasons</text>
+   </g>
+   <g id="n:notice:item2">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="248.553346" y="43.417">after the direction rule</text>
+   </g>
+   <g id="n:commentary-methods:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="79.117">Commentary methods</text>
+   </g>
+   <g id="n:commentary-methods:item1">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="87.517">Marginal applicant method</text>
+   </g>
+   <g id="n:commentary-methods:item2">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="95.917">Average applicant method</text>
+   </g>
+   <g id="n:reference-notices:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="121.117">Reference notices</text>
+   </g>
+   <g id="n:reference-notices:item1">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="129.517">Canned notice</text>
+   </g>
+   <g id="n:reference-notices:item2">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="50.678789" y="137.917">Random notice</text>
+   </g>
+   <g id="c:six-tests:title">
+    <text font-size="7" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #0f4d92" x="347.413516" y="21.712">Six tests</text>
+   </g>
+   <g id="n:e1:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="36.704667">E1 Direction</text>
+   </g>
+   <g id="n:e2:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="56.036">E2 Accuracy</text>
+   </g>
+   <g id="n:e3:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="75.367333">E3 Specificity</text>
+   </g>
+   <g id="n:e4:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="94.698667">E4 Selection</text>
+   </g>
+   <g id="n:e5:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="114.03">E5 Prohibited bases</text>
+   </g>
+   <g id="n:e6:label">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="347.413516" y="133.361333">E6 Recourse</text>
+   </g>
+   <g id="l:contributions">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #4d4d4d" x="55.678789" y="64.027">per factor contributions</text>
+   </g>
+   <g id="l:commentary-reasons">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #4d4d4d" x="203.092305" y="82.2">contributions and the reasons selected from them</text>
+   </g>
+   <g id="l:same-applicants">
+    <text font-size="6.5" style="font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #4d4d4d" x="203.092305" y="124.2">built for the same applicants</text>
+   </g>
+   <g id="s:1:number">
+    <text font-size="6" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="6.1" y="7.748">1</text>
+   </g>
+   <g id="s:2:number">
+    <text font-size="6" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="116.49138" y="7.748">2</text>
+   </g>
+   <g id="s:3:number">
+    <text font-size="6" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="207.413464" y="7.748">3</text>
+   </g>
+   <g id="s:4:number">
+    <text font-size="6" style="font-weight: 700; font-family: 'Arial', 'Helvetica', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #272727" x="310.927031" y="7.748">4</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p0dede4305e">
+   <rect x="0" y="0" width="390" height="145.2"/>
+  </clipPath>
+ </defs>
+</svg>

@@ -7,8 +7,8 @@
 What it does, on SYNTHETIC data only (no dataset is read, no model is fitted, no
 explainer is run):
 
-1. Runs the built-in ``--selftest`` of rescore, paper_tables, compare_bundles,
-   denial_reasons, notices and rating_analysis (skip with --skip-script-selftests).
+1. Runs the built-in ``--selftest`` of rescore, paper_tables, compare_bundles and
+   denial_reasons (skip with --skip-script-selftests).
 2. Checks the cross-agent contract: the runner's ``cslaw`` config parsing and
    echo, the null-baseline ids in common/runner/generators, the model API names
    (native_feature_contributions_batch, ranking_contributions, use_native_ranking,
@@ -25,8 +25,8 @@ explainer is run):
    nullbaselines (null baselines, native contributions removed to exercise the
    cross-bundle join) and an "old" bundle without any persisted field.
 4. Calls the pure functions and main() of rescore, paper_tables, compare_bundles,
-   regb_reference, multiplicity, proxy_substitution, common_faithfulness, notices
-   and rating_analysis (with synthetic ratings) and asserts that the expected
+   regb_reference, multiplicity, proxy_substitution and common_faithfulness, and
+   asserts that the expected
    output files exist and that a few invariants hold, e.g. the rescored
    css_no_dsv equals the renormalized formula, compare_bundles reports a copy as
    identical, Reg B M1 reasons match an independent recomputation, and every
@@ -41,7 +41,7 @@ explainer is run):
    sub-components, cf_reason_source) through rescore --variant
    v2_legal_functions, paper_tables (T1 status, T3 open faithfulness, T8),
    regb_reference (v2 flags), common_faithfulness (pipeline consistency),
-   proxy_substitution (provenance registry), multiplicity and notices; then
+   proxy_substitution (provenance registry) and multiplicity; then
    merge_bundles on shards of that bundle (exact reassembly, refusals) and
    version_diff between the v1-shaped and the v2-shaped bundle.
 
@@ -85,10 +85,8 @@ import compare_bundles  # noqa: E402
 import denial_reasons  # noqa: E402
 import merge_bundles  # noqa: E402
 import multiplicity  # noqa: E402
-import notices  # noqa: E402
 import paper_tables  # noqa: E402
 import proxy_substitution  # noqa: E402
-import rating_analysis  # noqa: E402
 import regb_reference  # noqa: E402
 import rescore  # noqa: E402
 import version_diff  # noqa: E402
@@ -131,9 +129,8 @@ except ImportError as import_error:  # pragma: no cover - environment guard
 # Synthetic world
 # ---------------------------------------------------------------------------
 
-# feature -> (plain meaning, taxonomy sensitivity). Dataset ids are real credit ids
-# so notices.py renders them with its default --datasets; the features and the
-# metadata written below are synthetic.
+# feature -> (plain meaning, taxonomy sensitivity). Dataset ids are real credit
+# ids; the features and the metadata written below are synthetic.
 DATASETS: dict[str, dict[str, tuple[str, str]]] = {
     "heloc": {
         "ExternalRiskEstimate": ("external risk estimate", "P"),
@@ -1527,84 +1524,6 @@ def check_common_faithfulness(
     )
 
 
-def check_notices_and_ratings(
-    native_payload: dict[str, Any],
-    native_dir: Path,
-    meta_root: Path,
-    root: Path,
-    checks: Checklist,
-) -> None:
-    packet = root / "analysis" / "notices"
-    outputs = notices.run([native_dir], packet, n=12, seed=7, repo_root=meta_root)
-    assert_files(outputs, "notices")
-    key_path = packet / notices.OUTPUT_FILES["key"]
-    key_rows = read_csv(key_path)
-    assert len(key_rows) == 12
-    assert not any(common.is_null_baseline(row["explainer"]) for row in key_rows)
-    for row in read_csv(packet / notices.OUTPUT_FILES["notices_csv"]):
-        assert not notices.blinding_violations(row["notice_text"]), row["notice_text"]
-        assert row["notice_text"].startswith(notices.HEADER_CREDIT)
-    checks.ok("notices: 12 blinded notices rendered from persisted canonical explanations")
-
-    template = read_csv(packet / notices.OUTPUT_FILES["template"])
-    rating_paths: list[Path] = []
-    for rater in ("rater_a", "rater_b"):
-        disagreement = seeded("disagreement", rater)
-        rows = []
-        for position, row in enumerate(template):
-            base = seeded("rating", row["notice_id"])
-            values = {
-                "R1_specificity": str(base.randint(0, 2)),
-                "R2_prohibited_basis": base.choice(["no", "no", "yes", "unsure"]),
-                "R3_rectification": str(base.randint(0, 2)),
-                "R4_recourse": base.choice(["0", "1", "2", "N/A"]),
-                "R5_overall": str(base.randint(1, 5)),
-            }
-            if rater == "rater_b" and position % 4 == 0:
-                values["R5_overall"] = str(disagreement.randint(1, 5))
-            rows.append({"notice_id": row["notice_id"], "rater_id": rater, **values, "comment": ""})
-        path = root / "ratings" / f"ratings_{rater}.csv"
-        notices.write_csv(path, rows, notices.TEMPLATE_COLUMNS)
-        rating_paths.append(path)
-
-    analysis = root / "analysis" / "rating_analysis"
-    outputs = rating_analysis.run(
-        rating_paths,
-        key_path,
-        analysis,
-        bundles=[native_dir],
-        n_boot=N_BOOT,
-        n_perm=N_BOOT,
-        seed=42,
-    )
-    assert_files(outputs, "rating_analysis")
-    scores = rating_analysis.index_scores(native_payload)
-    key_by_id = {row["notice_id"]: row for row in key_rows}
-    consensus = read_csv(analysis / rating_analysis.OUTPUT_FILES["consensus"])
-    assert len(consensus) == 12
-    for row in consensus:
-        assert row["bundle_match"] == "path", row["bundle_match"]
-        key_row = key_by_id[row["notice_id"]]
-        css = scores[(key_row["explainer"], key_row["instance_id"])]["contestability_support_score"]
-        assert abs(float(row["css"]) - css["score"]) < 1e-12
-    cli_out = root / "analysis" / "rating_analysis_cli"
-    rating_analysis.main(
-        [
-            "--ratings", *(str(path) for path in rating_paths),
-            "--key", str(key_path),
-            "--bundle", str(native_dir),
-            "--out-dir", str(cli_out),
-            "--n-boot", "20",
-            "--n-perm", "20",
-        ]
-    )
-    assert (cli_out / rating_analysis.OUTPUT_FILES["report"]).is_file()
-    checks.ok(
-        "rating_analysis: synthetic ratings joined to the notices' benchmark scores; "
-        "run() and main() outputs"
-    )
-
-
 def check_old_bundle(
     old_payload: dict[str, Any],
     old_dir: Path,
@@ -1640,14 +1559,6 @@ def check_old_bundle(
         common_faithfulness.run,
         [old_dir],
         out / "faithfulness",
-        contains="persist_canonical_explanations",
-    )
-    expect_exit(
-        "notices",
-        notices.run,
-        [old_dir],
-        out / "notices",
-        repo_root=meta_root,
         contains="persist_canonical_explanations",
     )
     rescored, _report = rescore.rescore_payload(
@@ -2339,17 +2250,6 @@ def check_v2_bundles(
         "against the features the run dropped, refuses a missing recorded file; multiplicity runs"
     )
 
-    packet = root / "analysis_v2" / "notices"
-    notices.run([dirs["v2_native"]], packet, n=12, seed=7, repo_root=meta_root)
-    key_rows = read_csv(packet / notices.OUTPUT_FILES["key"])
-    assert key_rows and all(row["corrections_version"] == "v2" for row in key_rows)
-    counterfactual = [row for row in key_rows if row["family"] == "counterfactual"]
-    assert all(row["cf_reason_source"] in common.CF_REASON_SOURCES for row in counterfactual)
-    assert "Corrections per bundle" in (packet / notices.OUTPUT_FILES["design"]).read_text(
-        encoding="utf-8"
-    )
-    checks.ok("notices on a v2 bundle: key records corrections_version and cf_reason_source")
-
 
 def shard_payload(payload: dict[str, Any], groups: set[tuple[str, str]], label: str) -> dict[str, Any]:
     """The part of a bundle a single dataset:track shard job would have written."""
@@ -2704,8 +2604,6 @@ def run_script_selftests(checks: Checklist) -> None:
         ("paper_tables.py --selftest", paper_tables.run_selftest),
         ("compare_bundles.py --selftest", compare_bundles.run_selftest),
         ("denial_reasons.py --selftest", denial_reasons.run_selftest),
-        ("notices.py --selftest", notices.selftest),
-        ("rating_analysis.py --selftest", rating_analysis.selftest),
     ):
         func()
         checks.ok(label)
@@ -2750,7 +2648,6 @@ def run_all(root: Path, *, script_selftests: bool) -> Checklist:
     check_multiplicity(payload, shared_dir, root, checks)
     check_proxy(payload, shared_dir, meta_root, root, checks)
     check_common_faithfulness(native_payload, null_payload, native_dir, null_dir, root, checks)
-    check_notices_and_ratings(native_payload, native_dir, meta_root, root, checks)
     check_old_bundle(old_payload, old_dir, meta_root, root, checks)
 
     print("[3/3, v2] v2-shaped bundles (corrections, provenance, sub-components), merge, version diff")

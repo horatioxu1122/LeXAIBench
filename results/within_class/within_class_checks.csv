@@ -1,0 +1,17 @@
+dataset_id,track,model_id,reference_means_max_gap_vs_saved,contributions_max_gap_vs_persisted,reasons_differing_from_published,original_denied_share
+heloc,primary,ebm,0.0,0.0,0,1.0
+heloc,primary,xgboost,0.0,0.0,0,1.0
+heloc,audit,ebm,0.0,0.0,0,1.0
+heloc,audit,xgboost,0.0,0.0,0,1.0
+default_of_credit_card_clients,primary,ebm,0.0,0.0,0,1.0
+default_of_credit_card_clients,primary,xgboost,0.0,0.0,0,1.0
+default_of_credit_card_clients,audit,ebm,0.0,0.0,0,1.0
+default_of_credit_card_clients,audit,xgboost,0.0,0.0,0,1.0
+give_me_some_credit,primary,ebm,0.0,0.0,0,1.0
+give_me_some_credit,primary,xgboost,0.0,0.0,0,1.0
+give_me_some_credit,audit,ebm,0.0,0.0,0,1.0
+give_me_some_credit,audit,xgboost,0.0,0.0,0,1.0
+south_german_credit,primary,ebm,0.0,0.0,0,1.0
+south_german_credit,primary,xgboost,0.0,0.0,0,1.0
+south_german_credit,audit,ebm,0.0,0.0,0,1.0
+south_german_credit,audit,xgboost,0.0,0.0,0,1.0

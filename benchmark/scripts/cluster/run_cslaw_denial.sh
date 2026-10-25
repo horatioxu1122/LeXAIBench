@@ -10,7 +10,6 @@
 #   cslaw_v2_credit_shared_<TAG>, cslaw_v2_noncredit_<TAG>; optional cslaw_v2_credit_lime_local_<TAG> and
 #   cslaw_v2_credit_lime_default_<TAG>.
 # Output: benchmark/outputs/cslaw_denial_<TAG>/{credit,nullbaselines,shared,noncredit,lime_local,lime_default,analysis}
-# To add lime_default to an existing cslaw_denial_<TAG> without rerunning everything, use run_cslaw_lime_default.sh.
 set -euo pipefail
 
 REPO_ROOT="${HOME}/explainableAI-CS"
@@ -24,7 +23,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --tag) TAG="$2"; shift 2 ;;
     --force) FORCE=1; shift ;;
-    -h | --help) sed -n '2,10p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h | --help) sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown argument: $1" >&2; exit 1 ;;
   esac
 done
@@ -84,7 +83,6 @@ DISC_ARGS=(--bundle "${DEST}/credit")
 [[ -f "${DEST}/noncredit/results.json" ]] && DISC_ARGS+=(--bundle "${DEST}/noncredit")
 run track_disclosure "${PY}" benchmark/cslaw/track_disclosure.py "${DISC_ARGS[@]}" --out-dir "${A}/track_disclosure"
 run common_faithfulness "${PY}" benchmark/cslaw/common_faithfulness.py --bundle "${DEST}/credit" --bundle "${DEST}/nullbaselines" --out-dir "${A}/common_faithfulness"
-run notices "${PY}" benchmark/cslaw/notices.py --bundle "${DEST}/credit" --n 48 --seed 7 --out-dir "${A}/notices" "${FORCE_ARG[@]}"
 run regb_nullbaselines "${PY}" benchmark/cslaw/regb_reference.py --bundle "${DEST}/nullbaselines" --out-dir "${A}/regb_nullbaselines"
 # E2 pass rule: each method against the canned notice on the same applicants (reads the regb_* outputs above).
 run canned_paired "${PY}" benchmark/cslaw/canned_paired.py --analysis-dir "${A}" --out-dir "${A}/canned_paired"

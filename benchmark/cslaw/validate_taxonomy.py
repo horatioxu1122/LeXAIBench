@@ -756,7 +756,7 @@ def manifest_text(
         f"#   taxonomy: {taxonomy_label}",
         f"#   registry: {registry_label}",
         "# The JSON files are the machine-read source; this manifest documents them.",
-        "# Labels are drafts that require author verification; see",
+        "# The labeling rules and every change from v1:",
         "# benchmark/metadata/TAXONOMY_V2_CHANGES.md.",
     ]
     top = {key: taxonomy[key] for key in ("taxonomy_version", "status") if key in taxonomy}

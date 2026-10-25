@@ -1,0 +1,5 @@
+dataset_id,excluded_in_primary,excluded_sensitivity,retained_S_features_in_primary,observed_excluded_in_primary,registry_matches_run
+default_of_credit_card_clients,SEX|MARRIAGE|AGE,S|S|S,,AGE|MARRIAGE|SEX,True
+give_me_some_credit,age,S,,age,True
+heloc,,,,,True
+south_german_credit,personal_status_sex|age,S|S,,age|personal_status_sex,True

@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-# Defaults of the published non-credit run (cross_domain_strongest_real_full_cluster).
+# Defaults of the v1 non-credit run.
 V1_MAX_INSTANCES = 12
 # LeXAIBench v2 (--cslaw-v2) budget, the same as benchmark/configs/experiment_cslaw_v2_credit.json.
 V2_MAX_INSTANCES = 24
@@ -122,7 +122,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def cslaw_native_block() -> dict:
-    """Round-1 cslaw block (--cslaw-native); superseded by cslaw_v2_block()."""
+    """Pre-v2 cslaw block (--cslaw-native); the paper runs use cslaw_v2_block()."""
     return {
         "use_native_contributions_for_ranking": True,
         "persist_canonical_explanations": True,

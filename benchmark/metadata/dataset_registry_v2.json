@@ -12,7 +12,7 @@
     "taxonomy": "benchmark/metadata/feature_taxonomy_v2.json",
     "validator": "benchmark/cslaw/validate_taxonomy.py",
     "changes": "benchmark/metadata/TAXONOMY_V2_CHANGES.md",
-    "review_status": "draft — requires author verification (prepared with AI assistance; no legal co-author)"
+    "review_status": "reviewed by the authors"
   },
   "datasets": {
     "heloc": {

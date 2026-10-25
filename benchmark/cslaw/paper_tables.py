@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""CS&Law revision tables (T1-T8) computed offline from LeXAIBench result bundles.
+"""CS&Law tables (T1-T8) computed offline from LeXAIBench result bundles.
 
 Usage (from the repository root; no model or explainer is run):
 
     python benchmark/cslaw/paper_tables.py \
-        --bundle credit=benchmark/outputs/four_dataset_real_highbudget_heldout_refresh \
-        --bundle crossdomain=benchmark/outputs/cross_domain_strongest_real_full_cluster \
+        --bundle credit=benchmark/outputs/cslaw_denial_<TAG>/credit \
+        --bundle noncredit=benchmark/outputs/cslaw_denial_<TAG>/noncredit \
         [--bundle nullbaselines=<bundle with random_reasons/global_ranking>] \
         --robustness-root benchmark/outputs \
         [--rescored-root <dir with rescore.py outputs>] \
@@ -1874,8 +1874,7 @@ def t6_robustness_rows(
                     f"Skipped {candidate.directory.name} (corrections {check_version}): the only "
                     f"baselines covering it have another corrections version "
                     f"({'; '.join(version_mismatches)}); a cross-version leader change would mix "
-                    "the corrections with the robustness factor. The same-version comparison is in "
-                    "the offline paper_tables run (cslaw_offline_<tag>/paper_tables)."
+                    "the corrections with the robustness factor."
                 )
             else:
                 notes.append(
@@ -2975,7 +2974,7 @@ def run_selftest() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="CS&Law revision tables T1-T8 from result bundles.")
+    parser = argparse.ArgumentParser(description="CS&Law tables T1-T8 from result bundles.")
     parser.add_argument(
         "--bundle",
         action="append",

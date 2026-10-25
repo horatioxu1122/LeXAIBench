@@ -1,0 +1,7 @@
+bundle,dataset_id,track,model_id,source,threshold,near_cutoff_n_rows,near_cutoff_score_low,near_cutoff_score_high,all_applicants_n_rows,native_contribution_source,model_backend
+hmda_geo,hmda,audit,ebm,ebm_eval_terms_pair_split,0.5,104941,0.4000015738565402,0.4999999383471435,5000,ebm_eval_terms_pair_split,ebm_classifier
+hmda_geo,hmda,audit,logistic_regression,lr_coef_x_standardized,0.5,114729,0.4000000685857421,0.49999789432861547,5000,lr_coef_x_standardized,sklearn_logistic_regression
+hmda_geo,hmda,audit,xgboost,xgb_pred_contribs,0.5,86456,0.40000346302986145,0.49999940395355225,5000,xgb_pred_contribs,xgboost_classifier
+hmda_geo,hmda,primary,ebm,ebm_eval_terms_pair_split,0.5,92975,0.40000062002577985,0.4999990966566457,5000,ebm_eval_terms_pair_split,ebm_classifier
+hmda_geo,hmda,primary,logistic_regression,lr_coef_x_standardized,0.5,110328,0.4000002684890499,0.49999926423682284,5000,lr_coef_x_standardized,sklearn_logistic_regression
+hmda_geo,hmda,primary,xgboost,xgb_pred_contribs,0.5,79436,0.4000003933906555,0.4999924898147583,5000,xgb_pred_contribs,xgboost_classifier

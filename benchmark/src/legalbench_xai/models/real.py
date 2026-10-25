@@ -158,7 +158,7 @@ class VectorizedClassifierModel:
     def ranking_contributions(self, row: dict[str, Any]) -> dict[str, float]:
         """Per-feature contributions that explainers use to rank candidate features.
 
-        Correction native_contributions (v2), also the round-1 use_native_ranking switch:
+        Correction native_contributions (v2), also the pre-v2 use_native_ranking switch:
         returns native_feature_contributions(row) (the fitted model's own additive
         log-odds contributions; LR coef x standardized x, EBM eval_terms, XGBoost
         pred_contribs). Otherwise returns original_feature_contributions(row), which for

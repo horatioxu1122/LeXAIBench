@@ -165,7 +165,7 @@ def accuracy_units(analysis: Path) -> dict:
     for sub, bundle in (("regb_credit", "credit"), ("regb_nullbaselines", "nullbaselines"), ("regb_lime_local", "lime_local"),
                         ("regb_lime_default", "lime_default")):
         if sub == "regb_lime_default" and not (analysis / sub / "regb_reference_instances.csv").is_file():
-            continue  # optional robustness run (run_cslaw_lime_default.sh)
+            continue  # optional robustness run (run_cslaw_credit.sh --steps limedefault)
         for row in read_csv(analysis / sub / "regb_reference_instances.csv"):
             value = row.get("pr_overlap_m1_grouped")
             if row["dataset_id"] in CREDIT and value not in (None, "", "None", "nan"):

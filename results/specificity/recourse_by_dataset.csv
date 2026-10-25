@@ -1,0 +1,15 @@
+bundle,dataset_id,explainer_id,mean,ci_low,ci_high,n
+credit,default_of_credit_card_clients,dice,1.0,1.0,1.0,144
+credit,default_of_credit_card_clients,wachter,1.0,1.0,1.0,144
+credit,give_me_some_credit,dice,1.0,1.0,1.0,144
+credit,give_me_some_credit,wachter,0.9930555555555556,0.9791666666666666,1.0,144
+credit,heloc,dice,0.9027777777777778,0.8541666666666666,0.9513888888888888,144
+credit,heloc,wachter,0.7708333333333334,0.7013888888888888,0.8402777777777778,144
+credit,south_german_credit,dice,1.0,1.0,1.0,144
+credit,south_german_credit,wachter,0.7638888888888888,0.6875,0.8263888888888888,144
+noncredit,fda_inspections,dice,0.0,0.0,0.0,144
+noncredit,fda_inspections,wachter,0.0,0.0,0.0,144
+noncredit,hmda,dice,1.0,1.0,1.0,144
+noncredit,hmda,wachter,0.8958333333333334,0.8472222222222222,0.9444444444444444,144
+noncredit,ny_courts_pretrial,dice,0.3333333333333333,0.2569444444444444,0.4166666666666667,144
+noncredit,ny_courts_pretrial,wachter,0.0,0.0,0.0,144

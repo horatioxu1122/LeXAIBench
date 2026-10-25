@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 [Author Names Withheld for Blind Review]
+Copyright (c) 2026 Jingyan Xu and Tianyi Yang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,18 @@ SOFTWARE.
 
 ---
 
-Note on dataset licensing: The LegalBench-XAI benchmark composes data from
-several public sources. Each underlying dataset retains its own license:
+Note on dataset licensing: LeXAIBench uses data from several public sources.
+The repository does not include the data. Each dataset keeps its own license:
 
 - HMDA (Home Mortgage Disclosure Act data): public-domain U.S. government work,
   released by the Consumer Financial Protection Bureau.
 - NY Courts pretrial release data: New York State public records.
 - FDA inspection classifications: public-domain U.S. government work.
 - UCI Machine Learning Repository datasets (Default of Credit Card Clients,
-  South German Credit): see the UCI repository terms.
+  South German Credit): CC BY 4.0.
 - OpenML datasets (HELOC, Give Me Some Credit): see the OpenML platform terms
   and the original FICO / Kaggle source terms.
 
 See `benchmark/DATA_ACQUISITION.md` for source URLs. The MIT license above
-covers only the Python package, configs, scripts, and documentation in this
-repository; it does not relicense the underlying datasets.
+covers the code, configurations, documentation, and analysis outputs in this
+repository. It does not cover the datasets.
